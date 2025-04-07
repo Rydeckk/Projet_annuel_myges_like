@@ -4,7 +4,7 @@
   "tabWidth": 2,
   "overrides": [
     {
-      "files": "src/*.{tsx, ts}",
+      "files": "src/**/*.{tsx, ts}",
       "options": {
         "tabWidth": 4
       }
