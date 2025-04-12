@@ -1,11 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
-import { Public } from "src/auth/auth.guard";
+import { Controller } from "@nestjs/common";
 
 @Controller("users")
-export class UserController {
-    @Public()
-    @Get()
-    findAll() {
-        return [];
-    }
-}
+export class UserController {}

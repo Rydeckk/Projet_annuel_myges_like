@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { JWTPaylod } from "src/types/jwt-paylod";
 
-export const User = createParamDecorator(
+export const GetCurrentUser = createParamDecorator(
     (data: keyof JWTPaylod, ctx: ExecutionContext) => {
         const request = ctx
             .switchToHttp()

@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthGuard, Public } from "./auth.guard";
-import { User } from "src/decorators/user.decorator";
+import { GetCurrentUser } from "src/decorators/user.decorator";
+import { Public } from "./jwt-auth.guard";
 import { JWTPaylod } from "src/types/jwt-paylod";
 
 @Controller("auth")
@@ -10,17 +10,21 @@ export class AuthController {
 
     @Public()
     @Post("login")
-    signIn(@Body() signInDto: Record<string, any>) {
-        return this.authService.signIn(signInDto.username, signInDto.password);
+    signIn(@Body() signInDto: { username: string; pass: string }) {
+        return this.authService.login(signInDto);
     }
 
-    @UseGuards(AuthGuard)
+    @Public()
+    @Get("public")
+    publicTest() {
+        return "public";
+    }
+
     @Get("profile")
     getProfile(
-        @User()
+        @GetCurrentUser()
         user: JWTPaylod,
     ) {
-        console.log("getProfile", user);
         return user;
     }
 }

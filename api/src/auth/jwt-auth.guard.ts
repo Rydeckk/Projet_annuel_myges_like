@@ -1,28 +1,30 @@
 import {
-    CanActivate,
     ExecutionContext,
     Injectable,
-    UnauthorizedException,
     SetMetadata,
+    UnauthorizedException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
 import { Reflector } from "@nestjs/core";
-import { ConfigService } from "@nestjs/config";
+import { AuthGuard } from "@nestjs/passport";
 import { JWTPaylod } from "src/types/jwt-paylod";
+import { Request } from "express";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
 
 export const IS_PUBLIC_KEY = "isPublic";
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class JwtAuthGuard extends AuthGuard("jwt") {
     constructor(
-        private jwtService: JwtService,
         private reflector: Reflector,
         private configService: ConfigService,
-    ) {}
+        private jwtService: JwtService,
+    ) {
+        super();
+    }
 
-    async canActivate(context: ExecutionContext) {
+    canActivate(context: ExecutionContext) {
         const isPublic = this.reflector.getAllAndOverride<boolean>(
             IS_PUBLIC_KEY,
             [context.getHandler(), context.getClass()],
@@ -41,20 +43,17 @@ export class AuthGuard implements CanActivate {
 
         try {
             const secret = this.configService.get<string>("jwtSecret");
-
-            const payload = await this.jwtService.verifyAsync<JWTPaylod>(
-                token,
-                {
+            const verifyToken = async () => {
+                await this.jwtService.verifyAsync<JWTPaylod>(token, {
                     secret,
-                },
-            );
-
-            request["user"] = payload;
+                });
+            };
+            void verifyToken();
         } catch {
             throw new UnauthorizedException();
         }
 
-        return true;
+        return super.canActivate(context);
     }
 
     private extractTokenFromHeader(request: Request) {
