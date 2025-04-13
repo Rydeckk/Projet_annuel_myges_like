@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
+import { GoogleProfile } from "./strategies/google/google.strategy";
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,17 @@ export class AuthService {
 
         return {
             access_token: await this.jwtService.signAsync(payload),
+        };
+    }
+
+    googleLogin(req: Request & { user: GoogleProfile }) {
+        if (!req.user) {
+            return "No user from google";
+        }
+
+        return {
+            message: "User information from google",
+            user: req.user,
         };
     }
 }

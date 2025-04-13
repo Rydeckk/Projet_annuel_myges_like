@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Request,
+    UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { GetCurrentUser } from "src/decorators/user.decorator";
-import { Public } from "./jwt-auth.guard";
+import { Public } from "./strategies/jwt/jwt-auth.guard";
 import { JWTPaylod } from "src/types/jwt-paylod";
+import { GoogleOAuthGuard } from "./strategies/google/google-oauth.guard";
+import { GoogleProfile } from "./strategies/google/google.strategy";
 
 @Controller("auth")
 export class AuthController {
@@ -26,5 +35,17 @@ export class AuthController {
         user: JWTPaylod,
     ) {
         return user;
+    }
+
+    @Public()
+    @Get()
+    @UseGuards(GoogleOAuthGuard)
+    googleAuth() {}
+
+    @Public()
+    @Get("google-redirect")
+    @UseGuards(GoogleOAuthGuard)
+    googleAuthRedirect(@Request() req: Request & { user: GoogleProfile }) {
+        return this.authService.googleLogin(req);
     }
 }

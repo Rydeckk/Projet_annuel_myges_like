@@ -1,0 +1,45 @@
+import { PassportStrategy } from "@nestjs/passport";
+import { Strategy, VerifyCallback } from "passport-google-oauth20";
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+
+export type GoogleProfile = {
+    name: {
+        givenName: string;
+        familyName: string;
+    };
+    emails: {
+        value: string;
+        verified: boolean;
+    }[];
+    photos: { value: string }[];
+    provider: string;
+};
+
+@Injectable()
+export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
+    constructor(configService: ConfigService) {
+        super({
+            clientID: configService.get<string>("google.clientID")!,
+            clientSecret: configService.get<string>("google.clientSecret")!,
+            callbackURL: "http://localhost:3000/auth/google-redirect",
+            scope: ["email", "profile"],
+        });
+    }
+
+    validate(
+        _accessToken: string,
+        _refreshToken: string,
+        profile: GoogleProfile,
+        done: VerifyCallback,
+    ) {
+        const { name, emails, photos } = profile;
+        const user = {
+            email: emails[0].value,
+            firstName: name.givenName,
+            lastName: name.familyName,
+            picture: photos[0].value,
+        };
+        done(null, user);
+    }
+}
