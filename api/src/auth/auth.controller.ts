@@ -10,8 +10,10 @@ import { AuthService } from "./auth.service";
 import { GetCurrentUser } from "src/decorators/user.decorator";
 import { Public } from "./strategies/jwt/jwt-auth.guard";
 import { JWTPaylod } from "src/types/jwt-paylod";
-import { GoogleOAuthGuard } from "./strategies/google/google-oauth.guard";
+import { GoogleAuthGuard } from "./strategies/google/google-auth.guard";
 import { GoogleProfile } from "./strategies/google/google.strategy";
+import { MicrosoftAuthGuard } from "./strategies/microsoft/microsoft-auth.guard";
+import { MicrosoftProfile } from "./strategies/microsoft/microsoft.strategy";
 
 @Controller("auth")
 export class AuthController {
@@ -38,14 +40,34 @@ export class AuthController {
     }
 
     @Public()
-    @Get()
-    @UseGuards(GoogleOAuthGuard)
+    @Get("google")
+    @UseGuards(GoogleAuthGuard)
     googleAuth() {}
 
     @Public()
     @Get("google-redirect")
-    @UseGuards(GoogleOAuthGuard)
+    @UseGuards(GoogleAuthGuard)
     googleAuthRedirect(@Request() req: Request & { user: GoogleProfile }) {
-        return this.authService.googleLogin(req);
+        return {
+            message: "User information from google",
+            user: req.user,
+        };
+    }
+
+    @Public()
+    @Get("microsoft")
+    @UseGuards(MicrosoftAuthGuard)
+    microsoftLogin() {}
+
+    @Public()
+    @Get("microsoft/callback")
+    @UseGuards(MicrosoftAuthGuard)
+    microsoftLoginCallback(
+        @Request() req: Request & { user: MicrosoftProfile },
+    ) {
+        return {
+            message: "Microsoft login successful",
+            user: req.user,
+        };
     }
 }

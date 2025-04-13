@@ -7,6 +7,7 @@ import { UsersService } from "src/users/users.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./strategies/jwt/jwt.strategy";
 import { GoogleStrategy } from "./strategies/google/google.strategy";
+import { MicrosoftStrategy } from "./strategies/microsoft/microsoft.strategy";
 
 @Module({
     imports: [
@@ -20,7 +21,13 @@ import { GoogleStrategy } from "./strategies/google/google.strategy";
             }),
         }),
     ],
-    providers: [AuthService, UsersService, JwtStrategy, GoogleStrategy],
+    providers: [
+        AuthService,
+        UsersService,
+        JwtStrategy,
+        GoogleStrategy,
+        MicrosoftStrategy,
+    ],
     controllers: [AuthController],
     exports: [AuthService],
 })
