@@ -33,12 +33,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         profile: GoogleProfile,
         done: VerifyCallback,
     ) {
-        const { name, emails, photos } = profile;
+        const { name, emails, provider } = profile;
         const user = {
             email: emails[0].value,
             firstName: name.givenName,
             lastName: name.familyName,
-            picture: photos[0].value,
+            provider,
         };
         done(null, user);
     }

@@ -29,6 +29,5 @@ import { MicrosoftStrategy } from "./strategies/microsoft/microsoft.strategy";
         MicrosoftStrategy,
     ],
     controllers: [AuthController],
-    exports: [AuthService],
 })
 export class AuthModule {}

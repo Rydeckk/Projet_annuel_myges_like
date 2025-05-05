@@ -13,7 +13,445 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    String @id @default(uuid())
-  email String @unique
+// #region USER
+
+enum UserRole {
+  STUDENT
+  TEACHER
 }
+
+model User {
+  id        String   @id @default(uuid())
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  email     String
+  password  String
+  role      UserRole
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  student Student?
+  teacher Teacher?
+  emails  Email[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Email {
+  email       String
+  ssoProdider String @map("sso_provider")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@unique([email])
+  @@map("email")
+}
+
+model Student {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  promotionStudents    PromotionStudent[]
+  projectGroupStudents ProjectGroupStudent[]
+  deliverables         Deliverable[]
+  ratingResults        RatingResult[]
+
+  @@unique([userId])
+  @@map("student")
+}
+
+model Teacher {
+  id String @id @default(uuid())
+
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String      @map("user_id")
+  promotions Promotion[]
+  projects   Project[]
+
+  @@unique([userId])
+  @@map("teacher")
+}
+
+// #endregion
+
+// #region PROMOTION
+
+model Promotion {
+  id        String   @id @default(uuid())
+  name      String
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  teacher            Teacher            @relation(fields: [createdByTeacherId], references: [id])
+  createdByTeacherId String             @map("created_by_teacher_id")
+  promotionStudents  PromotionStudent[]
+  promotionProjects  PromotionProject[]
+
+  @@map("promotion")
+}
+
+model PromotionStudent {
+  student     Student   @relation(fields: [studentId], references: [id])
+  studentId   String    @map("student_id")
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  promotionId String    @map("promotion_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([studentId, promotionId])
+  @@map("promotion_student")
+}
+
+// #endregion
+
+// #region PROJECT
+
+enum ProjectVisibility {
+  DRAFT
+  VISIBLE
+}
+
+model Project {
+  id                String            @id @default(uuid())
+  name              String
+  description       String
+  fileName          String?           @map("file_name")
+  path              String?
+  fileSize          Int?              @map("file_size")
+  projectVisibility ProjectVisibility @map("project_visibility")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  teacher            Teacher            @relation(fields: [createdByTeacherId], references: [id])
+  createdByTeacherId String             @map("created_by_teacher_id")
+  promotionProjects  PromotionProject[]
+
+  @@map("project")
+}
+
+enum ProjectGroupRule {
+  MANUAL
+  RANDOM
+  FREE
+}
+
+model PromotionProject {
+  id                  String           @id @default(uuid())
+  minPerGroup         Int              @map("min_per_group")
+  maxPerGroup         Int              @map("max_per_group")
+  malus               Int?
+  malusPerTime        DateTime?        @map("malus_per_time")
+  allowLateSubmission Boolean          @map("allow_late_submission")
+  projectGroupRule    ProjectGroupRule @map("project_group_rume")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  promotion                        Promotion                         @relation(fields: [promotionId], references: [id])
+  promotionId                      String                            @map("promotion_id")
+  project                          Project                           @relation(fields: [projectId], references: [id])
+  projectId                        String                            @map("project_id")
+  projectGroups                    ProjectGroup[]
+  promotionProjectDeliverableRules PromotionProjectDeliverableRule[]
+  promotionProjectRatingScales     PromotionProjectRatingScale[]
+
+  @@unique([promotionId, projectId])
+  @@map("promotion_project")
+}
+
+model ProjectGroup {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  promotionProject     PromotionProject      @relation(fields: [promotionProjectId], references: [id])
+  promotionProjectId   String                @map("promotion_project_id")
+  projectGroupStudents ProjectGroupStudent[]
+  deliverables         Deliverable[]
+  projectGroupResult   ProjectGroupResult?
+  report               Report?
+  defense              Defense?
+
+  @@map("project_group")
+}
+
+model ProjectGroupStudent {
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroupId String       @map("project_group_id")
+  student        Student      @relation(fields: [studentId], references: [id])
+  studentId      String       @map("student_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([projectGroupId, studentId])
+  @@map("project_group_student")
+}
+
+model Report {
+  id      String @id @default(uuid())
+  content String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroupId String       @map("project_group_id")
+
+  @@unique([projectGroupId])
+  @@map("report")
+}
+
+model Defense {
+  id           String    @id @default(uuid())
+  startDate    DateTime  @map("start_date")
+  endDate      DateTime? @map("end_date")
+  duration     DateTime
+  passageOrder Int       @map("passage_order")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroupId String       @map("project_group_id")
+
+  @@unique([projectGroupId])
+  @@map("defense")
+}
+
+// #endregion
+
+// #region DELIVERABLE
+
+model Deliverable {
+  id          String  @id @default(uuid())
+  name        String
+  descritpion String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  projectGroup        ProjectGroup        @relation(fields: [projectGroupId], references: [id])
+  projectGroupId      String              @map("project_group_id")
+  uploadedByStudent   Student             @relation(fields: [uploadedByStudentId], references: [id])
+  uploadedByStudentId String              @map("uploaded_by_student_id")
+  deliverableArchive  DeliverableArchive?
+
+  @@map("deliverable")
+}
+
+model DeliverableArchive {
+  id       String @id @default(uuid())
+  name     String
+  path     String
+  fileSize Int    @map("file_size")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  deliverableId String      @map("deliverable_id")
+
+  @@unique([deliverableId])
+  @@map("deliverable_archive")
+}
+
+// #endregion
+
+// #region DELIVERABLE RULE 
+
+enum RuleType {
+  MAX_SIZE_FILE
+  FILE_PRESENCE
+  FILE_CONTENT_MATCH
+}
+
+model DeliverableRule {
+  id       String   @id @default(uuid())
+  ruleType RuleType @map("rule_type")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  promotionProjectDeliverableRules PromotionProjectDeliverableRule[]
+  ruleMaxSizeFile                  RuleMaxSizeFile?
+  ruleFilePresence                 RuleFilePresence?
+  ruleFileContentMatch             RuleFileContentMatch?
+  deliverableRuleResults           DeliverableRuleResult[]
+
+  @@map("deliverable_rule")
+}
+
+model PromotionProjectDeliverableRule {
+  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id])
+  promotionProjectId String           @map("promotion_project_id")
+  deliverableRule    DeliverableRule  @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRuleId  String           @map("deliverable_rule_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([deliverableRuleId, promotionProjectId])
+  @@map("promotion_project_deliverable_rule")
+}
+
+model RuleMaxSizeFile {
+  id      String @id @default(uuid())
+  maxSize Int    @map("max_size")
+
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRuleId String          @map("deliverable_rule_id")
+
+  @@unique([deliverableRuleId])
+  @@map("rule_max_size_file")
+}
+
+model RuleFilePresence {
+  id       String @id @default(uuid())
+  fileName String @map("file_name")
+
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRuleId String          @map("deliverable_rule_id")
+
+  @@unique([deliverableRuleId])
+  @@map("rule_rile_presence")
+}
+
+enum MatchType {
+  TEXT
+  REGEX
+}
+
+model RuleFileContentMatch {
+  id        String    @id @default(uuid())
+  fileName  String    @map("file_name")
+  match     String
+  matchType MatchType @map("match_type")
+
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRuleId String          @map("deliverable_rule_id")
+
+  @@unique([deliverableRuleId])
+  @@map("rule_file_content_match")
+}
+
+// #endregion
+
+// #region PROJECT RESULT
+
+model ProjectGroupResult {
+  id                String  @id @default(uuid())
+  isSubmittedInTime Boolean @map("is_submitted_in_time")
+  similarityRate    Int     @map("similarity_rate")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  projectGroup           ProjectGroup            @relation(fields: [projectGroupId], references: [id])
+  projectGroupId         String                  @map("project_group_id")
+  deliverableRuleResults DeliverableRuleResult[]
+
+  @@unique([projectGroupId])
+  @@map("project_group_result")
+}
+
+model DeliverableRuleResult {
+  id              String  @id @default(uuid())
+  isRuleRespected Boolean @map("is_rule_respected")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  projectGroupResult   ProjectGroupResult @relation(fields: [projectGroupResultId], references: [id])
+  projectGroupResultId String             @map("project_group_result_id")
+  deliverableRule      DeliverableRule    @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRuleId    String             @map("deliverable_rule_id")
+
+  @@unique([projectGroupResultId, deliverableRuleId])
+  @@map("deliverable_rule_result")
+}
+
+model RatingResult {
+  id     String @id @default(uuid())
+  rating Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  ratingScaleCriteria   RatingScaleCriteria @relation(fields: [ratingScaleCriteriaId], references: [id])
+  ratingScaleCriteriaId String              @map("rating_scale_criteria_id")
+  student               Student             @relation(fields: [studentId], references: [id])
+  studentId             String              @map("student_id")
+
+  @@map("rating_result")
+}
+
+// #endregion
+
+// #region RATING SCALE
+
+enum RatingScope {
+  DELIVERABLE
+  REPORT
+  DEFENSE
+}
+
+enum RatingGroupScope {
+  INDIVIDIAL
+  GROUP
+}
+
+model RatingScale {
+  id               String           @id @default(uuid())
+  name             String
+  description      String?
+  ratingScope      RatingScope      @map("rating_scope")
+  ratingGroupScope RatingGroupScope @map("rating_group_scope")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  promotionProjectRatingScales PromotionProjectRatingScale[]
+  ratingScaleCriteria          RatingScaleCriteria[]
+
+  @@map("rating_scale")
+}
+
+model RatingScaleCriteria {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  weight      Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  ratingScale   RatingScale    @relation(fields: [ratingScaleId], references: [id])
+  ratingScaleId String         @map("rating_scale_id")
+  ratingResults RatingResult[]
+
+  @@map("rating_scale_criteria")
+}
+
+model PromotionProjectRatingScale {
+  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id])
+  promotionProjectId String           @map("promotion_project_id")
+  ratingScale        RatingScale      @relation(fields: [ratingScaleId], references: [id])
+  ratingScaleId      String           @map("rating_scale_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([promotionProjectId, ratingScaleId])
+  @@map("promotion_project_rating_scale")
+}
+
+// #endregion

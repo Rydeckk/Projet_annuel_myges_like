@@ -35,16 +35,15 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
                 email: string;
                 firstName: string;
                 lastName: string;
-                picture: string;
             },
         ) => void,
     ) {
-        const { name, emails } = profile;
+        const { name, emails, provider } = profile;
         const user = {
             email: emails[0].value,
             firstName: name.givenName,
             lastName: name.familyName,
-            picture: "",
+            provider,
         };
         done(null, user);
     }
