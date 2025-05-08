@@ -11,7 +11,7 @@ export type MicrosoftProfile = {
 
 @Injectable()
 export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
-    constructor(configService: ConfigService) {
+    constructor(readonly configService: ConfigService) {
         super({
             clientID: configService.get<string>("microsoft.clientID")!,
             clientSecret: configService.get<string>("microsoft.clientSecret")!,

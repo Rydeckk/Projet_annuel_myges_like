@@ -3,11 +3,13 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { UsersService } from "src/users/users.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./strategies/jwt/jwt.strategy";
 import { GoogleStrategy } from "./strategies/google/google.strategy";
 import { MicrosoftStrategy } from "./strategies/microsoft/microsoft.strategy";
+import { UsersService } from "src/users/users.service";
+import { StudentsService } from "src/students/students.service";
+import { TeachersService } from "src/teachers/teachers.service";
 
 @Module({
     imports: [
@@ -23,10 +25,12 @@ import { MicrosoftStrategy } from "./strategies/microsoft/microsoft.strategy";
     ],
     providers: [
         AuthService,
-        UsersService,
         JwtStrategy,
         GoogleStrategy,
         MicrosoftStrategy,
+        UsersService,
+        StudentsService,
+        TeachersService,
     ],
     controllers: [AuthController],
 })
