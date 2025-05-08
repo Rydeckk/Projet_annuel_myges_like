@@ -18,7 +18,7 @@ export type GoogleProfile = {
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
-    constructor(configService: ConfigService) {
+    constructor(readonly configService: ConfigService) {
         super({
             clientID: configService.get<string>("google.clientID")!,
             clientSecret: configService.get<string>("google.clientSecret")!,
