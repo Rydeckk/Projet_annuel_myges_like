@@ -1,9 +1,5 @@
-import { Button } from "./components/ui/button";
+import { Authentification } from "./pages/authentification/Authentification";
 
 export const App = () => {
-    return (
-        <div>
-            <Button>Button</Button>
-        </div>
-    );
+    return <Authentification />;
 };
