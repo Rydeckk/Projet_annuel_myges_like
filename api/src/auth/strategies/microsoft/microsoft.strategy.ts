@@ -2,12 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-microsoft";
-
-export type MicrosoftProfile = {
-    provider: string;
-    name: { familyName: string; givenName: string };
-    emails: { type: string; value: string }[];
-};
+import { MicrosoftProfile } from "src/types/sso";
 
 @Injectable()
 export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
@@ -15,7 +10,7 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
         super({
             clientID: configService.get<string>("microsoft.clientID")!,
             clientSecret: configService.get<string>("microsoft.clientSecret")!,
-            callbackURL: "http://localhost:3000/auth/microsoft/callback",
+            callbackURL: `${configService.get<string>("clientUrl")!}/microsoft-redirect`,
             scope: [
                 "openid",
                 "profile",

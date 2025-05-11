@@ -21,12 +21,13 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  email     String
-  password  String
-  role      UserRole
+  id                   String   @id @default(uuid())
+  firstName            String   @map("first_name")
+  lastName             String   @map("last_name")
+  email                String
+  password             String
+  shouldUpdatePassword Boolean  @default(false) @map("should_update_password")
+  role                 UserRole
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -41,7 +42,7 @@ model User {
 
 model Email {
   email       String
-  ssoProdider String @map("sso_provider")
+  ssoProvider String @map("sso_provider")
 
   createdAt DateTime @default(now()) @map("created_at")
 

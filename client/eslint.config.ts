@@ -25,6 +25,7 @@ export default tseslint
           "warn",
           { allowConstantExport: true },
         ],
+        "react-hooks/exhaustive-deps": "off",
       },
     },
   )
