@@ -26,6 +26,7 @@ CREATE TABLE "user" (
     "last_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "should_update_password" BOOLEAN NOT NULL DEFAULT false,
     "role" "UserRole" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -340,91 +341,91 @@ CREATE UNIQUE INDEX "project_group_result_project_group_id_key" ON "project_grou
 CREATE UNIQUE INDEX "deliverable_rule_result_project_group_result_id_deliverable_key" ON "deliverable_rule_result"("project_group_result_id", "deliverable_rule_id");
 
 -- AddForeignKey
-ALTER TABLE "email" ADD CONSTRAINT "email_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "email" ADD CONSTRAINT "email_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "student" ADD CONSTRAINT "student_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "student" ADD CONSTRAINT "student_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "teacher" ADD CONSTRAINT "teacher_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "teacher" ADD CONSTRAINT "teacher_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "promotion" ADD CONSTRAINT "promotion_created_by_teacher_id_fkey" FOREIGN KEY ("created_by_teacher_id") REFERENCES "teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_student" ADD CONSTRAINT "promotion_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_student" ADD CONSTRAINT "promotion_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_student" ADD CONSTRAINT "promotion_student_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_student" ADD CONSTRAINT "promotion_student_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotion"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "project" ADD CONSTRAINT "project_created_by_teacher_id_fkey" FOREIGN KEY ("created_by_teacher_id") REFERENCES "teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project" ADD CONSTRAINT "promotion_project_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project" ADD CONSTRAINT "promotion_project_promotion_id_fkey" FOREIGN KEY ("promotion_id") REFERENCES "promotion"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project" ADD CONSTRAINT "promotion_project_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project" ADD CONSTRAINT "promotion_project_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "project_group" ADD CONSTRAINT "project_group_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "project_group" ADD CONSTRAINT "project_group_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "project_group_student" ADD CONSTRAINT "project_group_student_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "project_group_student" ADD CONSTRAINT "project_group_student_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "project_group_student" ADD CONSTRAINT "project_group_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "project_group_student" ADD CONSTRAINT "project_group_student_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "report" ADD CONSTRAINT "report_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "report" ADD CONSTRAINT "report_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "defense" ADD CONSTRAINT "defense_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "defense" ADD CONSTRAINT "defense_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "deliverable" ADD CONSTRAINT "deliverable_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "deliverable" ADD CONSTRAINT "deliverable_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "deliverable" ADD CONSTRAINT "deliverable_uploaded_by_student_id_fkey" FOREIGN KEY ("uploaded_by_student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "deliverable_archive" ADD CONSTRAINT "deliverable_archive_deliverable_id_fkey" FOREIGN KEY ("deliverable_id") REFERENCES "deliverable"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "deliverable_archive" ADD CONSTRAINT "deliverable_archive_deliverable_id_fkey" FOREIGN KEY ("deliverable_id") REFERENCES "deliverable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project_deliverable_rule" ADD CONSTRAINT "promotion_project_deliverable_rule_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project_deliverable_rule" ADD CONSTRAINT "promotion_project_deliverable_rule_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project_deliverable_rule" ADD CONSTRAINT "promotion_project_deliverable_rule_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project_deliverable_rule" ADD CONSTRAINT "promotion_project_deliverable_rule_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rule_max_size_file" ADD CONSTRAINT "rule_max_size_file_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rule_max_size_file" ADD CONSTRAINT "rule_max_size_file_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rule_rile_presence" ADD CONSTRAINT "rule_rile_presence_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rule_rile_presence" ADD CONSTRAINT "rule_rile_presence_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rule_file_content_match" ADD CONSTRAINT "rule_file_content_match_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rule_file_content_match" ADD CONSTRAINT "rule_file_content_match_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "project_group_result" ADD CONSTRAINT "project_group_result_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "project_group_result" ADD CONSTRAINT "project_group_result_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "deliverable_rule_result" ADD CONSTRAINT "deliverable_rule_result_project_group_result_id_fkey" FOREIGN KEY ("project_group_result_id") REFERENCES "project_group_result"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "deliverable_rule_result" ADD CONSTRAINT "deliverable_rule_result_project_group_result_id_fkey" FOREIGN KEY ("project_group_result_id") REFERENCES "project_group_result"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "deliverable_rule_result" ADD CONSTRAINT "deliverable_rule_result_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "deliverable_rule_result" ADD CONSTRAINT "deliverable_rule_result_deliverable_rule_id_fkey" FOREIGN KEY ("deliverable_rule_id") REFERENCES "deliverable_rule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rating_result" ADD CONSTRAINT "rating_result_rating_scale_criteria_id_fkey" FOREIGN KEY ("rating_scale_criteria_id") REFERENCES "rating_scale_criteria"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rating_result" ADD CONSTRAINT "rating_result_rating_scale_criteria_id_fkey" FOREIGN KEY ("rating_scale_criteria_id") REFERENCES "rating_scale_criteria"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "rating_result" ADD CONSTRAINT "rating_result_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rating_scale_criteria" ADD CONSTRAINT "rating_scale_criteria_rating_scale_id_fkey" FOREIGN KEY ("rating_scale_id") REFERENCES "rating_scale"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rating_scale_criteria" ADD CONSTRAINT "rating_scale_criteria_rating_scale_id_fkey" FOREIGN KEY ("rating_scale_id") REFERENCES "rating_scale"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project_rating_scale" ADD CONSTRAINT "promotion_project_rating_scale_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project_rating_scale" ADD CONSTRAINT "promotion_project_rating_scale_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "promotion_project_rating_scale" ADD CONSTRAINT "promotion_project_rating_scale_rating_scale_id_fkey" FOREIGN KEY ("rating_scale_id") REFERENCES "rating_scale"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "promotion_project_rating_scale" ADD CONSTRAINT "promotion_project_rating_scale_rating_scale_id_fkey" FOREIGN KEY ("rating_scale_id") REFERENCES "rating_scale"("id") ON DELETE CASCADE ON UPDATE CASCADE;

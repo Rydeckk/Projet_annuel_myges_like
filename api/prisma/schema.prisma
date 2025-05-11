@@ -46,7 +46,7 @@ model Email {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
   @@unique([email])
@@ -56,7 +56,7 @@ model Email {
 model Student {
   id String @id @default(uuid())
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
   promotionStudents    PromotionStudent[]
@@ -71,7 +71,7 @@ model Student {
 model Teacher {
   id String @id @default(uuid())
 
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String      @map("user_id")
   promotions Promotion[]
   projects   Project[]
@@ -102,9 +102,9 @@ model Promotion {
 }
 
 model PromotionStudent {
-  student     Student   @relation(fields: [studentId], references: [id])
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId   String    @map("student_id")
-  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
   promotionId String    @map("promotion_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -159,9 +159,9 @@ model PromotionProject {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  promotion                        Promotion                         @relation(fields: [promotionId], references: [id])
+  promotion                        Promotion                         @relation(fields: [promotionId], references: [id], onDelete: Cascade)
   promotionId                      String                            @map("promotion_id")
-  project                          Project                           @relation(fields: [projectId], references: [id])
+  project                          Project                           @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId                        String                            @map("project_id")
   projectGroups                    ProjectGroup[]
   promotionProjectDeliverableRules PromotionProjectDeliverableRule[]
@@ -178,7 +178,7 @@ model ProjectGroup {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  promotionProject     PromotionProject      @relation(fields: [promotionProjectId], references: [id])
+  promotionProject     PromotionProject      @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId   String                @map("promotion_project_id")
   projectGroupStudents ProjectGroupStudent[]
   deliverables         Deliverable[]
@@ -190,9 +190,9 @@ model ProjectGroup {
 }
 
 model ProjectGroupStudent {
-  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
   projectGroupId String       @map("project_group_id")
-  student        Student      @relation(fields: [studentId], references: [id])
+  student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId      String       @map("student_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -208,7 +208,7 @@ model Report {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
   projectGroupId String       @map("project_group_id")
 
   @@unique([projectGroupId])
@@ -225,7 +225,7 @@ model Defense {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
   projectGroupId String       @map("project_group_id")
 
   @@unique([projectGroupId])
@@ -244,7 +244,7 @@ model Deliverable {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  projectGroup        ProjectGroup        @relation(fields: [projectGroupId], references: [id])
+  projectGroup        ProjectGroup        @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
   projectGroupId      String              @map("project_group_id")
   uploadedByStudent   Student             @relation(fields: [uploadedByStudentId], references: [id])
   uploadedByStudentId String              @map("uploaded_by_student_id")
@@ -262,7 +262,7 @@ model DeliverableArchive {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  deliverable   Deliverable @relation(fields: [deliverableId], references: [id])
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
   deliverableId String      @map("deliverable_id")
 
   @@unique([deliverableId])
@@ -296,9 +296,9 @@ model DeliverableRule {
 }
 
 model PromotionProjectDeliverableRule {
-  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id])
+  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId String           @map("promotion_project_id")
-  deliverableRule    DeliverableRule  @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRule    DeliverableRule  @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
   deliverableRuleId  String           @map("deliverable_rule_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -311,7 +311,7 @@ model RuleMaxSizeFile {
   id      String @id @default(uuid())
   maxSize Int    @map("max_size")
 
-  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
   deliverableRuleId String          @map("deliverable_rule_id")
 
   @@unique([deliverableRuleId])
@@ -322,7 +322,7 @@ model RuleFilePresence {
   id       String @id @default(uuid())
   fileName String @map("file_name")
 
-  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
   deliverableRuleId String          @map("deliverable_rule_id")
 
   @@unique([deliverableRuleId])
@@ -340,7 +340,7 @@ model RuleFileContentMatch {
   match     String
   matchType MatchType @map("match_type")
 
-  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
   deliverableRuleId String          @map("deliverable_rule_id")
 
   @@unique([deliverableRuleId])
@@ -358,7 +358,7 @@ model ProjectGroupResult {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  projectGroup           ProjectGroup            @relation(fields: [projectGroupId], references: [id])
+  projectGroup           ProjectGroup            @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
   projectGroupId         String                  @map("project_group_id")
   deliverableRuleResults DeliverableRuleResult[]
 
@@ -372,9 +372,9 @@ model DeliverableRuleResult {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  projectGroupResult   ProjectGroupResult @relation(fields: [projectGroupResultId], references: [id])
+  projectGroupResult   ProjectGroupResult @relation(fields: [projectGroupResultId], references: [id], onDelete: Cascade)
   projectGroupResultId String             @map("project_group_result_id")
-  deliverableRule      DeliverableRule    @relation(fields: [deliverableRuleId], references: [id])
+  deliverableRule      DeliverableRule    @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
   deliverableRuleId    String             @map("deliverable_rule_id")
 
   @@unique([projectGroupResultId, deliverableRuleId])
@@ -388,7 +388,7 @@ model RatingResult {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  ratingScaleCriteria   RatingScaleCriteria @relation(fields: [ratingScaleCriteriaId], references: [id])
+  ratingScaleCriteria   RatingScaleCriteria @relation(fields: [ratingScaleCriteriaId], references: [id], onDelete: Cascade)
   ratingScaleCriteriaId String              @map("rating_scale_criteria_id")
   student               Student             @relation(fields: [studentId], references: [id])
   studentId             String              @map("student_id")
@@ -436,7 +436,7 @@ model RatingScaleCriteria {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  ratingScale   RatingScale    @relation(fields: [ratingScaleId], references: [id])
+  ratingScale   RatingScale    @relation(fields: [ratingScaleId], references: [id], onDelete: Cascade)
   ratingScaleId String         @map("rating_scale_id")
   ratingResults RatingResult[]
 
@@ -444,9 +444,9 @@ model RatingScaleCriteria {
 }
 
 model PromotionProjectRatingScale {
-  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id])
+  promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId String           @map("promotion_project_id")
-  ratingScale        RatingScale      @relation(fields: [ratingScaleId], references: [id])
+  ratingScale        RatingScale      @relation(fields: [ratingScaleId], references: [id], onDelete: Cascade)
   ratingScaleId      String           @map("rating_scale_id")
 
   createdAt DateTime @default(now()) @map("created_at")

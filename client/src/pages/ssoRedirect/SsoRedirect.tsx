@@ -3,7 +3,7 @@ import { ApiException } from "@/services/api/ApiException";
 import { AuthService } from "@/services/authService/AuthService";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { USER_ROLE } from "@/enums/UserRole";
 import { LoginResponseSchema } from "@/schemas/AuthSchema";
 import { SSO_TYPE, SsoType } from "@/enums/SsoType";
@@ -11,11 +11,18 @@ import { SSO_TYPE, SsoType } from "@/enums/SsoType";
 export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
     const navigate = useNavigate();
 
+    const [searchParams] = useSearchParams();
+
     const authService = useMemo(() => new AuthService(), []);
 
     const hasHandledRedirect = useRef(false);
 
     const queryString = window.location.search;
+
+    const ssoConnectionFailed = () => {
+        navigate("/");
+        toast.error("Connection failed");
+    };
 
     useEffect(() => {
         const ssoRedirect = async () => {
@@ -37,11 +44,17 @@ export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
             }
         };
 
+        if (searchParams.get("error") && !hasHandledRedirect.current) {
+            hasHandledRedirect.current = true;
+            ssoConnectionFailed();
+            return;
+        }
+
         if (queryString && !hasHandledRedirect.current) {
             hasHandledRedirect.current = true;
             ssoRedirect();
         }
-    }, [queryString]);
+    }, [queryString, searchParams]);
 
     return <></>;
 };
