@@ -1,35 +1,93 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
+import { RegisterDto } from "./dto/auth.dto";
+import { Prisma, UserRole } from "@prisma/client";
+import { JWTPaylod } from "src/types/jwt-paylod";
+import { StudentsService } from "src/students/students.service";
+import { TeachersService } from "src/teachers/teachers.service";
 
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
+        private readonly usersService: UsersService,
+        private readonly studentsService: StudentsService,
+        private readonly teachersService: TeachersService,
+        private readonly jwtService: JwtService,
     ) {}
 
-    validateUser(username: string, pass: string) {
-        const user = this.usersService.findOne(username);
-        if (user && user.password === pass) {
-            const { userId, username } = user;
-            return {
-                userId,
-                username,
-            };
-        }
-        return null;
+    async validateUser({ sub, scope }: JWTPaylod) {
+        return (
+            scope === UserRole.STUDENT
+                ? this.studentsService
+                : this.teachersService
+        ).findUnique({
+            id: sub,
+        });
     }
 
-    async login({ username, pass }: { username: string; pass: string }) {
-        const user = this.usersService.findOne(username);
-        if (user?.password !== pass) {
-            throw new UnauthorizedException();
+    async register({
+        registerData,
+        ssoProvider = undefined,
+    }: {
+        registerData: RegisterDto;
+        ssoProvider?: string;
+    }) {
+        const { role, email, ...user } = registerData;
+
+        const createdUser = await (
+            role === UserRole.STUDENT
+                ? this.studentsService
+                : this.teachersService
+        ).create({
+            user: {
+                create: {
+                    ...user,
+                    email,
+                    role,
+                    ...(ssoProvider
+                        ? {
+                              emails: {
+                                  create: {
+                                      email,
+                                      ssoProvider,
+                                  },
+                              },
+                          }
+                        : {}),
+                },
+            },
+        });
+
+        if (!ssoProvider) {
+            return createdUser;
         }
-        const payload = { sub: user.userId, username: user.username };
+
+        const foundUser = await this.usersService.findUnique({
+            id: createdUser.userId,
+        });
+
+        return this.login(foundUser!);
+    }
+
+    async login(
+        user: Prisma.UserGetPayload<{
+            include: {
+                student: true;
+                teacher: true;
+            };
+        }>,
+    ) {
+        const sub =
+            user.role === UserRole.STUDENT
+                ? user.student?.id
+                : user.teacher?.id;
+
+        const payload = { sub, scope: user.role };
 
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            accessToken: await this.jwtService.signAsync(payload),
+            userRole: user.role,
         };
     }
 }

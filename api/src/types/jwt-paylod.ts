@@ -1,4 +1,8 @@
+import { UserRole } from "@prisma/client";
+
 export type JWTPaylod = {
-    sub: number;
-    username: string;
+    sub: string;
+    scope: UserRole;
+    iat: number;
+    exp: number;
 };
