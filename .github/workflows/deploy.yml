@@ -23,13 +23,13 @@ jobs:
       - name: Build & Push Docker image (API)
         working-directory: ./api
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.API_SERVICE_NAME }} .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.API_SERVICE_NAME }}
+          docker build -t europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.API_SERVICE_NAME }} .
+          docker push europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.API_SERVICE_NAME }}
 
       - name: Deploy API to Cloud Run
         run: |
           gcloud run deploy ${{ secrets.API_SERVICE_NAME }} \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.API_SERVICE_NAME }} \
+            --image europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.API_SERVICE_NAME }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated
@@ -51,13 +51,13 @@ jobs:
       - name: Build & Push Docker image (Client)
         working-directory: ./client
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }} .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }}
+          docker build -t europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.CLIENT_SERVICE_NAME }} .
+          docker push europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.CLIENT_SERVICE_NAME }}
 
       - name: Deploy Client to Cloud Run
         run: |
           gcloud run deploy ${{ secrets.CLIENT_SERVICE_NAME }} \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLIENT_SERVICE_NAME }} \
+            --image europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.CLIENT_SERVICE_NAME }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated
