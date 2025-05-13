@@ -46,7 +46,6 @@ jobs:
               CLIENT_URL=${{ secrets.CLIENT_URL }},\
               JWT_SECRET=${{ secrets.JWT_SECRET }},\
               DATABASE_URL=${{ secrets.DATABASE_URL }}
-              
 
   deploy-client:
     runs-on: ubuntu-latest
