@@ -37,15 +37,14 @@ jobs:
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars \
-              GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},\
-              GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},\
-              AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }},\
-              AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }},\
-              PORT=3000,\
-              CLIENT_URL=${{ secrets.CLIENT_URL }},\
-              JWT_SECRET=${{ secrets.JWT_SECRET }},\
-              DATABASE_URL=${{ secrets.DATABASE_URL }}
+            --set-env-vars "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+            --set-env-vars "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            --set-env-vars "AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" \
+            --set-env-vars "AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" \
+            --set-env-vars "PORT=3000" \
+            --set-env-vars "CLIENT_URL=${{ secrets.CLIENT_URL }}" \
+            --set-env-vars "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+            --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}"
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -75,5 +74,4 @@ jobs:
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars \
-              VITE_API_URL=${{ secrets.VITE_API_URL }}
+            --set-env-vars "VITE_API_URL=${{ secrets.VITE_API_URL }}"
