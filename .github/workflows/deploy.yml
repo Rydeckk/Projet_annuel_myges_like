@@ -36,12 +36,12 @@ jobs:
             --image europe-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/depot-docker/${{ secrets.API_SERVICE_NAME }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
+            --port 3000 \
             --allow-unauthenticated \
             --set-env-vars "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
             --set-env-vars "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
             --set-env-vars "AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" \
             --set-env-vars "AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" \
-            --update-env-vars "PORT=3000" \
             --set-env-vars "CLIENT_URL=${{ secrets.CLIENT_URL }}" \
             --set-env-vars "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
             --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}"
@@ -74,4 +74,5 @@ jobs:
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
+            --port 80 \
             --set-env-vars "VITE_API_URL=${{ secrets.VITE_API_URL }}"
