@@ -1,0 +1,54 @@
+name: Continuous integration of application
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+
+jobs:
+  api-eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install API dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Run eslint
+        working-directory: ./api
+        run: npx eslint .
+
+  front-eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Client dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Run eslint
+        working-directory: ./client
+        run: npx eslint .
