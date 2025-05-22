@@ -15,6 +15,8 @@ import { ReportModule } from "./report/report.module";
 import { ProjectGroupsModule } from "./project-groups/project-groups.module";
 import { ReportSectionsModule } from "./report-sections/report-sections.module";
 import { ProjectGroupStudentsModule } from "./project-group-students/project-group-students.module";
+import { UploadModule } from "./upload/upload.module";
+import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-storage.service";
 
 @Module({
     imports: [
@@ -34,12 +36,14 @@ import { ProjectGroupStudentsModule } from "./project-group-students/project-gro
         ProjectGroupsModule,
         ReportSectionsModule,
         ProjectGroupStudentsModule,
+        UploadModule,
     ],
     providers: [
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
         },
+        GoogleCloudStorageService,
     ],
 })
 export class AppModule {}

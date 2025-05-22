@@ -18,6 +18,7 @@ import { TeacherPromotionReportsView } from "@/pages/teacherPage/pages/teacherPr
 import { TeacherPromotionProjectDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
 import { TeacherPromotionProjectDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/TeacherPromotionProjectDetailPage";
 import { TeacherProjectGroup } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/pages/teacherProjectGroup/TeacherProjectGroup";
+import { UploadArchiveForm } from "@/pages/project/components/uploadArchiveForm";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -135,5 +136,10 @@ export const ROUTER = createBrowserRouter([
     {
         path: "microsoft-redirect",
         element: <SsoRedirectPage ssoType={SSO_TYPE.MICROSOFT} />,
+    },
+    {
+        path: "uploadArchive",
+        Component: UploadArchiveForm,
+        children: [],
     },
 ]);
