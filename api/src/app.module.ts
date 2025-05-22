@@ -8,6 +8,8 @@ import { JwtAuthGuard } from "./auth/strategies/jwt/jwt-auth.guard";
 import { StudentsModule } from "./students/students.module";
 import { TeachersModule } from "./teachers/teachers.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { UploadModule } from "./upload/upload.module";
+import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-storage.service";
 
 @Module({
     imports: [
@@ -20,6 +22,7 @@ import { PrismaModule } from "./prisma/prisma.module";
         UsersModule,
         StudentsModule,
         TeachersModule,
+        UploadModule,
     ],
     controllers: [],
     providers: [
@@ -27,6 +30,7 @@ import { PrismaModule } from "./prisma/prisma.module";
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
         },
+        GoogleCloudStorageService,
     ],
 })
 export class AppModule {}

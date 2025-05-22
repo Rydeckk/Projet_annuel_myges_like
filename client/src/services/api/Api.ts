@@ -35,7 +35,12 @@ export class Api {
       };
 
       if (data && ["POST", "PUT", "PATCH"].includes(method.toUpperCase())) {
-        options.body = JSON.stringify(data);
+        if (data instanceof FormData) {
+          options.body = data;
+          delete requestHeaders["Content-Type"];
+        } else {
+          options.body = JSON.stringify(data);
+        }
       }
 
       const response = await fetch(`${apiUrl}/${path}`, options);

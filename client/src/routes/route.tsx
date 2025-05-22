@@ -4,6 +4,7 @@ import { Student } from "../pages/student/Student";
 import { Teacher } from "../pages/teacher/Teacher";
 import { SsoRedirect } from "@/pages/ssoRedirect/SsoRedirect";
 import { SSO_TYPE } from "@/enums/SsoType";
+import { UploadArchiveForm } from "@/pages/project/components/uploadArchiveForm";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -27,5 +28,10 @@ export const ROUTER = createBrowserRouter([
     {
         path: "microsoft-redirect",
         element: <SsoRedirect ssoType={SSO_TYPE.MICROSOFT} />,
+    },
+    {
+        path: "uploadArchive",
+        Component: UploadArchiveForm,
+        children: [],
     },
 ]);
