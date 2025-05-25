@@ -10,6 +10,7 @@ import { MicrosoftStrategy } from "./strategies/microsoft/microsoft.strategy";
 import { UsersService } from "src/users/users.service";
 import { StudentsService } from "src/students/students.service";
 import { TeachersService } from "src/teachers/teachers.service";
+import { HashService } from "src/services/hash.service";
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { TeachersService } from "src/teachers/teachers.service";
         UsersService,
         StudentsService,
         TeachersService,
+        HashService,
     ],
     controllers: [AuthController],
 })

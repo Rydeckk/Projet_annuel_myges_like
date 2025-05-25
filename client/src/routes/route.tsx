@@ -4,6 +4,8 @@ import { Student } from "../pages/student/Student";
 import { Teacher } from "../pages/teacher/Teacher";
 import { SsoRedirect } from "@/pages/ssoRedirect/SsoRedirect";
 import { SSO_TYPE } from "@/enums/SsoType";
+import { Promotions } from "@/pages/teacher/components/promotions/Promotions";
+import { PromotionDetail } from "@/pages/teacher/components/promotionDetail/PromotionDetail";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -18,7 +20,16 @@ export const ROUTER = createBrowserRouter([
     {
         path: "teacher",
         Component: Teacher,
-        children: [],
+        children: [
+            {
+                path: "promotion",
+                Component: Promotions,
+            },
+            {
+                path: "promotion/:promotionName",
+                Component: PromotionDetail,
+            },
+        ],
     },
     {
         path: "google-redirect",

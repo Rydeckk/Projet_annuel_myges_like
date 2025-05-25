@@ -1,8 +1,6 @@
 export type GoogleProfile = {
-    name: {
-        givenName: string;
-        familyName: string;
-    };
+    id: string;
+    name: { givenName?: string; familyName?: string };
     emails: {
         value: string;
         verified: boolean;
@@ -11,16 +9,18 @@ export type GoogleProfile = {
 };
 
 export type MicrosoftProfile = {
+    id: string;
     provider: string;
-    name: { familyName: string; givenName: string };
+    name: { familyName?: string; givenName?: string };
     emails: { type: string; value: string }[];
 };
 
 export type SsoUser = {
-    user: {
-        email: string;
-        firstName: string;
-        lastName: string;
-        provider: string;
-    };
+    providerUserId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    provider: string;
 };
+
+export type RequestUser = { user: SsoUser };
