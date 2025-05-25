@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useNavigate, useSearchParams } from "react-router";
 import { USER_ROLE } from "@/enums/UserRole";
-import { LoginResponseSchema } from "@/schemas/AuthSchema";
 import { SSO_TYPE, SsoType } from "@/enums/SsoType";
 
 export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
@@ -31,7 +30,7 @@ export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
                     ssoType === SSO_TYPE.GOOGLE
                         ? authService.googleRedirect.bind(authService)
                         : authService.microsoftRedirect.bind(authService)
-                )(queryString).then(LoginResponseSchema.parse);
+                )(queryString);
                 Cookies.set("token", accessToken);
                 toast.success("Login successfull");
                 navigate(
@@ -56,5 +55,5 @@ export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
         }
     }, [queryString, searchParams]);
 
-    return <></>;
+    return null;
 };

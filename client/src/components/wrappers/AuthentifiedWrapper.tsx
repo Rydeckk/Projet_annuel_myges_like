@@ -19,7 +19,7 @@ export const AuthentifiedWrapper = ({
     const token = Cookies.get("token");
     const decodedToken = decodeToken(token);
 
-    if (!decodeToken) {
+    if (!token || !decodeToken) {
         return <Navigate to="/" />;
     }
 

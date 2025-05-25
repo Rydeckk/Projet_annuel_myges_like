@@ -16,7 +16,6 @@ import { useForm } from "react-hook-form";
 import { LoginRequest } from "@/types/Auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { LoginResponseSchema } from "@/schemas/AuthSchema";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
@@ -45,9 +44,7 @@ export const LoginForm = ({
 
     const onLoginSubmit = async (data: LoginRequest) => {
         try {
-            const { accessToken, userRole } = await authService
-                .login(data)
-                .then(LoginResponseSchema.parse);
+            const { accessToken, userRole } = await authService.login(data);
             Cookies.set("token", accessToken);
             toast.success("Login successfull");
             navigate(userRole === USER_ROLE.STUDENT ? "/student" : "/teacher");
