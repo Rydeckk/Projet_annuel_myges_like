@@ -1,6 +1,6 @@
 import { Api } from "../api/Api";
 
-const TEACHER_PATH = "teachers";
+// const TEACHER_PATH = "teachers";
 
 export class TeacherService {
   api: Api;
