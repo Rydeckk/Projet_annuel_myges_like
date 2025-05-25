@@ -3,10 +3,10 @@ import { User } from "./User";
 
 export type RegisterRequest = Pick<
   User,
-  "firstName" | "lastName" | "email" | "password" | "role"
->;
+  "firstName" | "lastName" | "email" | "role"
+> & { password: string };
 
-export type LoginRequest = Pick<User, "email" | "password">;
+export type LoginRequest = Pick<User, "email"> & { password: string };
 
 export type LoginResponse = {
   accessToken: string;

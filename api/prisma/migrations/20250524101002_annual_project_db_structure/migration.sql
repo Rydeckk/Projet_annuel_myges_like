@@ -26,7 +26,6 @@ CREATE TABLE "user" (
     "last_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "should_update_password" BOOLEAN NOT NULL DEFAULT false,
     "role" "UserRole" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -35,11 +34,14 @@ CREATE TABLE "user" (
 );
 
 -- CreateTable
-CREATE TABLE "email" (
-    "email" TEXT NOT NULL,
-    "sso_provider" TEXT NOT NULL,
+CREATE TABLE "auth_provider" (
+    "id" TEXT NOT NULL,
+    "provider_user_id" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" TEXT NOT NULL
+
+    CONSTRAINT "auth_provider_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -305,7 +307,7 @@ CREATE TABLE "promotion_project_rating_scale" (
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "email_email_key" ON "email"("email");
+CREATE UNIQUE INDEX "auth_provider_user_id_key" ON "auth_provider"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "student_user_id_key" ON "student"("user_id");
@@ -341,7 +343,7 @@ CREATE UNIQUE INDEX "project_group_result_project_group_id_key" ON "project_grou
 CREATE UNIQUE INDEX "deliverable_rule_result_project_group_result_id_deliverable_key" ON "deliverable_rule_result"("project_group_result_id", "deliverable_rule_id");
 
 -- AddForeignKey
-ALTER TABLE "email" ADD CONSTRAINT "email_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "auth_provider" ADD CONSTRAINT "auth_provider_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "student" ADD CONSTRAINT "student_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

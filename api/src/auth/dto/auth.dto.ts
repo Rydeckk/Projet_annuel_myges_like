@@ -1,12 +1,5 @@
 import { UserRole } from "@prisma/client";
-import {
-    IsBoolean,
-    IsEmail,
-    IsEnum,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-} from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 export class RegisterDto {
     @IsEmail()
@@ -25,10 +18,6 @@ export class RegisterDto {
 
     @IsEnum(UserRole)
     role: UserRole;
-
-    @IsOptional()
-    @IsBoolean()
-    shouldUpdatePassword?: boolean = false;
 }
 
 export class LoginDto {

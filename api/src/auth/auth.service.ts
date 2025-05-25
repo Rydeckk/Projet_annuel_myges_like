@@ -28,10 +28,13 @@ export class AuthService {
 
     async register({
         registerData,
-        ssoProvider = undefined,
+        ssoData = undefined,
     }: {
         registerData: RegisterDto;
-        ssoProvider?: string;
+        ssoData?: {
+            provider: string;
+            providerUserId: string;
+        };
     }) {
         const { role, email, ...user } = registerData;
 
@@ -45,13 +48,10 @@ export class AuthService {
                     ...user,
                     email,
                     role,
-                    ...(ssoProvider
+                    ...(ssoData
                         ? {
-                              emails: {
-                                  create: {
-                                      email,
-                                      ssoProvider,
-                                  },
+                              authProvider: {
+                                  create: ssoData,
                               },
                           }
                         : {}),
@@ -59,12 +59,13 @@ export class AuthService {
             },
         });
 
-        if (!ssoProvider) {
+        if (!ssoData) {
             return createdUser;
         }
 
-        const foundUser = await this.usersService.findUnique({
+        const foundUser = await this.usersService.findFirst({
             id: createdUser.userId,
+            email,
         });
 
         return this.login(foundUser!);

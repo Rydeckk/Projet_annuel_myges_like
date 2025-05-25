@@ -10,4 +10,5 @@ export default () => ({
         clientID: process.env.AZURE_CLIENT_ID,
         clientSecret: process.env.AZURE_CLIENT_SECRET,
     },
+    brevoApiKey: process.env.BREVO_API_KEY,
 });
