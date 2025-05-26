@@ -15,10 +15,15 @@ export class PromotionService {
     this.api = api;
   }
 
-  async findAll(name: string = "") {
-    const queryParams = name ? `?name=${name}` : "";
-    return this.api.request<Promotion | Promotion[]>({
-      path: `${PROMOTION_PATH}${queryParams}`,
+  async findByName(name: string = "") {
+    return this.api.request<Promotion>({
+      path: `${PROMOTION_PATH}/${name}`,
+    });
+  }
+
+  async findAll() {
+    return this.api.request<Promotion[]>({
+      path: PROMOTION_PATH,
     });
   }
 

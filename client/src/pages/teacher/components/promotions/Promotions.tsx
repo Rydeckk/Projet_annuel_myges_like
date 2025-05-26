@@ -27,7 +27,7 @@ export const Promotions = () => {
 
     const getPromotions = async () => {
         const promotionsData = await promotionService.findAll();
-        setPromotions(promotionsData as Promotion[]);
+        setPromotions(promotionsData);
     };
 
     const onCreatePromotion = async (data: PromotionRequest) => {

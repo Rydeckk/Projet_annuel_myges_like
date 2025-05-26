@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { VerifyCallback } from "passport-oauth2";
 import { Strategy } from "passport-microsoft";
-import { MicrosoftProfile } from "src/types/sso";
+import { MicrosoftProfile } from "types/sso";
 
 @Injectable()
 export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
