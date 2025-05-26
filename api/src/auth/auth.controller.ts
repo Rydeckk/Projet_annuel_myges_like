@@ -17,7 +17,7 @@ import { LoginDto, RegisterDto } from "./dto/auth.dto";
 import { compare } from "bcryptjs";
 import { UsersService } from "src/users/users.service";
 import { UserRole } from "@prisma/client";
-import { RequestUser, SsoUser } from "src/types/sso";
+import { RequestUser, SsoUser } from "types/sso";
 import { HashService } from "src/services/hash.service";
 
 @Controller("auth")

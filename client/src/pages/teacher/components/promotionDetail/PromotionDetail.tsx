@@ -39,8 +39,9 @@ export const PromotionDetail = () => {
 
     const getPromotion = async () => {
         try {
-            const promotionData = await promotionService.findAll(promotionName);
-            setPromotion(promotionData as Promotion);
+            const promotionData =
+                await promotionService.findByName(promotionName);
+            setPromotion(promotionData);
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);
