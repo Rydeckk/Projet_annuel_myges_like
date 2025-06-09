@@ -15,10 +15,10 @@ import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Link } from "react-router";
-import { PromotionForm } from "../forms/PromotionForm";
+import { PromotionForm } from "./components/forms/PromotionForm";
 import { TableAction } from "@/components/table/TableAction";
 
-export const Promotions = () => {
+export const PromotionsPage = () => {
     const promotionService = useMemo(() => new PromotionService(), []);
 
     const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -26,8 +26,14 @@ export const Promotions = () => {
     const [editOpen, setEditOpen] = useState(false);
 
     const getPromotions = async () => {
-        const promotionsData = await promotionService.findAll();
-        setPromotions(promotionsData);
+        try {
+            const promotionsData = await promotionService.findAll();
+            setPromotions(promotionsData);
+        } catch (error) {
+            if (error instanceof ApiException) {
+                toast.error(error.message);
+            }
+        }
     };
 
     const onCreatePromotion = async (data: PromotionRequest) => {

@@ -24,7 +24,7 @@ import * as XLSX from "xlsx";
 import { TableAction } from "@/components/table/TableAction";
 import { PromotionStudentForm } from "../forms/PromotionStudentForm";
 
-export const PromotionDetail = () => {
+export const PromotionDetailPage = () => {
     const { promotionName } = useParams();
 
     const promotionService = useMemo(() => new PromotionService(), []);

@@ -48,10 +48,6 @@ export class Api {
       return response.json();
     } catch (error: unknown) {
       if (error instanceof ApiException) {
-        if (error.status === 401) {
-          Cookies.remove("token");
-          this.redirectToLogin();
-        }
         throw new ApiException({
           message: error.message,
           statusCode: error.status,
@@ -62,9 +58,5 @@ export class Api {
         statusCode: 500,
       });
     }
-  }
-
-  private redirectToLogin() {
-    window.location.href = import.meta.env.VITE_APP_URL;
   }
 }

@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { USER_ROLE } from "@/enums/UserRole";
 import { SSO_TYPE, SsoType } from "@/enums/SsoType";
 
-export const SsoRedirect = ({ ssoType }: { ssoType: SsoType }) => {
+export const SsoRedirectPage = ({ ssoType }: { ssoType: SsoType }) => {
     const navigate = useNavigate();
 
     const [searchParams] = useSearchParams();
