@@ -1,9 +1,12 @@
 import { App } from "../App";
 import { createBrowserRouter } from "react-router";
-import { Student } from "../pages/student/Student";
-import { Teacher } from "../pages/teacher/Teacher";
-import { SsoRedirect } from "@/pages/ssoRedirect/SsoRedirect";
+import { StudentPage } from "../pages/studentPage/StudentPage";
+import { TeacherPage } from "../pages/teacherPage/TeacherPage";
+import { SsoRedirectPage } from "@/pages/ssoRedirectPage/SsoRedirectPage";
 import { SSO_TYPE } from "@/enums/SsoType";
+import { PromotionsPage } from "@/pages/teacherPage/pages/promotionsPage/PromotionsPage";
+import { PromotionDetailPage } from "@/pages/teacherPage/pages/promotionsPage/components/promotionDetail/PromotionDetailPage";
+import { ProjectPage } from "@/pages/teacherPage/pages/projectPage/ProjectPage";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -12,20 +15,33 @@ export const ROUTER = createBrowserRouter([
     },
     {
         path: "student",
-        Component: Student,
+        Component: StudentPage,
         children: [],
     },
     {
         path: "teacher",
-        Component: Teacher,
-        children: [],
+        Component: TeacherPage,
+        children: [
+            {
+                path: "promotion",
+                Component: PromotionsPage,
+            },
+            {
+                path: "promotion/:promotionName",
+                Component: PromotionDetailPage,
+            },
+            {
+                path: "project",
+                Component: ProjectPage,
+            },
+        ],
     },
     {
         path: "google-redirect",
-        element: <SsoRedirect ssoType={SSO_TYPE.GOOGLE} />,
+        element: <SsoRedirectPage ssoType={SSO_TYPE.GOOGLE} />,
     },
     {
         path: "microsoft-redirect",
-        element: <SsoRedirect ssoType={SSO_TYPE.MICROSOFT} />,
+        element: <SsoRedirectPage ssoType={SSO_TYPE.MICROSOFT} />,
     },
 ]);

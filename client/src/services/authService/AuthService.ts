@@ -1,3 +1,4 @@
+import { Teacher } from "@/types/Teacher";
 import { Api } from "../api/Api";
 import { LoginRequest, LoginResponse, RegisterRequest } from "@/types/Auth";
 
@@ -10,15 +11,15 @@ export class AuthService {
     this.api = api;
   }
 
-  register(data: RegisterRequest) {
-    return this.api.request({
+  async register(data: RegisterRequest) {
+    return this.api.request<Teacher>({
       path: `${AUTH_PATH}/register`,
       method: "POST",
       data,
     });
   }
 
-  login(data: LoginRequest) {
+  async login(data: LoginRequest) {
     return this.api.request<LoginResponse>({
       path: `${AUTH_PATH}/login`,
       method: "POST",
