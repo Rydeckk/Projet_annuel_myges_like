@@ -1,10 +1,10 @@
-import { LoginForm } from "@/pages/authentification/components/loginForm/LoginForm";
-import { RegisterForm } from "@/pages/authentification/components/registerForm/RegisterForm";
+import { LoginForm } from "@/pages/authentificationPage/components/loginForm/LoginForm";
+import { RegisterForm } from "@/pages/authentificationPage/components/registerForm/RegisterForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AUTH_TABS, AuthTabs } from "@/enums/AuthTabs";
 import { useState } from "react";
 
-export const Authentification = () => {
+export const AuthentificationPage = () => {
     const [currentTab, setCurrentTab] = useState<AuthTabs>(AUTH_TABS.LOGIN);
 
     return (

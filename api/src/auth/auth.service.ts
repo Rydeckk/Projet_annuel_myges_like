@@ -3,7 +3,7 @@ import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { RegisterDto } from "./dto/auth.dto";
 import { Prisma, UserRole } from "@prisma/client";
-import { JWTPaylod } from "src/types/jwt-paylod";
+import { JWTPaylod } from "types/jwt-paylod";
 import { StudentsService } from "src/students/students.service";
 import { TeachersService } from "src/teachers/teachers.service";
 

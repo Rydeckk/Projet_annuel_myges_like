@@ -13,7 +13,7 @@ export class PromotionsService {
         private readonly hashService: HashService,
     ) {}
 
-    async create(data: CreatePromotionDto, teacherId: string) {
+    async create(teacherId: string, data: CreatePromotionDto) {
         return this.prisma.promotion.create({
             data: {
                 ...data,
@@ -84,11 +84,11 @@ export class PromotionsService {
     }
 
     async update({
-        data,
         promotionId,
+        data,
     }: {
-        data: UpdatePromotionDto;
         promotionId: string;
+        data: UpdatePromotionDto;
     }) {
         return this.prisma.promotion.update({
             where: {

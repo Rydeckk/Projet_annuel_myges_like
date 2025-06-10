@@ -14,9 +14,18 @@ const navData: NavData[] = [
             },
         ],
     },
+    {
+        title: "Project",
+        items: [
+            {
+                title: "Project management",
+                url: "project",
+            },
+        ],
+    },
 ];
 
-export const Teacher = () => {
+export const TeacherPage = () => {
     return (
         <AuthentifiedWrapper scope={USER_ROLE.TEACHER}>
             <TeacherContextProvider>
