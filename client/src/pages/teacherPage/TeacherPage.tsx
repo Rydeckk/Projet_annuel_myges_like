@@ -10,7 +10,7 @@ const navData: NavData[] = [
         items: [
             {
                 title: "Promotions management",
-                url: "promotion",
+                url: "promotions",
             },
         ],
     },

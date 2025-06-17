@@ -75,6 +75,7 @@ export class PromotionsService {
                         },
                     },
                 },
+                promotionProjects: true,
             },
         });
     }

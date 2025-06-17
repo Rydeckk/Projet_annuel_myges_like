@@ -26,8 +26,11 @@ export const UrlBreadcrumb = () => {
                         <>
                             <BreadcrumbItem className="hidden md:block">
                                 <BreadcrumbLink asChild>
-                                    <Link className="capitalize" to={path}>
-                                        {path}
+                                    <Link
+                                        className="capitalize"
+                                        to={paths.slice(0, index + 1).join("/")}
+                                    >
+                                        {decodeURI(path)}
                                     </Link>
                                 </BreadcrumbLink>
                             </BreadcrumbItem>

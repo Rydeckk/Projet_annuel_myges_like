@@ -1,5 +1,6 @@
-import { Student } from "./Student";
 import { Teacher } from "./Teacher";
+import { PromotionProject } from "./PromotionProject";
+import { PromotionStudent } from "./PromotionStudent";
 
 export type PromotionRequest = {
   name: string;
@@ -14,14 +15,6 @@ export type PromotionStudentRequest = {
   promotionId: string;
 };
 
-export type PromotionStudent = {
-  student?: Student;
-  studentId: string;
-  teacher?: Teacher;
-  teacherId: string;
-  createdAt: Date;
-};
-
 export type Promotion = {
   id: string;
   name: string;
@@ -32,4 +25,5 @@ export type Promotion = {
   createdByTeacherId: string;
   teacher?: Teacher;
   promotionStudents?: PromotionStudent[];
+  promotionProjects?: PromotionProject[];
 };

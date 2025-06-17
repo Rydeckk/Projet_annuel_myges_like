@@ -15,7 +15,7 @@ type Props = {
 
 export const TableAction = ({ onEditClick, onDeleteClick }: Props) => {
     return (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
                     <MoreHorizontal />

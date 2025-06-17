@@ -1,7 +1,15 @@
+import { ApiException } from "@/services/api/ApiException";
+import { PromotionService } from "@/services/promotionService/PromotionService";
+import { PromotionStudentRequest } from "@/types/Promotion";
+import { User } from "@/types/User";
+import { ColumnDef } from "@tanstack/react-table";
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { PromotionStudentActionCell } from "../teacherPromotionsPage/components/promotionStudentActionCell/PromotionStudentActionCell";
+import * as XLSX from "xlsx";
 import { Table } from "@/components/table/Table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { CirclePlus } from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -10,44 +18,20 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { ApiException } from "@/services/api/ApiException";
-import { PromotionService } from "@/services/promotionService/PromotionService";
-import { UserService } from "@/services/userService/UserService";
-import { Promotion, PromotionStudentRequest } from "@/types/Promotion";
-import { User } from "@/types/User";
-import { ColumnDef } from "@tanstack/react-table";
-import { CirclePlus } from "lucide-react";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
-import { toast } from "sonner";
-import * as XLSX from "xlsx";
-import { TableAction } from "@/components/table/TableAction";
-import { PromotionStudentForm } from "../forms/PromotionStudentForm";
+import { PromotionStudentForm } from "../teacherPromotionsPage/components/forms/PromotionStudentForm";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { PromotionDetailContext } from "@/contexts/PromotionDetailContext";
 
-export const PromotionDetailPage = () => {
-    const { promotionName } = useParams();
+export const TeacherPromotionStudentsPage = () => {
+    const { promotion, getPromotion } = useContext(PromotionDetailContext);
 
     const promotionService = useMemo(() => new PromotionService(), []);
-    const userService = useMemo(() => new UserService(), []);
 
-    const [promotion, setPromotion] = useState<Promotion | null>(null);
     const [open, setOpen] = useState(false);
-    const [editOpen, setEditOpen] = useState(false);
     const [importOpen, setImportOpen] = useState(false);
     const [importFile, setImportFile] =
         useState<ChangeEvent<HTMLInputElement> | null>(null);
-
-    const getPromotion = async () => {
-        try {
-            const promotionData =
-                await promotionService.findByName(promotionName);
-            setPromotion(promotionData);
-        } catch (error) {
-            if (error instanceof ApiException) {
-                toast.error(error.message);
-            }
-        }
-    };
 
     const onAddStudentToPromotion = async (
         data: Omit<PromotionStudentRequest, "promotionId">,
@@ -63,34 +47,6 @@ export const PromotionDetailPage = () => {
             getPromotion();
             setOpen(false);
             toast.success("The student was successfully created");
-        } catch (error) {
-            if (error instanceof ApiException) {
-                toast.error(error.message);
-            }
-        }
-    };
-
-    const onStudentUpdate = async (
-        userId: string,
-        data: Omit<PromotionStudentRequest, "promotionId">,
-    ) => {
-        try {
-            await userService.update(userId, data);
-            getPromotion();
-            setEditOpen(false);
-            toast.success("The student was successfully updated");
-        } catch (error) {
-            if (error instanceof ApiException) {
-                toast.error(error.message);
-            }
-        }
-    };
-
-    const onDeleteStudent = async (userId: string) => {
-        try {
-            await userService.delete(userId);
-            getPromotion();
-            toast.success("The student was successfully deleted");
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);
@@ -117,31 +73,13 @@ export const PromotionDetailPage = () => {
         {
             id: "actions",
             enableHiding: false,
-            cell: ({ row }) => {
-                const userId = row.original.id;
-
-                return (
-                    <>
-                        <TableAction
-                            onEditClick={() => setEditOpen(true)}
-                            onDeleteClick={() => onDeleteStudent(userId)}
-                        />
-                        <Sheet open={editOpen} onOpenChange={setEditOpen}>
-                            <SheetContent className="p-4">
-                                <SheetHeader>
-                                    <SheetTitle>Update student</SheetTitle>
-                                </SheetHeader>
-                                <PromotionStudentForm
-                                    onSubmit={(data) =>
-                                        onStudentUpdate(userId, data)
-                                    }
-                                    studentUserData={row.original}
-                                />
-                            </SheetContent>
-                        </Sheet>
-                    </>
-                );
-            },
+            cell: ({ row }) => (
+                <PromotionStudentActionCell
+                    key={row.original.id}
+                    user={row.original}
+                    getPromotion={getPromotion}
+                />
+            ),
         },
     ];
 
@@ -214,7 +152,8 @@ export const PromotionDetailPage = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold">{`Promotion: ${promotion?.name}`}</h1>
+            <h1 className="text-2xl font-bold">Promotion students</h1>
+            <h2 className="text-1xl font-bold">{`Promotion: ${promotion?.name}`}</h2>
             <Table
                 data={
                     promotion?.promotionStudents

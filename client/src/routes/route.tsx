@@ -1,12 +1,16 @@
 import { App } from "../App";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import { StudentPage } from "../pages/studentPage/StudentPage";
 import { TeacherPage } from "../pages/teacherPage/TeacherPage";
 import { SsoRedirectPage } from "@/pages/ssoRedirectPage/SsoRedirectPage";
 import { SSO_TYPE } from "@/enums/SsoType";
-import { PromotionsPage } from "@/pages/teacherPage/pages/promotionsPage/PromotionsPage";
-import { PromotionDetailPage } from "@/pages/teacherPage/pages/promotionsPage/components/promotionDetail/PromotionDetailPage";
-import { ProjectPage } from "@/pages/teacherPage/pages/projectPage/ProjectPage";
+import { TeacherProjectPage } from "@/pages/teacherPage/pages/teacherProjectPage/TeacherProjectPage";
+import { TeacherPromotionProjectsPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsPage/TeacherPromotionProjectsPage";
+import { TeacherPromotionStudentsPage } from "@/pages/teacherPage/pages/teacherPromotionStudentsPage/TeacherPromotionStudentsPage";
+import { TeacherPromotionsPage } from "@/pages/teacherPage/pages/teacherPromotionsPage/components/TeacherPromotionsPage";
+import { PromotionContextProvider } from "@/contexts/PromotionContext";
+import { PromotionDetailContextProvider } from "@/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPromotionDetailPage/TeacherPromotionDetailPage";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -23,16 +27,44 @@ export const ROUTER = createBrowserRouter([
         Component: TeacherPage,
         children: [
             {
-                path: "promotion",
-                Component: PromotionsPage,
-            },
-            {
-                path: "promotion/:promotionName",
-                Component: PromotionDetailPage,
+                path: "promotions",
+                element: (
+                    <PromotionContextProvider>
+                        <Outlet />
+                    </PromotionContextProvider>
+                ),
+                children: [
+                    {
+                        path: "",
+                        Component: TeacherPromotionsPage,
+                    },
+                    {
+                        path: ":promotionName",
+                        element: (
+                            <PromotionDetailContextProvider>
+                                <Outlet />
+                            </PromotionDetailContextProvider>
+                        ),
+                        children: [
+                            {
+                                path: "",
+                                Component: TeacherPromotionDetailPage,
+                            },
+                            {
+                                path: "students",
+                                Component: TeacherPromotionStudentsPage,
+                            },
+                            {
+                                path: "projects",
+                                Component: TeacherPromotionProjectsPage,
+                            },
+                        ],
+                    },
+                ],
             },
             {
                 path: "project",
-                Component: ProjectPage,
+                Component: TeacherProjectPage,
             },
         ],
     },

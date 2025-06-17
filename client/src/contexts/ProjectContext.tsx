@@ -11,12 +11,12 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-type ContextValue = {
+type ContextProps = {
     projects: Project[];
     getProjects: () => Promise<void>;
 };
 
-const ProjectContext = createContext<ContextValue>({
+const ProjectContext = createContext<ContextProps>({
     projects: [],
     getProjects: async () => {},
 });
