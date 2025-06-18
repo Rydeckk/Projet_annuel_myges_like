@@ -1,3 +1,4 @@
+import { Project, ProjectGroupRule } from "./Project";
 import { Student } from "./Student";
 import { Teacher } from "./Teacher";
 
@@ -32,4 +33,18 @@ export type Promotion = {
   createdByTeacherId: string;
   teacher?: Teacher;
   promotionStudents?: PromotionStudent[];
+};
+
+export type PromotionProject = {
+  id: string;
+  minPerGroup: number;
+  maxPerGroup: number;
+  malus: number;
+  malusPerTime: number;
+  allowLateSubmission: boolean;
+  projectGroupRule: ProjectGroupRule;
+  createdAt: Date;
+  updatedAt: Date;
+  promotion: Promotion;
+  project: Project;
 };

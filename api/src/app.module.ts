@@ -10,6 +10,7 @@ import { TeachersModule } from "./teachers/teachers.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PromotionsModule } from "./promotions/promotions.module";
 import { ProjectsModule } from "./projects/projects.module";
+import { ReportModule } from "./report/report.module";
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ProjectsModule } from "./projects/projects.module";
         TeachersModule,
         PromotionsModule,
         ProjectsModule,
+        ReportModule,
     ],
     controllers: [],
     providers: [

@@ -111,6 +111,8 @@ CREATE TABLE "promotion_project" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "promotion_id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
+    "is_report_required" BOOLEAN NOT NULL,
+    "description" TEXT,
 
     CONSTRAINT "promotion_project_pkey" PRIMARY KEY ("id")
 );
