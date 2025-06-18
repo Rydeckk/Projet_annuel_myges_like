@@ -167,6 +167,9 @@ model PromotionProject {
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   String    @map("project_id")
 
+  isReportRequired Boolean @map("is_report_required")
+  description      String? @map("description")
+
   projectGroups                    ProjectGroup[]
   promotionProjectDeliverableRules PromotionProjectDeliverableRule[]
   promotionProjectRatingScales     PromotionProjectRatingScale[]
