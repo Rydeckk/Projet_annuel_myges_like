@@ -75,7 +75,11 @@ export class PromotionsService {
                         },
                     },
                 },
-                promotionProjects: true,
+                promotionProjects: {
+                    include: {
+                        project: true,
+                    },
+                },
             },
         });
     }

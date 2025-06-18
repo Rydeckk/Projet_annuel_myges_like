@@ -6,15 +6,40 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { PromotionDetailContext } from "@/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
 import { CirclePlus } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { PromotionProjectFrom } from "./forms/PromotionProjectFrom";
+import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
+import { PromotionProjectRequest } from "@/types/PromotionProject";
+import { ApiException } from "@/services/api/ApiException";
+import { toast } from "sonner";
+import { PromotionProjects } from "./components/promotionProjects/PromotionProjects";
 
 export const TeacherPromotionProjectsPage = () => {
-    const { promotion } = useContext(PromotionDetailContext);
+    const { promotion, getPromotion } = useContext(
+        TeacherPromotionDetailContext,
+    );
+
+    const promotionProjectService = useMemo(
+        () => new PromotionProjectService(),
+        [],
+    );
     const [open, setOpen] = useState(false);
+
+    const onCreatePromotionProject = async (data: PromotionProjectRequest) => {
+        try {
+            await promotionProjectService.create(data);
+            getPromotion();
+            setOpen(false);
+            toast.success("The promotion project was successfully created");
+        } catch (error) {
+            if (error instanceof ApiException) {
+                toast.error(error.message);
+            }
+        }
+    };
 
     return (
         <div>
@@ -44,15 +69,17 @@ export const TeacherPromotionProjectsPage = () => {
                             project is not created yet: <br /> Go to {"-> "}
                             <Link
                                 className="font-bold underline text-blue-400"
-                                to="/teacher/project"
+                                to="/teacher/projects"
                             >
                                 Project management
                             </Link>
                         </SheetDescription>
                     </SheetHeader>
-                    <PromotionProjectFrom />
+                    <PromotionProjectFrom onSubmit={onCreatePromotionProject} />
                 </SheetContent>
             </Sheet>
+
+            <PromotionProjects />
         </div>
     );
 };

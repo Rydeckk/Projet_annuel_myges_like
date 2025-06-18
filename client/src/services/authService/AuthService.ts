@@ -5,7 +5,7 @@ import { LoginRequest, LoginResponse, RegisterRequest } from "@/types/Auth";
 const AUTH_PATH = "auth";
 
 export class AuthService {
-  api: Api;
+  private api: Api;
 
   constructor({ api = new Api() }: { api?: Api } = {}) {
     this.api = api;

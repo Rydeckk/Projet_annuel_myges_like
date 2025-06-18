@@ -1,4 +1,6 @@
 import { ProjectGroupRule } from "@prisma/client";
+import { Type } from "class-transformer";
+import { ProjectEntity } from "src/projects/entities/project.entity";
 
 export class PromotionProjectEntity {
     id: string;
@@ -12,6 +14,9 @@ export class PromotionProjectEntity {
     allowLateSubmission: boolean;
     projectGroupRule: ProjectGroupRule;
     projectId: string;
+
+    @Type(() => ProjectEntity)
+    project: ProjectEntity;
 
     constructor(partial: Partial<PromotionProjectEntity>) {
         Object.assign(this, partial);

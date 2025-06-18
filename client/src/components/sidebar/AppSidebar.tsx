@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, House, LogOut } from "lucide-react";
 import {
     Collapsible,
     CollapsibleContent,
@@ -20,9 +20,11 @@ import {
     SidebarRail,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { UrlBreadcrumb } from "../breadcrumb/UrlBreadcrumb";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import Cookies from "js-cookie";
 
 type NavItem = {
     title: string;
@@ -47,6 +49,13 @@ export const AppSidebar = ({
     children,
     ...props
 }: React.ComponentProps<typeof Sidebar> & Props) => {
+    const navigate = useNavigate();
+
+    const onLogoutClick = () => {
+        Cookies.remove("token");
+        navigate("/");
+    };
+
     return (
         <SidebarProvider>
             <Sidebar {...props}>
@@ -57,11 +66,21 @@ export const AppSidebar = ({
                                 asChild
                                 className="data-[slot=sidebar-menu-button]:!p-1.5"
                             >
-                                <Link to={path}>
-                                    <span className="text-base font-semibold">
+                                <div className="flex items-center justify-between">
+                                    <h1 className="text-base font-semibold">
                                         {title}
-                                    </span>
-                                </Link>
+                                    </h1>
+                                    <div className="flex gap-4">
+                                        <Button asChild>
+                                            <Link to={path}>
+                                                <House />
+                                            </Link>
+                                        </Button>
+                                        <Button onClick={onLogoutClick}>
+                                            <LogOut />
+                                        </Button>
+                                    </div>
+                                </div>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>

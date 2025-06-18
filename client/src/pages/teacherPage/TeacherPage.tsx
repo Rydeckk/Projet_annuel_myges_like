@@ -19,7 +19,7 @@ const navData: NavData[] = [
         items: [
             {
                 title: "Project management",
-                url: "project",
+                url: "projects",
             },
         ],
     },

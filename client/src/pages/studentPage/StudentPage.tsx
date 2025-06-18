@@ -6,11 +6,11 @@ import { Outlet } from "react-router";
 
 const navData: NavData[] = [
     {
-        title: "Promotion",
+        title: "Project",
         items: [
             {
-                title: "Promotions management",
-                url: "promotions",
+                title: "My projects",
+                url: "projects",
             },
         ],
     },
@@ -20,7 +20,7 @@ export const StudentPage = () => {
     return (
         <AuthentifiedWrapper scope={USER_ROLE.STUDENT}>
             <StudentContextProvider>
-                <AppSidebar title="Teacher" path="/teacher" navData={navData}>
+                <AppSidebar title="Student" path="/student" navData={navData}>
                     <div className="flex flex-1 flex-col gap-4 p-4">
                         <Outlet />
                     </div>

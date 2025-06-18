@@ -21,10 +21,12 @@ import {
 import { PromotionStudentForm } from "../teacherPromotionsPage/components/forms/PromotionStudentForm";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { PromotionDetailContext } from "@/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
 
 export const TeacherPromotionStudentsPage = () => {
-    const { promotion, getPromotion } = useContext(PromotionDetailContext);
+    const { promotion, getPromotion } = useContext(
+        TeacherPromotionDetailContext,
+    );
 
     const promotionService = useMemo(() => new PromotionService(), []);
 

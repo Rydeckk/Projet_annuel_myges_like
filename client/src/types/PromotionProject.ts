@@ -1,4 +1,14 @@
 import { ProjectGroupRule } from "@/enums/ProjectGroupRule";
+import { Project } from "./Project";
+
+export type PromotionProjectRequest = {
+  minPerGroup: number;
+  maxPerGroup: number;
+  allowLateSubmission: boolean;
+  projectGroupRule: ProjectGroupRule;
+  projectId: string;
+  promotionId: string;
+};
 
 export type PromotionProject = {
   id: string;
@@ -12,4 +22,5 @@ export type PromotionProject = {
   allowLateSubmission: boolean;
   projectGroupRule: ProjectGroupRule;
   projectId: string;
+  project?: Project;
 };

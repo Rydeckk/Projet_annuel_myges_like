@@ -15,7 +15,7 @@ type ContextProps = {
     getPromotions: () => Promise<void>;
 };
 
-const PromotionContext = createContext<ContextProps>({
+const TeacherPromotionContext = createContext<ContextProps>({
     promotions: [],
     getPromotions: async () => {},
 });
@@ -24,7 +24,7 @@ type Props = {
     children: ReactNode;
 };
 
-const PromotionContextProvider = ({ children }: Props) => {
+const TeacherPromotionContextProvider = ({ children }: Props) => {
     const promotionService = useMemo(() => new PromotionService(), []);
 
     const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -46,10 +46,10 @@ const PromotionContextProvider = ({ children }: Props) => {
     );
 
     return (
-        <PromotionContext.Provider value={data}>
+        <TeacherPromotionContext.Provider value={data}>
             {children}
-        </PromotionContext.Provider>
+        </TeacherPromotionContext.Provider>
     );
 };
 
-export { PromotionContext, PromotionContextProvider };
+export { TeacherPromotionContext, TeacherPromotionContextProvider };

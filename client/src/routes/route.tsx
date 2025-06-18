@@ -8,9 +8,12 @@ import { TeacherProjectPage } from "@/pages/teacherPage/pages/teacherProjectPage
 import { TeacherPromotionProjectsPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsPage/TeacherPromotionProjectsPage";
 import { TeacherPromotionStudentsPage } from "@/pages/teacherPage/pages/teacherPromotionStudentsPage/TeacherPromotionStudentsPage";
 import { TeacherPromotionsPage } from "@/pages/teacherPage/pages/teacherPromotionsPage/components/TeacherPromotionsPage";
-import { PromotionContextProvider } from "@/contexts/PromotionContext";
-import { PromotionDetailContextProvider } from "@/contexts/PromotionDetailContext";
+import { TeacherPromotionContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionContext";
+import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/contexts/PromotionDetailContext";
 import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPromotionDetailPage/TeacherPromotionDetailPage";
+import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPage/StudentProjectsPage";
+import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
+import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -20,7 +23,24 @@ export const ROUTER = createBrowserRouter([
     {
         path: "student",
         Component: StudentPage,
-        children: [],
+        children: [
+            {
+                path: "projects",
+                Component: StudentProjectPage,
+                children: [
+                    {
+                        path: ":projectName",
+                        Component: StudentProjectDetailPage,
+                        children: [
+                            {
+                                path: "groups",
+                                Component: StudentProjectGroupsPage,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
     },
     {
         path: "teacher",
@@ -29,9 +49,9 @@ export const ROUTER = createBrowserRouter([
             {
                 path: "promotions",
                 element: (
-                    <PromotionContextProvider>
+                    <TeacherPromotionContextProvider>
                         <Outlet />
-                    </PromotionContextProvider>
+                    </TeacherPromotionContextProvider>
                 ),
                 children: [
                     {
@@ -41,9 +61,9 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: ":promotionName",
                         element: (
-                            <PromotionDetailContextProvider>
+                            <TeacherPromotionDetailContextProvider>
                                 <Outlet />
-                            </PromotionDetailContextProvider>
+                            </TeacherPromotionDetailContextProvider>
                         ),
                         children: [
                             {
@@ -63,7 +83,7 @@ export const ROUTER = createBrowserRouter([
                 ],
             },
             {
-                path: "project",
+                path: "projects",
                 Component: TeacherProjectPage,
             },
         ],

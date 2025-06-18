@@ -1,4 +1,4 @@
-import { PromotionContext } from "@/contexts/PromotionContext";
+import { TeacherPromotionContext } from "@/pages/teacherPage/contexts/TeacherPromotionContext";
 import { ApiException } from "@/services/api/ApiException";
 import { PromotionService } from "@/services/promotionService/PromotionService";
 import { Promotion, PromotionRequest } from "@/types/Promotion";
@@ -20,7 +20,7 @@ import {
 import { PromotionForm } from "./forms/PromotionForm";
 
 export const TeacherPromotionsPage = () => {
-    const { promotions, getPromotions } = useContext(PromotionContext);
+    const { promotions, getPromotions } = useContext(TeacherPromotionContext);
 
     const promotionService = useMemo(() => new PromotionService(), []);
     const [open, setOpen] = useState(false);
