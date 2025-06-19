@@ -12,6 +12,9 @@ export class CreatePromotionProjectDto {
     @IsBoolean()
     allowLateSubmission: boolean;
 
+    @IsBoolean()
+    isReportRequired: boolean;
+
     @IsEnum(ProjectGroupRule)
     projectGroupRule: ProjectGroupRule;
 
