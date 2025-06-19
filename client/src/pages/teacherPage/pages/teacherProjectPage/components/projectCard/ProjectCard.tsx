@@ -70,8 +70,8 @@ export const ProjectCard = ({ project }: Props) => {
                 </CardHeader>
                 <CardContent>
                     <p>Visibility : {project.projectVisibility}</p>
-                    <p>{`Created at : ${format(project.createdAt, "H:m:ss - yyyy-MM-dd")}`}</p>
-                    <p>{`Updated at : ${format(project.updatedAt, "H:m:ss - yyyy-MM-dd")}`}</p>
+                    <p>{`Created at : ${format(project.createdAt, "HH:mm:ss - yyyy-MM-dd")}`}</p>
+                    <p>{`Updated at : ${format(project.updatedAt, "HH:mm:ss - yyyy-MM-dd")}`}</p>
                 </CardContent>
                 <CardFooter className="flex gap-4">
                     <Button onClick={() => setOpen(true)}>Update</Button>

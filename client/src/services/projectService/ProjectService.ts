@@ -16,11 +16,12 @@ export class ProjectService {
     });
   }
 
-  async create(data: ProjectRequest) {
+  async create(data: ProjectRequest | FormData) {
     return this.api.request<Project>({
       path: PROJECT_PATH,
       method: "POST",
       data,
+      ...(data instanceof FormData ? { contentType: null } : {}),
     });
   }
 
