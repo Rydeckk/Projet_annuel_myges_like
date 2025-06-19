@@ -94,10 +94,6 @@ export const ProjectForm = ({ onSubmit, projectData = undefined }: Props) => {
                         </Select>
                     )}
                 />
-
-                <p className="text-red-500">
-                    {errors.projectVisibility?.message}
-                </p>
             </div>
             <Button type="submit">Save</Button>
         </form>

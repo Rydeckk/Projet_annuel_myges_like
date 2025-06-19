@@ -5,7 +5,7 @@ import { PromotionStudentRequest } from "@/types/Promotion";
 const USER_ROUTE = "users";
 
 export class UserService {
-  api: Api;
+  private api: Api;
 
   constructor({ api = new Api() }: { api?: Api } = {}) {
     this.api = api;

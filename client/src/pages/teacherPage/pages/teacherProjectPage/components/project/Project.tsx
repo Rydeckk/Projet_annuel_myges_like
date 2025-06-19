@@ -6,7 +6,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { ProjectContext } from "@/contexts/ProjectContext";
+import { TeacherProjectContext } from "@/pages/teacherPage/contexts/TeacherProjectContext";
 import { ApiException } from "@/services/api/ApiException";
 import { ProjectService } from "@/services/projectService/ProjectService";
 import { ProjectRequest } from "@/types/Project";
@@ -17,7 +17,7 @@ import { ProjectForm } from "../projectForm/ProjectForm";
 import { ProjectCard } from "../projectCard/ProjectCard";
 
 export const Project = () => {
-    const { projects, getProjects } = useContext(ProjectContext);
+    const { projects, getProjects } = useContext(TeacherProjectContext);
     const projectService = useMemo(() => new ProjectService(), []);
 
     const [open, setOpen] = useState(false);

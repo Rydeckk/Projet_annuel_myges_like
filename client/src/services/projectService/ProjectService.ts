@@ -4,7 +4,7 @@ import { Api } from "../api/Api";
 const PROJECT_PATH = "projects";
 
 export class ProjectService {
-  api: Api;
+  private api: Api;
 
   constructor({ api = new Api() }: { api?: Api } = {}) {
     this.api = api;

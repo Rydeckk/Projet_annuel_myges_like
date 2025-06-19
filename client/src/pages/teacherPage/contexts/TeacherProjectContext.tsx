@@ -11,12 +11,12 @@ import {
 } from "react";
 import { toast } from "sonner";
 
-type ContextValue = {
+type ContextProps = {
     projects: Project[];
     getProjects: () => Promise<void>;
 };
 
-const ProjectContext = createContext<ContextValue>({
+const TeacherProjectContext = createContext<ContextProps>({
     projects: [],
     getProjects: async () => {},
 });
@@ -25,7 +25,7 @@ type Props = {
     children: ReactNode;
 };
 
-const ProjectContextProvider = ({ children }: Props) => {
+const TeacherProjectContextProvider = ({ children }: Props) => {
     const projectService = useMemo(() => new ProjectService(), []);
     const [projects, setProjects] = useState<Project[]>([]);
 
@@ -50,10 +50,10 @@ const ProjectContextProvider = ({ children }: Props) => {
     );
 
     return (
-        <ProjectContext.Provider value={data}>
+        <TeacherProjectContext.Provider value={data}>
             {children}
-        </ProjectContext.Provider>
+        </TeacherProjectContext.Provider>
     );
 };
 
-export { ProjectContext, ProjectContextProvider };
+export { TeacherProjectContext, TeacherProjectContextProvider };

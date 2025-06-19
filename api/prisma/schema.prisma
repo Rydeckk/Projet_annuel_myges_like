@@ -157,7 +157,7 @@ model PromotionProject {
   malus               Int?
   malusPerTime        DateTime?        @map("malus_per_time")
   allowLateSubmission Boolean          @map("allow_late_submission")
-  projectGroupRule    ProjectGroupRule @map("project_group_rume")
+  projectGroupRule    ProjectGroupRule @map("project_group_rule")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")

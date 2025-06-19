@@ -13,7 +13,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { ProjectContext } from "@/contexts/ProjectContext";
+import { TeacherProjectContext } from "@/pages/teacherPage/contexts/TeacherProjectContext";
 import { ApiException } from "@/services/api/ApiException";
 import { ProjectService } from "@/services/projectService/ProjectService";
 import { Project, ProjectRequest } from "@/types/Project";
@@ -27,7 +27,7 @@ type Props = {
 };
 
 export const ProjectCard = ({ project }: Props) => {
-    const { getProjects } = useContext(ProjectContext);
+    const { getProjects } = useContext(TeacherProjectContext);
 
     const projectService = useMemo(() => new ProjectService(), []);
 

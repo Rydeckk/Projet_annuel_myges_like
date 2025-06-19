@@ -9,7 +9,7 @@ import { Student } from "@/types/Student";
 const PROMOTION_PATH = "promotions";
 
 export class PromotionService {
-  api: Api;
+  private api: Api;
 
   constructor({ api = new Api() }: { api?: Api } = {}) {
     this.api = api;

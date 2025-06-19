@@ -106,7 +106,7 @@ CREATE TABLE "promotion_project" (
     "malus" INTEGER,
     "malus_per_time" TIMESTAMP(3),
     "allow_late_submission" BOOLEAN NOT NULL,
-    "project_group_rume" "ProjectGroupRule" NOT NULL,
+    "project_group_rule" "ProjectGroupRule" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "promotion_id" TEXT NOT NULL,
