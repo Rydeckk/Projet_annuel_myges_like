@@ -33,14 +33,17 @@ export const ReportPage = ({ existingReport, onSubmit }: ReportProps) => {
 
     return (
         <div data-color-mode="light">
-            <MDEditor value={content} onChange={setContent} />
+            <MDEditor
+                value={content}
+                onChange={(value) => setContent(value || "")}
+            />
             <Button
                 className="ml-auto"
                 variant="outline"
                 onClick={() =>
                     onSaveReport({
                         content: content || "",
-                        projectGroupId: report.projetGroup.id,
+                        projectGroupId: report.projetGroupId,
                     })
                 }
             >
