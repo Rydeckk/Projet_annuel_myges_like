@@ -1,41 +1,32 @@
 import { Injectable } from "@nestjs/common";
 import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
 import { PrismaService } from "src/prisma/prisma.service";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ReportService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async create(createReportDto: CreateReportDto) {
+    async create(data: CreateReportDto) {
         return this.prisma.report.create({
-            data: { ...createReportDto },
+            data,
         });
     }
 
-    findAll() {
-        return `This action returns all report`;
-    }
-
-    async findOne(id: string) {
+    async findUnique(where: Prisma.ReportWhereUniqueInput) {
         return this.prisma.report.findUnique({
-            where: { id },
+            where,
         });
     }
 
-    async findByProjectGroupId(projectGroupId: string) {
-        return this.prisma.report.findMany({
-            where: { projectGroupId },
-        });
-    }
-
-    async update(id: string, updateReportDto: UpdateReportDto) {
+    async update(id: string, data: UpdateReportDto) {
         return this.prisma.report.update({
             where: { id },
-            data: { ...updateReportDto },
+            data,
         });
     }
 
-    remove(id: string) {
+    async remove(id: string) {
         return this.prisma.report.delete({
             where: { id },
         });

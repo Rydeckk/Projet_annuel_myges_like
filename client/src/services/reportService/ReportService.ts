@@ -4,7 +4,7 @@ import { Api } from "../api/Api";
 const REPORT_PATH = "report";
 
 export class ReportService {
-  api: Api;
+  private api: Api;
 
   constructor({ api = new Api() }: { api?: Api } = {}) {
     this.api = api;
@@ -19,7 +19,7 @@ export class ReportService {
   }
 
   async getReportByProjectGroupId(projectGroupId: string) {
-    return this.api.request<Report[]>({
+    return this.api.request<Report>({
       path: `${REPORT_PATH}/project-group/${projectGroupId}`,
       method: "GET",
     });

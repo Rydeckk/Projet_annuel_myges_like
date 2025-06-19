@@ -1,37 +1,29 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { Button } from "@/components/ui/button";
 import { Report, ReportRequest } from "@/types/Report";
-import { ReportService } from "@/services/reportService/ReportService";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
 
 type ReportProps = {
-    report: Report;
+    existingReport: Report;
+    onSubmit: (data: ReportRequest) => Promise<void>;
 };
 
-export const ReportPage = (props: ReportProps) => {
-    const [content, setContent] = useState<string | undefined>("");
-    console.log(content);
-    const reportService = useMemo(() => new ReportService(), []);
-    const [report, setReport] = useState<Report>(props.report);
+export const ReportPage = ({ existingReport, onSubmit }: ReportProps) => {
+    const [report, setReport] = useState<Report>(existingReport);
+    const [content, setContent] = useState<string>("");
 
     useEffect(() => {
-        if (props.report) {
-            setReport(props.report);
-            setContent(props.report.content || "");
+        if (report) {
+            setReport(report);
+            setContent(report.content || "");
         }
-    }, [props.report]);
+    }, [report]);
 
     const onSaveReport = async (data: ReportRequest) => {
         try {
-            if (report) {
-                await reportService.update(report.id, data);
-                toast.success("The report was successfully updated");
-                return;
-            }
-            await reportService.create(data);
-            toast.success("The report was successfully saved");
+            await onSubmit(data);
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);

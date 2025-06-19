@@ -6,41 +6,52 @@ import {
     Patch,
     Param,
     Delete,
+    SerializeOptions,
+    ParseUUIDPipe,
 } from "@nestjs/common";
 import { ReportService } from "./report.service";
 import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
+import { ReportEntity } from "./entities/report.entity";
 
 @Controller("report")
 export class ReportController {
     constructor(private readonly reportService: ReportService) {}
 
     @Post()
-    create(@Body() createReportDto: CreateReportDto) {
+    async create(@Body() createReportDto: CreateReportDto) {
         return this.reportService.create(createReportDto);
     }
 
-    @Get()
-    findAll() {
-        return this.reportService.findAll();
-    }
-
     @Get(":id")
-    findOne(@Param("id") id: string) {
-        return this.reportService.findOne(id);
+    @SerializeOptions({ type: ReportEntity })
+    async findOne(@Param("id", ParseUUIDPipe) id: string) {
+        return this.reportService.findUnique({
+            id,
+        });
     }
 
     @Get("project-group/:projectGroupId")
-    findByProjectGroupId(@Param("projectGroupId") projectGroupId: string) {
-        return this.reportService.findByProjectGroupId(projectGroupId);
+    @SerializeOptions({ type: ReportEntity })
+    async findByProjectGroupId(
+        @Param("projectGroupId", ParseUUIDPipe) projectGroupId: string,
+    ) {
+        return this.reportService.findUnique({
+            projectGroupId,
+        });
     }
 
     @Patch(":id")
-    update(@Param("id") id: string, @Body() updateReportDto: UpdateReportDto) {
+    @SerializeOptions({ type: ReportEntity })
+    async update(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() updateReportDto: UpdateReportDto,
+    ) {
         return this.reportService.update(id, updateReportDto);
     }
 
     @Delete(":id")
-    remove(@Param("id") id: string) {
+    @SerializeOptions({ type: ReportEntity })
+    async remove(@Param("id", ParseUUIDPipe) id: string) {
         return this.reportService.remove(id);
     }
 }
