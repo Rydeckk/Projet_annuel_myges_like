@@ -11,6 +11,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { PromotionsModule } from "./promotions/promotions.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { PromotionProjectsModule } from "./promotion-projects/promotion-projects.module";
+import { ReportModule } from "./report/report.module";
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { PromotionProjectsModule } from "./promotion-projects/promotion-projects
         PromotionsModule,
         ProjectsModule,
         PromotionProjectsModule,
+        ReportModule,
     ],
     controllers: [],
     providers: [

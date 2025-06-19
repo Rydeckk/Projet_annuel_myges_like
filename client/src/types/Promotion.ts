@@ -1,6 +1,6 @@
 import { Teacher } from "./Teacher";
-import { PromotionProject } from "./PromotionProject";
 import { PromotionStudent } from "./PromotionStudent";
+import { PromotionProject } from "./PromotionProject";
 
 export type PromotionRequest = {
   name: string;
