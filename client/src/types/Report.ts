@@ -1,5 +1,3 @@
-import { ProjectGroup } from "./Project";
-
 export type ReportRequest = {
   content: string;
   projectGroupId: string;
@@ -10,5 +8,5 @@ export type Report = {
   content: string;
   createdAt: Date;
   updatedAt: Date;
-  projetGroup: ProjectGroup;
+  projetGroupId: string;
 };

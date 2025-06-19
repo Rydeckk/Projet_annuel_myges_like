@@ -1,5 +1,4 @@
 import { ProjectVisibility } from "@/enums/ProjectVisibility";
-import { PromotionProject } from "./Promotion";
 
 export type ProjectRequest = {
   name: string;
@@ -21,17 +20,4 @@ export type Project = {
   createdAt: Date;
   updatedAt: Date;
   createdByTeacherId: string;
-};
-
-export type ProjectGroup = {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  promotionProject: PromotionProject;
-};
-
-export type ProjectGroupRule = {
-  id: string;
-  name: string;
 };
