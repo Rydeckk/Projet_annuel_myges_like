@@ -2,7 +2,7 @@ import { Bucket, Storage } from "@google-cloud/storage";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { parse } from "path";
-import { BUCKET_NAME } from "src/constants/bucket.constant";
+import { BUCKET_NAME, BucketDestination } from "src/constants/bucket.constant";
 
 @Injectable()
 export class FileService {
@@ -41,7 +41,10 @@ export class FileService {
             .replace(/\r|\n/g, "_");
     }
 
-    async uploadFile(uploadedFile: Express.Multer.File, destination: string) {
+    async uploadFile(
+        uploadedFile: Express.Multer.File,
+        destination: BucketDestination,
+    ) {
         const fileName =
             this.setDestination(destination) + this.setFilename(uploadedFile);
         const file = this.bucket.file(fileName);
