@@ -1,15 +1,27 @@
 import { Bucket, Storage } from "@google-cloud/storage";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { parse } from "path";
+import { BUCKET_NAME } from "src/constants/bucket.constant";
 
 @Injectable()
 export class FileService {
     private bucket: Bucket;
     private storage: Storage;
 
-    constructor() {
-        this.storage = new Storage();
-        this.bucket = this.storage.bucket("");
+    constructor(readonly configService: ConfigService) {
+        this.storage = new Storage({
+            projectId: this.configService.get<string>("google.cloud.projectId"),
+            credentials: {
+                client_email: this.configService.get<string>(
+                    "google.cloud.clientEmail",
+                ),
+                private_key: this.configService.get<string>(
+                    "google.cloud.privateKey",
+                ),
+            },
+        });
+        this.bucket = this.storage.bucket(BUCKET_NAME);
     }
 
     private setDestination(destination: string): string {
@@ -38,10 +50,11 @@ export class FileService {
                 contentType: uploadedFile.mimetype,
             });
         } catch {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException(
+                "Unexpected error on file upload",
+            );
         }
         return {
-            ...file.metadata,
             publicUrl: `https://storage.googleapis.com/${this.bucket.name}/${file.name}`,
         };
     }

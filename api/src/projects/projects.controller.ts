@@ -12,7 +12,7 @@ import {
 } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { CreateProjectDto, UpdateProjectDto } from "./dto/project.dto";
-import { GetCurrentUser } from "decorators/user.decorator";
+import { GetCurrentUser } from "src/decorators/user.decorator";
 import { ProjectEntity } from "./entities/project.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileService } from "src/services/file.service";
