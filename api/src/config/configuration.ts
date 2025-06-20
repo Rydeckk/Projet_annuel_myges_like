@@ -2,6 +2,7 @@ export default () => ({
     port: process.env.PORT,
     jwtSecret: process.env.JWT_SECRET,
     clientUrl: process.env.CLIENT_URL,
+    apiUrl: process.env.API_URL,
     google: {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
