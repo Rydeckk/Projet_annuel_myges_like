@@ -113,6 +113,16 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                 <p className="text-red-500">
                     {errors.allowLateSubmission?.message}
                 </p>
+                <div className="flex items-center space-x-2">
+                    <Label htmlFor="report-required">Report required</Label>
+                    <Switch
+                        id="report-required"
+                        {...register("isReportRequired")}
+                    />
+                </div>
+                <p className="text-red-500">
+                    {errors.isReportRequired?.message}
+                </p>
             </div>
 
             <div className="flex flex-col gap-2">

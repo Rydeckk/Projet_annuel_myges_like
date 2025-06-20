@@ -1,3 +1,10 @@
+import { ProjectGroupContextProvider } from "../../context/ProjectGroupContext";
+import { StudentProjectDetail } from "./StudentProjectDetail/StudentProjectDetail";
+
 export const StudentProjectDetailPage = () => {
-    return <div>StudentProjectDetailPage</div>;
+    return (
+        <ProjectGroupContextProvider>
+            <StudentProjectDetail />
+        </ProjectGroupContextProvider>
+    );
 };

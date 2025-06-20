@@ -21,4 +21,22 @@ export class PromotionProjectsService {
             data,
         });
     }
+
+    async find(where: Prisma.PromotionProjectWhereInput) {
+        return this.prisma.promotionProject.findFirst({
+            where,
+            include: {
+                project: true,
+                promotion: {
+                    include: {
+                        promotionStudents: {
+                            include: {
+                                student: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
 }

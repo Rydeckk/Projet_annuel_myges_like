@@ -14,6 +14,8 @@ import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPro
 import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPage/StudentProjectsPage";
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
 import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
+import { PromotionProjectContextProvider } from "@/pages/studentPage/context/PromotionProjectContext";
+import { ProjectGroupContextProvider } from "@/pages/studentPage/context/ProjectGroupContext";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -26,12 +28,30 @@ export const ROUTER = createBrowserRouter([
         children: [
             {
                 path: "projects",
-                Component: StudentProjectPage,
+                element: (
+                    <PromotionProjectContextProvider>
+                        <Outlet />
+                    </PromotionProjectContextProvider>
+                ),
                 children: [
                     {
+                        path: "",
+                        Component: StudentProjectPage,
+                    },
+                    {
                         path: ":projectName",
-                        Component: StudentProjectDetailPage,
+                        element: (
+                            <PromotionProjectContextProvider>
+                                <ProjectGroupContextProvider>
+                                    <Outlet />
+                                </ProjectGroupContextProvider>
+                            </PromotionProjectContextProvider>
+                        ),
                         children: [
+                            {
+                                path: "",
+                                Component: StudentProjectDetailPage,
+                            },
                             {
                                 path: "groups",
                                 Component: StudentProjectGroupsPage,

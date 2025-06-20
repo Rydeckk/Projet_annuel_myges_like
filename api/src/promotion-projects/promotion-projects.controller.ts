@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, SerializeOptions } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    SerializeOptions,
+} from "@nestjs/common";
 import { PromotionProjectsService } from "./promotion-projects.service";
 import { CreatePromotionProjectDto } from "./dto/promotion-project.dto";
 import { PromotionProjectEntity } from "./entities/promotion-project.entity";
@@ -28,5 +35,27 @@ export class PromotionProjectsController {
     @SerializeOptions({ type: PromotionProjectEntity })
     async create(@Body() createPromotionProjectDto: CreatePromotionProjectDto) {
         return this.promotionProjectsService.create(createPromotionProjectDto);
+    }
+
+    @Get("project/:name")
+    @SerializeOptions({ type: PromotionProjectEntity })
+    async findByProjectName(
+        @GetCurrentUser("id") userScopeId: string,
+        @Param("name") projectName: string,
+    ) {
+        return this.promotionProjectsService.find({
+            project: {
+                name: projectName,
+            },
+            promotion: {
+                promotionStudents: {
+                    some: {
+                        student: {
+                            id: userScopeId,
+                        },
+                    },
+                },
+            },
+        });
     }
 }
