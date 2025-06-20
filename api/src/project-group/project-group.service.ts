@@ -49,7 +49,7 @@ export class ProjectGroupService {
 
         const groupsData = Array.from({ length: nbGroups }, (_, i) => ({
             promotionProjectId: promotionProject.id,
-            name: `Groupe ${i + 1}`,
+            name: `Group ${i + 1}`,
         }));
 
         const projectGroupsCreated =
