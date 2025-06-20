@@ -4,7 +4,7 @@ import {
     DatesNotEqualConstraint,
     EndDateAfterStartDateConstraint,
     NotInPastConstraint,
-} from "decorators/date-validator.decorator";
+} from "src/decorators/date-validator.decorator";
 
 export class CreatePromotionDto {
     @IsNotEmpty()

@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { PromotionsService } from "./promotions.service";
 import { CreatePromotionDto, UpdatePromotionDto } from "./dto/promotion.dto";
-import { GetCurrentUser } from "decorators/user.decorator";
+import { GetCurrentUser } from "src/decorators/user.decorator";
 import { CreatePromotionStudentDto } from "./dto/promotion-student.dto";
 import { PromotionEntity } from "./entities/promotion.entity";
 import { StudentEntity } from "src/students/entities/student.entity";

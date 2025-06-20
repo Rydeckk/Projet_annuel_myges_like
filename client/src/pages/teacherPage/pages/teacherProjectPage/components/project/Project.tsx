@@ -24,7 +24,11 @@ export const Project = () => {
 
     const onCreateProject = async (data: ProjectRequest) => {
         try {
-            await projectService.create(data);
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+            await projectService.create(formData);
             await getProjects();
             setOpen(false);
             toast.success("The project was successfully created");

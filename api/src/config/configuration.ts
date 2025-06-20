@@ -5,6 +5,11 @@ export default () => ({
     google: {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        cloud: {
+            projectId: process.env.GCS_PROJECT_ID,
+            clientEmail: process.env.GCS_CLIENT_EMAIL,
+            privateKey: process.env.GCS_PRIVATE_KEY,
+        },
     },
     microsoft: {
         clientID: process.env.AZURE_CLIENT_ID,

@@ -7,15 +7,23 @@ import {
     Post,
     Put,
     SerializeOptions,
+    UploadedFile,
+    UseInterceptors,
 } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { CreateProjectDto, UpdateProjectDto } from "./dto/project.dto";
-import { GetCurrentUser } from "decorators/user.decorator";
+import { GetCurrentUser } from "src/decorators/user.decorator";
 import { ProjectEntity } from "./entities/project.entity";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { FileService } from "src/services/file.service";
+import { BUCKET_DESTINATION } from "src/constants/bucket.constant";
 
 @Controller("projects")
 export class ProjectsController {
-    constructor(private readonly projectsService: ProjectsService) {}
+    constructor(
+        private readonly projectsService: ProjectsService,
+        private readonly fileService: FileService,
+    ) {}
 
     @Get("me")
     @SerializeOptions({ type: ProjectEntity })
@@ -26,12 +34,28 @@ export class ProjectsController {
     }
 
     @Post()
+    @UseInterceptors(FileInterceptor("file"))
     @SerializeOptions({ type: ProjectEntity })
     async create(
         @GetCurrentUser("id") userScopeId: string,
         @Body() project: CreateProjectDto,
+        @UploadedFile() file: Express.Multer.File,
     ) {
-        return this.projectsService.create(userScopeId, project);
+        const uploadedFile = await this.fileService.uploadFile(
+            file,
+            BUCKET_DESTINATION.PROJECT,
+        );
+
+        return this.projectsService.create(userScopeId, {
+            ...project,
+            ...(file
+                ? {
+                      fileName: file.originalname,
+                      fileSize: file.size,
+                      path: uploadedFile.publicUrl,
+                  }
+                : {}),
+        });
     }
 
     @Put(":id")
