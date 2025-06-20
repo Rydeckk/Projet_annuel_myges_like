@@ -204,7 +204,10 @@ export const TeacherPromotionStudentsPage = () => {
                     <SheetHeader>
                         <SheetTitle>Import student</SheetTitle>
                         <SheetDescription>
-                            Import student to promotion
+                            Import students into your promotion <br />
+                            <span className="font-semibold">
+                                Existing email are automatically filtered
+                            </span>
                         </SheetDescription>
                     </SheetHeader>
                     <div className="flex flex-col gap-2 px-4">
@@ -212,7 +215,6 @@ export const TeacherPromotionStudentsPage = () => {
                         <Input
                             id="file"
                             type="file"
-                            placeholder="First name"
                             accept=".json, .xlsx"
                             onChange={setImportFile}
                         />

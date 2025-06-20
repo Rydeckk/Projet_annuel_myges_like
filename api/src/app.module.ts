@@ -29,7 +29,6 @@ import { ReportModule } from "./report/report.module";
         PromotionProjectsModule,
         ReportModule,
     ],
-    controllers: [],
     providers: [
         {
             provide: APP_GUARD,
