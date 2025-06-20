@@ -68,7 +68,12 @@ export const StudentProjectGroupsCard = ({
                     {promotionProject &&
                         promotionProject.projectGroupRule === "FREE" && (
                             <>
-                                {!myProjectGroup && <Button>Join Group</Button>}
+                                {!myProjectGroup &&
+                                    projectGroup.projectGroupStudents &&
+                                    projectGroup.projectGroupStudents?.length <
+                                        promotionProject.maxPerGroup && (
+                                        <Button>Join Group</Button>
+                                    )}
                                 {projectGroup.id === myProjectGroup?.id && (
                                     <Button>Left Group</Button>
                                 )}
