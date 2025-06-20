@@ -65,10 +65,15 @@ export const StudentProjectGroupsCard = ({
                     />
                 </CardContent>
                 <CardFooter className="flex gap-4">
-                    {!myProjectGroup && <Button>Join Group</Button>}
-                    {projectGroup.id === myProjectGroup?.id && (
-                        <Button>Left Group</Button>
-                    )}
+                    {promotionProject &&
+                        promotionProject.projectGroupRule === "FREE" && (
+                            <>
+                                {!myProjectGroup && <Button>Join Group</Button>}
+                                {projectGroup.id === myProjectGroup?.id && (
+                                    <Button>Left Group</Button>
+                                )}
+                            </>
+                        )}
                 </CardFooter>
             </Card>
         </>
