@@ -5,6 +5,7 @@ export type PromotionProjectRequest = {
   minPerGroup: number;
   maxPerGroup: number;
   allowLateSubmission: boolean;
+  isReportRequired: boolean;
   projectGroupRule: ProjectGroupRule;
   projectId: string;
   promotionId: string;

@@ -25,6 +25,7 @@ const schema = z.object({
     minPerGroup: z.number(),
     maxPerGroup: z.number(),
     allowLateSubmission: z.boolean(),
+    isReportRequired: z.boolean(),
     projectGroupRule: z.nativeEnum(PROJECT_GROUP_RULE),
     promotionId: z.string().uuid().nonempty(),
     projectId: z
@@ -49,6 +50,7 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
         resolver: zodResolver(schema),
         defaultValues: {
             allowLateSubmission: false,
+            isReportRequired: false,
             projectGroupRule: PROJECT_GROUP_RULE.RANDOM,
             promotionId: promotion?.id,
         },
@@ -110,6 +112,19 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                 </div>
                 <p className="text-red-500">
                     {errors.allowLateSubmission?.message}
+                </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                    <Label htmlFor="is-report-required">Report required</Label>
+                    <Switch
+                        id="is-report-required"
+                        {...register("isReportRequired")}
+                    />
+                </div>
+                <p className="text-red-500">
+                    {errors.isReportRequired?.message}
                 </p>
             </div>
 
