@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyGES Enseignant</string>
+    
+    <!-- Authentication -->
+    <string name="login_title">Connexion</string>
+    <string name="email_hint">Adresse e-mail</string>
+    <string name="email_placeholder">nom@exemple.com</string>
+    <string name="password_hint">Mot de passe</string>
+    <string name="password_placeholder">Votre mot de passe</string>
+    <string name="login_button">Se connecter</string>
+    <string name="google_login">Continuer avec Google</string>
+    <string name="microsoft_login">Continuer avec Microsoft</string>
+    <string name="login_subtitle">Enseignant</string>
+    <string name="login_description">Connectez-vous pour accéder à votre espace de travail</string>
+    <string name="terms_text">En vous connectant, vous acceptez nos conditions d\'utilisation.</string>
+    <string name="or_text">ou</string>
+    <string name="show_password">Afficher le mot de passe</string>
+    <string name="hide_password">Masquer le mot de passe</string>
+    
+    <!-- Navigation -->
+    <string name="dashboard_title">Tableau de bord</string>
+    <string name="deliverables_title">Livrables</string>
+    <string name="reports_title">Rapports</string>
+    <string name="grading_title">Notation</string>
+    <string name="back_button">Retour</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Bienvenue dans votre espace enseignant MyGES</string>
+    <string name="overview_title">Vue d\'ensemble</string>
+    <string name="overview_subtitle">Statistiques de vos cours</string>
+    <string name="quick_actions_title">Actions rapides</string>
+    <string name="quick_actions_subtitle">Accès rapide aux fonctionnalités principales</string>
+    <string name="recent_activity_title">Activité récente</string>
+    <string name="recent_activity_subtitle">Dernières actions sur vos cours</string>
+    <string name="upcoming_deadlines_title">Échéances à venir</string>
+    <string name="upcoming_deadlines_subtitle">Livrables à évaluer prochainement</string>
+    
+    <!-- Quick stats -->
+    <string name="students_label">Étudiants</string>
+    <string name="deliverables_label">Livrables</string>
+    <string name="submissions_label">Remises</string>
+    <string name="reports_label">Rapports</string>
+    
+    <!-- Quick actions -->
+    <string name="deliverables_action">Livrables</string>
+    <string name="deliverables_description">Gérer les remises</string>
+    <string name="reports_action">Rapports</string>
+    <string name="reports_description">Lire les rapports</string>
+    <string name="grading_action">Notation</string>
+    <string name="grading_description">Évaluer les travaux</string>
+    <string name="logout_action">Déconnexion</string>
+    <string name="logout_description">Se déconnecter</string>
+    
+    <!-- Activity -->
+    <string name="new_submission">Nouvelle remise</string>
+    <string name="submission_activity_desc">%s a remis ses spécifications</string>
+    <string name="report_evaluated">Rapport évalué</string>
+    <string name="report_activity_desc">Rapport de %s marqué comme lu</string>
+    <string name="new_grade">Nouvelle note</string>
+    <string name="grade_activity_desc">%s a reçu sa note de projet</string>
+    <string name="time_ago_hours">il y a %dh</string>
+    <string name="time_ago_yesterday">Hier</string>
+    
+    <!-- Submissions -->
+    <string name="submissions_count">%d remises</string>
+    
+    <!-- Deliverables -->
+    <string name="deliverables_management">Gestion des livrables</string>
+    <string name="deliverables_management_desc">Consulter et gérer les remises de vos étudiants</string>
+    <string name="deliverable_details">Détails du livrable</string>
+    <string name="due_date">Échéance</string>
+    <string name="due_date_format">Échéance : %s</string>
+    <string name="max_size">Taille max</string>
+    <string name="allowed_extensions">Extensions autorisées : %s</string>
+    <string name="statistics_title">Statistiques</string>
+    <string name="submission_status">État des remises</string>
+    <string name="submissions_count_title">Remises (%d)</string>
+    <string name="submissions_desc">Fichiers remis par les étudiants</string>
+    <string name="no_submissions">Aucune remise pour le moment</string>
+    <string name="download_button">Télécharger</string>
+    <string name="submitted_on">Remis le %s</string>
+    <string name="unknown_project">Projet inconnu</string>
+    
+    <!-- Submission status -->
+    <string name="status_submitted">Remis</string>
+    <string name="status_evaluated">Évalué</string>
+    <string name="status_late">En retard</string>
+    <string name="status_pending">En attente</string>
+    <string name="pending_label">En attente</string>
+    <string name="evaluated_label">Évaluées</string>
+    
+    <!-- Reports -->
+    <string name="student_reports">Rapports d\'étudiants</string>
+    <string name="student_reports_desc">Consulter et évaluer les rapports de projet de vos étudiants</string>
+    <string name="report_details">Détails du rapport</string>
+    <string name="student_information">Informations de l\'étudiant</string>
+    <string name="student_information_desc">Détails de l\'auteur du rapport</string>
+    <string name="actions_title">Actions</string>
+    <string name="actions_desc">Consulter le contenu du rapport</string>
+    <string name="quick_preview">Aperçu rapide</string>
+    <string name="read_full">Lire intégralement</string>
+    <string name="full_version">Version complète</string>
+    <string name="creation_date">Date de création</string>
+    <string name="length_label">Longueur</string>
+    <string name="length_characters">%d caractères</string>
+    <string name="status_label">Statut :</string>
+    <string name="mark_as_read">Marquer comme lu</string>
+    <string name="created_on">Créé le %s</string>
+    <string name="student_number">Numéro étudiant : %s</string>
+    <string name="characters_count">%d caractères</string>
+    <string name="report_marked_read">Rapport marqué comme lu</string>
+    
+    <!-- Report status -->
+    <string name="status_draft">Brouillon</string>
+    <string name="status_report_submitted">Remis</string>
+    <string name="status_reviewed">Lu</string>
+    
+    <!-- Grading -->
+    <string name="grade_management">Gestion des notes</string>
+    <string name="grade_management_desc">Évaluer les projets de vos étudiants selon les critères définis</string>
+    <string name="grading_grid">Grille de notation</string>
+    <string name="student_evaluation">Évaluation d\'étudiant</string>
+    <string name="project_label">Projet : %s</string>
+    <string name="evaluation_criteria">Critères d\'évaluation</string>
+    <string name="scale_points">Barème sur %d points</string>
+    <string name="students_count_grid">Étudiants (%d)</string>
+    <string name="students_grid_desc">Cliquer sur un étudiant pour le noter</string>
+    <string name="students_count_project">%d étudiants</string>
+    <string name="criteria_count">%d critères</string>
+    <string name="points_label">%d pts</string>
+    <string name="current_grade">Note actuelle : %s</string>
+    <string name="grade_out_of">Note sur %d</string>
+    <string name="comment_optional">Commentaire (optionnel)</string>
+    <string name="add_remarks">Ajouter des remarques...</string>
+    <string name="evaluation_summary">Résumé de l\'évaluation</string>
+    <string name="check_grades_before_save">Vérifier les notes avant sauvegarde</string>
+    <string name="total_points" formatted="false">Total : %d / %d points</string>
+    <string name="percentage_label">Pourcentage : %d%%</string>
+    <string name="save_grades">Sauvegarder les notes</string>
+    <string name="grades_saved" formatted="false">Notes sauvegardées pour %s %s</string>
+    <string name="not_graded">Non notée</string>
+    
+    <!-- Project status -->
+    <string name="status_completed">Terminé</string>
+    <string name="status_in_progress">En cours</string>
+    <string name="status_started">Commencé</string>
+    <string name="status_todo">À faire</string>
+    
+    <!-- Toast messages -->
+    <string name="file_downloaded">Fichier %s téléchargé avec succès</string>
+</resources>

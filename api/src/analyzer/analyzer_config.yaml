@@ -1,0 +1,70 @@
+# Performance settings
+timeout_per_file: 30.0  # Maximum seconds to analyze each file
+max_workers: 4          # Number of parallel workers
+max_file_size: 104857600  # 100MB - Maximum file size to analyze
+
+# Similarity thresholds
+critical_similarity_threshold: 0.9  # >= 90% similarity is critical
+high_similarity_threshold: 0.7      # >= 70% similarity is high
+medium_similarity_threshold: 0.5    # >= 50% similarity is medium
+
+# Similarity calculation weights
+# These weights determine how different algorithms contribute to the final score
+similarity_weights:
+  difflib: 0.4      # Sequence matching (exact comparison)
+  fuzzy: 0.3        # Fuzzy string matching
+  token_overlap: 0.3  # Token-based comparison
+
+# File types to skip during analysis
+skip_file_types:
+  - .exe
+  - .dll
+  - .so
+  - .dylib
+  - .jpg
+  - .jpeg
+  - .png
+  - .gif
+  - .mp3
+  - .mp4
+  - .avi
+  - .mov
+
+# Text file extensions for content analysis
+text_file_extensions:
+  - .txt
+  - .md
+  - .rst
+  - .tex
+  - .py
+  - .js
+  - .java
+  - .cpp
+  - .c
+  - .h
+  - .cs
+  - .rb
+  - .go
+  - .rs
+  - .php
+  - .html
+  - .css
+  - .json
+  - .xml
+  - .yaml
+  - .yml
+  - .sql
+
+# Report settings
+default_report_format: json
+include_details_in_report: true
+report_directory: reports
+
+# API server settings
+api_host: "0.0.0.0"
+api_port: 8000
+cors_origins:
+  - "*"  # Configure appropriately for production
+
+# Logging
+log_level: INFO

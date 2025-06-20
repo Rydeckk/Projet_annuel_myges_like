@@ -8,6 +8,10 @@ import { JwtAuthGuard } from "./auth/strategies/jwt/jwt-auth.guard";
 import { StudentsModule } from "./students/students.module";
 import { TeachersModule } from "./teachers/teachers.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { PromotionsModule } from "./promotions/promotions.module";
+import { ProjectsModule } from "./projects/projects.module";
+import { PromotionProjectsModule } from "./promotion-projects/promotion-projects.module";
+import { ReportModule } from "./report/report.module";
 
 @Module({
     imports: [
@@ -20,8 +24,11 @@ import { PrismaModule } from "./prisma/prisma.module";
         UsersModule,
         StudentsModule,
         TeachersModule,
+        PromotionsModule,
+        ProjectsModule,
+        PromotionProjectsModule,
+        ReportModule,
     ],
-    controllers: [],
     providers: [
         {
             provide: APP_GUARD,

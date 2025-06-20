@@ -1,10 +1,10 @@
 import { UnauthotentifiedWrapper } from "./components/wrappers/UnauthotentifiedWrapper";
-import { Authentification } from "./pages/authentification/Authentification";
+import { AuthentificationPage } from "./pages/authentificationPage/AuthentificationPage";
 
 export const App = () => {
     return (
         <UnauthotentifiedWrapper>
-            <Authentification />
+            <AuthentificationPage />
         </UnauthotentifiedWrapper>
     );
 };
