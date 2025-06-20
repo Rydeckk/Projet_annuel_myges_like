@@ -1,5 +1,7 @@
 import * as React from "react";
 import { ChevronRight, House, LogOut } from "lucide-react";
+import { UserCard } from "@/components/ui/user-card";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import {
     Collapsible,
     CollapsibleContent,
@@ -50,6 +52,7 @@ export const AppSidebar = ({
     ...props
 }: React.ComponentProps<typeof Sidebar> & Props) => {
     const navigate = useNavigate();
+    const { user, loading: userLoading } = useCurrentUser();
 
     const onLogoutClick = () => {
         Cookies.remove("token");
@@ -86,6 +89,11 @@ export const AppSidebar = ({
                     </SidebarMenu>
                 </SidebarHeader>
                 <SidebarContent className="gap-0">
+                    {user && !userLoading && (
+                        <div className="px-2 py-2">
+                            <UserCard user={user} />
+                        </div>
+                    )}
                     {navData.map((item) => (
                         <Collapsible
                             key={item.title}
