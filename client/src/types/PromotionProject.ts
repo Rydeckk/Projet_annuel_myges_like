@@ -1,5 +1,6 @@
 import { ProjectGroupRule } from "@/enums/ProjectGroupRule";
 import { Project } from "./Project";
+import { ProjectGroup } from "./ProjectGroup";
 
 export type PromotionProjectRequest = {
   minPerGroup: number;
@@ -24,4 +25,5 @@ export type PromotionProject = {
   projectGroupRule: ProjectGroupRule;
   projectId: string;
   project?: Project;
+  projectGroups?: ProjectGroup[];
 };

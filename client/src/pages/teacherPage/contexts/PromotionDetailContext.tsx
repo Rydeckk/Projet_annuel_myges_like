@@ -35,8 +35,9 @@ const TeacherPromotionDetailContextProvider = ({ children }: Props) => {
 
     const getPromotion = useCallback(async () => {
         try {
-            const promotionData =
-                await promotionService.findByName(promotionName);
+            const promotionData = await promotionService.findByName(
+                promotionName ?? "",
+            );
             setPromotion(promotionData);
         } catch (error) {
             if (error instanceof ApiException) {

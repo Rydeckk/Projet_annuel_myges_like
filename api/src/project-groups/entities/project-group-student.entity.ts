@@ -1,9 +1,9 @@
 import { Type } from "class-transformer";
 import { StudentEntity } from "src/students/entities/student.entity";
 
-export class PromotionStudentEntity {
+export class ProjectGroupStudentEntity {
     studentId: string;
-    promotionId: string;
+    projectGroupId: string;
 
     @Type(() => Date)
     createdAt: Date;
@@ -11,7 +11,7 @@ export class PromotionStudentEntity {
     @Type(() => StudentEntity)
     student?: StudentEntity;
 
-    constructor(partial: Partial<PromotionStudentEntity>) {
+    constructor(partial: Partial<ProjectGroupStudentEntity>) {
         Object.assign(this, partial);
     }
 }
