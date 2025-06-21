@@ -106,42 +106,58 @@ export const TeacherPromotionStudentsPage = () => {
 
         const reader = new FileReader();
 
-        const parsedData = (await new Promise((resolve, reject) => {
-            reader.onload = (e) => {
-                try {
-                    const result = e.target?.result as string;
+        const parsedData = (
+            (await new Promise((resolve, reject) => {
+                reader.onload = (e) => {
+                    try {
+                        const result = e.target?.result as string;
 
-                    if (isJsonFile) resolve(JSON.parse(result));
+                        if (isJsonFile) resolve(JSON.parse(result));
 
-                    const workbook = XLSX.read(result, {
-                        type: "array",
-                    });
+                        const workbook = XLSX.read(result, {
+                            type: "array",
+                        });
 
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
 
-                    const jsonData = XLSX.utils.sheet_to_json(
-                        worksheet,
-                    ) as Omit<PromotionStudentRequest, "promotionId">[];
+                        const jsonData = XLSX.utils.sheet_to_json(
+                            worksheet,
+                        ) as Omit<PromotionStudentRequest, "promotionId">[];
 
-                    resolve(jsonData);
-                } catch (error) {
-                    reject(error);
+                        resolve(jsonData);
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                reader.onerror = () => {
+                    reject(new Error("Error on file parsing"));
+                };
+                reader[isJsonFile ? "readAsText" : "readAsArrayBuffer"](file);
+            })) as Omit<PromotionStudentRequest, "promotionId">[]
+        )
+            .filter(
+                ({ email }) =>
+                    !promotion?.promotionStudents?.find(
+                        ({ student }) => student?.user?.email === email,
+                    ),
+            )
+            .reduce((acc: PromotionStudentRequest[], curr) => {
+                if (acc.find(({ email }) => email === curr.email)) {
+                    return acc;
                 }
-            };
-            reader.onerror = () => {
-                reject(new Error("Error on file parsing"));
-            };
-            reader[isJsonFile ? "readAsText" : "readAsArrayBuffer"](file);
-        })) as Omit<PromotionStudentRequest, "promotionId">[];
+                return [...acc, { ...curr, promotionId: promotion!.id }];
+            }, []);
+
+        if (!parsedData.length) {
+            toast.warning(
+                "No students have been imported, please check that your file is not empty or you are not using an existing e-mail address.",
+            );
+            return;
+        }
 
         try {
-            await promotionService.createPromotionStudents(
-                parsedData.map((data) => ({
-                    ...data,
-                    promotionId: promotion!.id,
-                })),
-            );
+            await promotionService.createPromotionStudents(parsedData);
             getPromotion();
             setImportOpen(false);
             toast.success("Students was successfully imported");
