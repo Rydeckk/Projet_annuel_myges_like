@@ -1,6 +1,18 @@
 import { ProjectGroupRule } from "@prisma/client";
-import { IsBoolean, IsEnum, IsNumber, IsUUID } from "class-validator";
+import {
+    IsBoolean,
+    IsDateString,
+    IsEnum,
+    IsNumber,
+    IsUUID,
+    Validate,
+} from "class-validator";
 import { UUID } from "crypto";
+import {
+    DatesNotEqualConstraint,
+    EndDateAfterStartDateConstraint,
+    NotInPastConstraint,
+} from "decorators/date-validator.decorator";
 
 export class CreatePromotionProjectDto {
     @IsNumber()
@@ -23,4 +35,14 @@ export class CreatePromotionProjectDto {
 
     @IsUUID()
     promotionId: UUID;
+
+    @IsDateString()
+    @Validate(NotInPastConstraint)
+    @Validate(DatesNotEqualConstraint)
+    startDate: Date;
+
+    @IsDateString()
+    @Validate(EndDateAfterStartDateConstraint)
+    @Validate(DatesNotEqualConstraint)
+    endDate: Date;
 }
