@@ -20,19 +20,39 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { isBefore, isEqual, startOfDay } from "date-fns";
 
-const schema = z.object({
-    minPerGroup: z.number(),
-    maxPerGroup: z.number(),
-    allowLateSubmission: z.boolean(),
-    isReportRequired: z.boolean(),
-    projectGroupRule: z.nativeEnum(PROJECT_GROUP_RULE),
-    promotionId: z.string().uuid().nonempty(),
-    projectId: z
-        .string({ required_error: "Project is required" })
-        .uuid()
-        .nonempty(),
-});
+const schema = z
+    .object({
+        minPerGroup: z.number(),
+        maxPerGroup: z.number(),
+        allowLateSubmission: z.boolean(),
+        isReportRequired: z.boolean(),
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+        projectGroupRule: z.nativeEnum(PROJECT_GROUP_RULE),
+        promotionId: z.string().uuid().nonempty(),
+        projectId: z
+            .string({ required_error: "Project is required" })
+            .uuid()
+            .nonempty(),
+    })
+    .refine((data) => !isBefore(data.startDate, startOfDay(new Date())), {
+        message: "Start date cannot be in the past",
+        path: ["startDate"],
+    })
+    .refine((data) => !isBefore(data.endDate, data.startDate), {
+        message: "End date must be after start date",
+        path: ["endDate"],
+    })
+    .refine((data) => !isEqual(data.startDate, data.endDate), {
+        message: "Start and end dates cannot be identical",
+        path: ["startDate"],
+    })
+    .refine((data) => !isEqual(data.startDate, data.endDate), {
+        message: "Start and end dates cannot be identical",
+        path: ["endDate"],
+    });
 
 type Props = {
     onSubmit: (data: PromotionProjectRequest) => void;
@@ -77,7 +97,7 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
 
     return (
         <form
-            className="flex flex-col gap-4 px-4"
+            className="flex flex-col gap-4 px-4 overflow-y-auto"
             onSubmit={handleSubmit(onSubmit)}
         >
             <div className="flex flex-col gap-2">
@@ -117,19 +137,6 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
 
             <div className="flex flex-col gap-2">
                 <div className="flex items-center space-x-2">
-                    <Label htmlFor="report-required">Report required</Label>
-                    <Switch
-                        id="report-required"
-                        {...register("isReportRequired")}
-                    />
-                </div>
-                <p className="text-red-500">
-                    {errors.isReportRequired?.message}
-                </p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <div className="flex items-center space-x-2">
                     <Label htmlFor="is-report-required">Report required</Label>
                     <Switch
                         id="is-report-required"
@@ -139,6 +146,18 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                 <p className="text-red-500">
                     {errors.isReportRequired?.message}
                 </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="startDate">Start date</Label>
+                <Input id="startDate" {...register("startDate")} type="date" />
+                <p className="text-red-500">{errors.startDate?.message}</p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="endDate">End date</Label>
+                <Input id="endDate" {...register("endDate")} type="date" />
+                <p className="text-red-500">{errors.endDate?.message}</p>
             </div>
 
             <div className="flex flex-col gap-2">

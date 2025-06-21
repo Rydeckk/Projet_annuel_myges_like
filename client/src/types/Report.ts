@@ -9,4 +9,5 @@ export type Report = {
   createdAt: Date;
   updatedAt: Date;
   projetGroupId: string;
+  createdByStudentId: string;
 };

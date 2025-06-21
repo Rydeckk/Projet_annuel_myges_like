@@ -12,14 +12,18 @@ import {
 import { ReportService } from "./report.service";
 import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
 import { ReportEntity } from "./entities/report.entity";
+import { GetCurrentUser } from "decorators/user.decorator";
 
 @Controller("report")
 export class ReportController {
     constructor(private readonly reportService: ReportService) {}
 
     @Post()
-    async create(@Body() createReportDto: CreateReportDto) {
-        return this.reportService.create(createReportDto);
+    async create(
+        @Body() createReportDto: CreateReportDto,
+        @GetCurrentUser("id") userScopeId: string,
+    ) {
+        return this.reportService.create(userScopeId, createReportDto);
     }
 
     @Get(":id")

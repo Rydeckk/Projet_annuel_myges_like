@@ -8,6 +8,9 @@ CREATE TYPE "ProjectVisibility" AS ENUM ('DRAFT', 'VISIBLE');
 CREATE TYPE "ProjectGroupRule" AS ENUM ('MANUAL', 'RANDOM', 'FREE');
 
 -- CreateEnum
+CREATE TYPE "MalusTimeType" AS ENUM ('HOUR', 'DAY', 'WEEK');
+
+-- CreateEnum
 CREATE TYPE "RuleType" AS ENUM ('MAX_SIZE_FILE', 'FILE_PRESENCE', 'FILE_CONTENT_MATCH');
 
 -- CreateEnum
@@ -104,9 +107,11 @@ CREATE TABLE "promotion_project" (
     "min_per_group" INTEGER NOT NULL,
     "max_per_group" INTEGER NOT NULL,
     "malus" INTEGER,
-    "malus_per_time" TIMESTAMP(3),
+    "malus_time_type" "MalusTimeType",
     "allow_late_submission" BOOLEAN NOT NULL,
     "project_group_rule" "ProjectGroupRule" NOT NULL,
+    "start_date" TIMESTAMP(3) NOT NULL,
+    "end_date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "promotion_id" TEXT NOT NULL,
@@ -144,8 +149,19 @@ CREATE TABLE "report" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "project_group_id" TEXT NOT NULL,
+    "student_id" TEXT NOT NULL,
 
     CONSTRAINT "report_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "report_section" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "project_group_id" TEXT NOT NULL,
+    "teacher_id" TEXT NOT NULL,
+
+    CONSTRAINT "report_section_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -382,6 +398,15 @@ ALTER TABLE "project_group_student" ADD CONSTRAINT "project_group_student_studen
 
 -- AddForeignKey
 ALTER TABLE "report" ADD CONSTRAINT "report_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "report" ADD CONSTRAINT "report_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "report_section" ADD CONSTRAINT "report_section_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "report_section" ADD CONSTRAINT "report_section_teacher_id_fkey" FOREIGN KEY ("teacher_id") REFERENCES "teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "defense" ADD CONSTRAINT "defense_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
