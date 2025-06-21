@@ -1,10 +1,20 @@
-import { ProjectGroupContextProvider } from "../../context/ProjectGroupContext";
-import { StudentProjectDetail } from "./StudentProjectDetail/StudentProjectDetail";
+import { useContext } from "react";
+import { StudentPromotionProjectContext } from "../../contexts/StudentPromotionProjectContext";
+import { StudentProjectDetailCard } from "./components/studentProjectDetailCard/StudentProjectDetailCard";
 
 export const StudentProjectDetailPage = () => {
+    const { promotionProject, studentProjectGroup } = useContext(
+        StudentPromotionProjectContext,
+    );
+
     return (
-        <ProjectGroupContextProvider>
-            <StudentProjectDetail />
-        </ProjectGroupContextProvider>
+        <div>
+            {promotionProject && studentProjectGroup && (
+                <StudentProjectDetailCard
+                    projectGroup={studentProjectGroup}
+                    promotionProject={promotionProject}
+                />
+            )}
+        </div>
     );
 };

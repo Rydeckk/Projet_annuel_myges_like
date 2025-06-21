@@ -15,7 +15,7 @@ export class PromotionService {
     this.api = api;
   }
 
-  async findByName(name: string = "") {
+  async findByName(name: string) {
     return this.api.request<Promotion>({
       path: `${PROMOTION_PATH}/${name}`,
     });

@@ -16,7 +16,6 @@ import { PromotionProjectRequest } from "@/types/PromotionProject";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
 import { PromotionProjects } from "./components/promotionProjects/PromotionProjects";
-import { ProjectGroupService } from "@/services/projectGroupService/ProjectGroupService";
 
 export const TeacherPromotionProjectsPage = () => {
     const { promotion, getPromotion } = useContext(
@@ -27,19 +26,12 @@ export const TeacherPromotionProjectsPage = () => {
         () => new PromotionProjectService(),
         [],
     );
-    const projectGroupsService = useMemo(() => new ProjectGroupService(), []);
     const [open, setOpen] = useState(false);
 
     const onCreatePromotionProject = async (data: PromotionProjectRequest) => {
         try {
-            const promotionProjectCreated =
-                await promotionProjectService.create(data);
+            await promotionProjectService.create(data);
             getPromotion();
-            if (promotionProjectCreated) {
-                await projectGroupsService.createAllProjectGroups({
-                    promotionProjectId: promotionProjectCreated.id,
-                });
-            }
             setOpen(false);
             toast.success("The promotion project was successfully created");
         } catch (error) {

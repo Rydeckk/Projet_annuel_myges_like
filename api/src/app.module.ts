@@ -12,7 +12,7 @@ import { PromotionsModule } from "./promotions/promotions.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { PromotionProjectsModule } from "./promotion-projects/promotion-projects.module";
 import { ReportModule } from "./report/report.module";
-import { ProjectGroupModule } from "./project-group/project-group.module";
+import { ProjectGroupsModule } from "./project-groups/project-groups.module";
 
 @Module({
     imports: [
@@ -29,7 +29,7 @@ import { ProjectGroupModule } from "./project-group/project-group.module";
         ProjectsModule,
         PromotionProjectsModule,
         ReportModule,
-        ProjectGroupModule,
+        ProjectGroupsModule,
     ],
     providers: [
         {

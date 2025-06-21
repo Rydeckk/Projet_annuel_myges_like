@@ -13,25 +13,23 @@ export class PromotionProjectService {
         this.api = api;
     }
 
-    async create(data: PromotionProjectRequest): Promise<PromotionProject> {
-        return this.api.request({
+    async create(data: PromotionProjectRequest) {
+        return this.api.request<PromotionProject>({
             path: PROMOTION_PROJECTS_PATH,
             method: "POST",
             data,
         });
     }
 
-    async findStudentProjects(): Promise<PromotionProject[]> {
-        return this.api.request({
-            path: `${PROMOTION_PROJECTS_PATH}/student`,
+    async findCurrentStudentPromotionProjects() {
+        return this.api.request<PromotionProject[]>({
+            path: `${PROMOTION_PROJECTS_PATH}/current-student`,
             method: "GET",
         });
     }
 
-    async findByProjectName(
-        projectName: string,
-    ): Promise<PromotionProject | null> {
-        return this.api.request({
+    async findByProjectName(projectName: string) {
+        return this.api.request<PromotionProject>({
             path: `${PROMOTION_PROJECTS_PATH}/project/${projectName}`,
             method: "GET",
         });

@@ -17,9 +17,11 @@ export class PromotionProjectsController {
         private readonly promotionProjectsService: PromotionProjectsService,
     ) {}
 
-    @Get("student")
+    @Get("current-student")
     @SerializeOptions({ type: PromotionProjectEntity })
-    async findStudentProjects(@GetCurrentUser("id") userScopeId: string) {
+    async findCurrentStudentPromotionProjects(
+        @GetCurrentUser("id") userScopeId: string,
+    ) {
         return this.promotionProjectsService.findMany({
             promotion: {
                 promotionStudents: {
@@ -43,7 +45,7 @@ export class PromotionProjectsController {
         @GetCurrentUser("id") userScopeId: string,
         @Param("name") projectName: string,
     ) {
-        return this.promotionProjectsService.find({
+        return this.promotionProjectsService.findFirst({
             project: {
                 name: projectName,
             },
