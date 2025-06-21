@@ -10,7 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import {
     BREVO_TEMPLATE,
     StudentAccountCreationParams,
-} from "src/constants/brevo.constant";
+} from "constants/brevo.constant";
 
 @Injectable()
 export class PromotionsService {

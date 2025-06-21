@@ -12,11 +12,11 @@ import {
 } from "@nestjs/common";
 import { ProjectsService } from "./projects.service";
 import { CreateProjectDto, UpdateProjectDto } from "./dto/project.dto";
-import { GetCurrentUser } from "src/decorators/user.decorator";
+import { GetCurrentUser } from "decorators/user.decorator";
 import { ProjectEntity } from "./entities/project.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileService } from "src/services/file.service";
-import { BUCKET_DESTINATION } from "src/constants/bucket.constant";
+import { BUCKET_DESTINATION } from "constants/bucket.constant";
 
 @Controller("projects")
 export class ProjectsController {

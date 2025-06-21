@@ -9,7 +9,7 @@ import {
 import { PromotionProjectsService } from "./promotion-projects.service";
 import { CreatePromotionProjectDto } from "./dto/promotion-project.dto";
 import { PromotionProjectEntity } from "./entities/promotion-project.entity";
-import { GetCurrentUser } from "src/decorators/user.decorator";
+import { GetCurrentUser } from "decorators/user.decorator";
 
 @Controller("promotion-projects")
 export class PromotionProjectsController {
