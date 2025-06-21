@@ -2,8 +2,11 @@ import {
     Body,
     Controller,
     Delete,
+    FileTypeValidator,
     Get,
+    MaxFileSizeValidator,
     Param,
+    ParseFilePipe,
     Post,
     Put,
     SerializeOptions,
@@ -17,6 +20,10 @@ import { ProjectEntity } from "./entities/project.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { FileService } from "src/services/file.service";
 import { BUCKET_DESTINATION } from "constants/bucket.constant";
+import {
+    ALLOWED_PROJECT_FILES,
+    FILE_SIZE_LIMIT,
+} from "constants/file.constant";
 
 @Controller("projects")
 export class ProjectsController {
@@ -39,7 +46,15 @@ export class ProjectsController {
     async create(
         @GetCurrentUser("id") userScopeId: string,
         @Body() project: CreateProjectDto,
-        @UploadedFile() file: Express.Multer.File,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new MaxFileSizeValidator({ maxSize: FILE_SIZE_LIMIT }),
+                    new FileTypeValidator({ fileType: ALLOWED_PROJECT_FILES }),
+                ],
+            }),
+        )
+        file: Express.Multer.File,
     ) {
         const uploadedFile = await this.fileService.uploadFile(
             file,
