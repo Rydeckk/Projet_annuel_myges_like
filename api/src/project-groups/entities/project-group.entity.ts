@@ -4,11 +4,7 @@ import { ProjectGroupStudentEntity } from "./project-group-student.entity";
 export class ProjectGroupEntity {
     id: string;
     name: string;
-
-    @Type(() => Date)
     createdAt: Date;
-
-    @Type(() => Date)
     updatedAt: Date;
 
     promotionProjectId: string;

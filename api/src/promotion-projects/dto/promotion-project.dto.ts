@@ -1,3 +1,4 @@
+import { OmitType, PartialType } from "@nestjs/mapped-types";
 import { ProjectGroupRule } from "@prisma/client";
 import {
     IsBoolean,
@@ -46,3 +47,8 @@ export class CreatePromotionProjectDto {
     @Validate(DatesNotEqualConstraint)
     endDate: Date;
 }
+
+export class UpdatePromotionProjectDto extends OmitType(
+    PartialType(CreatePromotionProjectDto),
+    ["projectId", "promotionId"],
+) {}

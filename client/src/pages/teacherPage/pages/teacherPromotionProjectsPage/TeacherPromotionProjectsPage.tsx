@@ -15,7 +15,7 @@ import { PromotionProjectService } from "@/services/promotionProjectService/Prom
 import { PromotionProjectRequest } from "@/types/PromotionProject";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
-import { PromotionProjects } from "./components/promotionProjects/PromotionProjects";
+import { PromotionProjectCard } from "./components/promotionProjectCard/PromotionProjectCard";
 
 export const TeacherPromotionProjectsPage = () => {
     const { promotion, getPromotion } = useContext(
@@ -79,7 +79,14 @@ export const TeacherPromotionProjectsPage = () => {
                 </SheetContent>
             </Sheet>
 
-            <PromotionProjects />
+            <div className="flex gap-4 mt-6 flex-wrap">
+                {promotion?.promotionProjects?.map((promotionProject) => (
+                    <PromotionProjectCard
+                        key={promotionProject.id}
+                        promotionProject={promotionProject}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

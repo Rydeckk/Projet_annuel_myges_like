@@ -1,21 +1,12 @@
-import { Button } from "@/components/ui/button";
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-} from "@/components/ui/sheet";
-import { TeacherProjectContext } from "@/pages/teacherPage/contexts/TeacherProjectContext";
-import { ApiException } from "@/services/api/ApiException";
-import { ProjectService } from "@/services/projectService/ProjectService";
-import { Project, ProjectRequest } from "@/types/Project";
-import { format } from "date-fns";
-import { useContext, useMemo, useState } from "react";
-import { toast } from "sonner";
-import { ProjectForm } from "../projectForm/ProjectForm";
-import { ExpandableCard } from "@/components/ui/expandable-card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ExpandableCard } from "@/components/ui/expandable-card";
 import { GET_COLOR_STYLES_BY_VISIBILITY } from "@/enums/ProjectVisibility";
+import {
+    PromotionProject,
+    PromotionProjectRequest,
+} from "@/types/PromotionProject";
+import { format } from "date-fns";
 import { Clock, Download, ExternalLink } from "lucide-react";
 import { Link } from "react-router";
 import {
@@ -24,24 +15,41 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useContext, useMemo, useState } from "react";
+import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
+import { ApiException } from "@/services/api/ApiException";
+import { toast } from "sonner";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from "@/components/ui/sheet";
+import { PromotionProjectFrom } from "../../forms/PromotionProjectFrom";
 
 type Props = {
-    project: Project;
+    promotionProject: PromotionProject;
 };
 
-export const ProjectCard = ({ project }: Props) => {
-    const { getProjects } = useContext(TeacherProjectContext);
+export const PromotionProjectCard = ({ promotionProject }: Props) => {
+    const { getPromotion } = useContext(TeacherPromotionDetailContext);
 
-    const projectService = useMemo(() => new ProjectService(), []);
+    const promotionProjectService = useMemo(
+        () => new PromotionProjectService(),
+        [],
+    );
 
     const [open, setOpen] = useState(false);
 
-    const onUpdateProject = async (data: Partial<ProjectRequest>) => {
+    const project = promotionProject.project!;
+
+    const onUpdatePromotionProject = async (data: PromotionProjectRequest) => {
         try {
-            await projectService.update(project.id, data);
-            await getProjects();
+            await promotionProjectService.update(promotionProject.id, data);
+            getPromotion();
             setOpen(false);
-            toast.success("The project was successfully updated");
+            toast.success("Promotion project was successfully updated");
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);
@@ -49,15 +57,14 @@ export const ProjectCard = ({ project }: Props) => {
         }
     };
 
-    const onDeleteProject = async (
+    const onDeletePromotionProject = async (
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     ) => {
         e.stopPropagation();
         try {
-            await projectService.delete(project.id);
-            getProjects();
-            setOpen(false);
-            toast.success("The project was successfully deleted");
+            await promotionProjectService.delete(promotionProject.id);
+            getPromotion();
+            toast.success("The promotion project was successfully deleted");
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);
@@ -69,19 +76,27 @@ export const ProjectCard = ({ project }: Props) => {
         <div className="w-[23rem]">
             <ExpandableCard
                 title={project.name}
-                description={project.description}
+                description={promotionProject.description ?? undefined}
                 headerContent={
                     <div className="w-full flex justify-between items-center">
-                        <Badge
-                            variant="secondary"
-                            className={
-                                GET_COLOR_STYLES_BY_VISIBILITY[
-                                    project.projectVisibility
-                                ]
-                            }
-                        >
-                            {project.projectVisibility}
-                        </Badge>
+                        <div className="flex gap-4">
+                            <Badge
+                                variant="secondary"
+                                className="bg-green-100 text-green-600"
+                            >
+                                {promotionProject.projectGroupRule}
+                            </Badge>
+                            <Badge
+                                variant="secondary"
+                                className={
+                                    GET_COLOR_STYLES_BY_VISIBILITY[
+                                        project.projectVisibility
+                                    ]
+                                }
+                            >
+                                {project.projectVisibility}
+                            </Badge>
+                        </div>
                         <div className="flex gap-4">
                             <TooltipProvider>
                                 <Tooltip>
@@ -129,18 +144,27 @@ export const ProjectCard = ({ project }: Props) => {
                         </div>
                     </div>
                 }
-                disabled
+                visibleChildren={
+                    <div className="flex flex-col gap-2 my-2">
+                        <p>{`Start date: ${format(promotionProject.startDate, "HH:mm - dd-MM-yyyy")}`}</p>
+                        <p>{`End date: ${format(promotionProject.endDate, "HH:mm - dd-MM-yyyy")}`}</p>
+                        <p>{`Is report required: ${promotionProject.isReportRequired}`}</p>
+                        <p>{`Allow late submission: ${promotionProject.allowLateSubmission}`}</p>
+                    </div>
+                }
+                footer={
+                    <div className="flex items-center justify-between w-full text-sm text-gray-600">
+                        <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2" />
+                            <span>{`Updated at : ${format(promotionProject.updatedAt, "HH:mm - dd-MM-yyyy")}`}</span>
+                        </div>
+                    </div>
+                }
             >
                 <div className="flex items-center justify-between text-sm text-gray-600">
                     <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-2" />
-                        <span>{`Created at : ${format(project.createdAt, "HH:mm - dd-MM-yyyy")}`}</span>
-                    </div>
-                </div>
-                <div className="flex items-center justify-between w-full text-sm text-gray-600">
-                    <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span>{`Updated at : ${format(project.updatedAt, "HH:mm - dd-MM-yyyy")}`}</span>
+                        <span>{`Created at : ${format(promotionProject.createdAt, "HH:mm - dd-MM-yyyy")}`}</span>
                     </div>
                 </div>
                 <div className="flex justify-between">
@@ -153,7 +177,10 @@ export const ProjectCard = ({ project }: Props) => {
                     >
                         Update
                     </Button>
-                    <Button className="w-[45%]" onClick={onDeleteProject}>
+                    <Button
+                        className="w-[45%]"
+                        onClick={onDeletePromotionProject}
+                    >
                         Delete
                     </Button>
                 </div>
@@ -161,11 +188,11 @@ export const ProjectCard = ({ project }: Props) => {
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetContent className="p-4">
                     <SheetHeader>
-                        <SheetTitle>Update project</SheetTitle>
+                        <SheetTitle>Update promotion project</SheetTitle>
                     </SheetHeader>
-                    <ProjectForm
-                        onSubmit={(data) => onUpdateProject(data)}
-                        projectData={project}
+                    <PromotionProjectFrom
+                        onSubmit={onUpdatePromotionProject}
+                        promotionProject={promotionProject}
                     />
                 </SheetContent>
             </Sheet>

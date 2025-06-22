@@ -1,13 +1,19 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
+    ParseUUIDPipe,
     Post,
+    Put,
     SerializeOptions,
 } from "@nestjs/common";
 import { PromotionProjectsService } from "./promotion-projects.service";
-import { CreatePromotionProjectDto } from "./dto/promotion-project.dto";
+import {
+    CreatePromotionProjectDto,
+    UpdatePromotionProjectDto,
+} from "./dto/promotion-project.dto";
 import { PromotionProjectEntity } from "./entities/promotion-project.entity";
 import { GetCurrentUser } from "decorators/user.decorator";
 
@@ -39,6 +45,18 @@ export class PromotionProjectsController {
         return this.promotionProjectsService.create(createPromotionProjectDto);
     }
 
+    @Put(":id")
+    @SerializeOptions({ type: PromotionProjectEntity })
+    async update(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Body() updatePromotionProjectDto: UpdatePromotionProjectDto,
+    ) {
+        return this.promotionProjectsService.update(
+            id,
+            updatePromotionProjectDto,
+        );
+    }
+
     @Get("project/:name")
     @SerializeOptions({ type: PromotionProjectEntity })
     async findByProjectName(
@@ -58,6 +76,14 @@ export class PromotionProjectsController {
                     },
                 },
             },
+        });
+    }
+
+    @Delete(":id")
+    @SerializeOptions({ type: PromotionProjectEntity })
+    async delete(@Param("id", ParseUUIDPipe) id: string) {
+        return this.promotionProjectsService.delete({
+            id,
         });
     }
 }

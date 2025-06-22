@@ -5,24 +5,21 @@ import { ProjectEntity } from "src/projects/entities/project.entity";
 
 export class PromotionProjectEntity {
     id: string;
+    description: string | null;
     createdAt: Date;
     updatedAt: Date;
     minPerGroup: number;
     maxPerGroup: number;
     malus: number | null;
     malusTimeType: MalusTimeType | null;
-
     allowLateSubmission: boolean;
+    isReportRequired: boolean;
     projectGroupRule: ProjectGroupRule;
+    startDate: Date;
+    endDate: Date;
 
     projectId: string;
     promotionId: string;
-
-    @Type(() => Date)
-    startDate: Date;
-
-    @Type(() => Date)
-    endDate: Date;
 
     @Type(() => ProjectEntity)
     project?: ProjectEntity;

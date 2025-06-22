@@ -1,5 +1,9 @@
 import { Bucket, Storage } from "@google-cloud/storage";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { parse } from "path";
 import { BUCKET_NAME, BucketDestination } from "constants/bucket.constant";
@@ -45,9 +49,11 @@ export class FileService {
         uploadedFile: Express.Multer.File,
         destination: BucketDestination,
     ) {
-        const fileName =
+        const fileName = this.setFilename(uploadedFile);
+        const destinationWithfileName =
             this.setDestination(destination) + this.setFilename(uploadedFile);
-        const file = this.bucket.file(fileName);
+
+        const file = this.bucket.file(destinationWithfileName);
         try {
             await file.save(uploadedFile.buffer, {
                 contentType: uploadedFile.mimetype,
@@ -58,7 +64,17 @@ export class FileService {
             );
         }
         return {
+            fileName,
             publicUrl: `https://storage.googleapis.com/${this.bucket.name}/${file.name}`,
         };
+    }
+
+    async removeFile(fileName: string, destination: BucketDestination) {
+        const file = this.bucket.file(`${destination}/${fileName}`);
+        try {
+            await file.delete();
+        } catch {
+            throw new BadRequestException();
+        }
     }
 }

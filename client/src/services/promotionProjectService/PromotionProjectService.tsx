@@ -1,6 +1,7 @@
 import {
     PromotionProject,
     PromotionProjectRequest,
+    UpdatePromotionProjectRequest,
 } from "@/types/PromotionProject";
 import { Api } from "../api/Api";
 
@@ -21,6 +22,14 @@ export class PromotionProjectService {
         });
     }
 
+    async update(id: string, data: UpdatePromotionProjectRequest) {
+        return this.api.request<PromotionProject>({
+            path: `${PROMOTION_PROJECTS_PATH}/${id}`,
+            method: "PUT",
+            data,
+        });
+    }
+
     async findCurrentStudentPromotionProjects() {
         return this.api.request<PromotionProject[]>({
             path: `${PROMOTION_PROJECTS_PATH}/current-student`,
@@ -32,6 +41,13 @@ export class PromotionProjectService {
         return this.api.request<PromotionProject>({
             path: `${PROMOTION_PROJECTS_PATH}/project/${projectName}`,
             method: "GET",
+        });
+    }
+
+    async delete(id: string) {
+        return this.api.request<PromotionProject>({
+            path: `${PROMOTION_PROJECTS_PATH}/${id}`,
+            method: "DELETE",
         });
     }
 }

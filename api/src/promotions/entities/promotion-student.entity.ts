@@ -4,8 +4,6 @@ import { StudentEntity } from "src/students/entities/student.entity";
 export class PromotionStudentEntity {
     studentId: string;
     promotionId: string;
-
-    @Type(() => Date)
     createdAt: Date;
 
     @Type(() => StudentEntity)

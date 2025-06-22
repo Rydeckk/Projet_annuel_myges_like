@@ -4,7 +4,7 @@ export type ProjectRequest = {
   name: string;
   description: string;
   projectVisibility: ProjectVisibility;
-  file: File;
+  file?: File;
 };
 
 export type Project = {

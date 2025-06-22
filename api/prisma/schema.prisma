@@ -160,11 +160,13 @@ enum MalusTimeType {
 
 model PromotionProject {
   id                  String           @id @default(uuid())
+  description         String?          @map("description")
   minPerGroup         Int              @map("min_per_group")
   maxPerGroup         Int              @map("max_per_group")
   malus               Int?
   malusTimeType       MalusTimeType?   @map("malus_time_type")
   allowLateSubmission Boolean          @map("allow_late_submission")
+  isReportRequired    Boolean          @map("is_report_required")
   projectGroupRule    ProjectGroupRule @map("project_group_rule")
   startDate           DateTime         @map("start_date")
   endDate             DateTime         @map("end_date")
@@ -176,9 +178,6 @@ model PromotionProject {
   promotionId String    @map("promotion_id")
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   String    @map("project_id")
-
-  isReportRequired Boolean @map("is_report_required")
-  description      String? @map("description")
 
   projectGroups                    ProjectGroup[]
   promotionProjectDeliverableRules PromotionProjectDeliverableRule[]

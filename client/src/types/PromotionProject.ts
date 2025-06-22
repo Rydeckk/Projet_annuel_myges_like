@@ -15,8 +15,13 @@ export type PromotionProjectRequest = {
   promotionId: string;
 };
 
+export type UpdatePromotionProjectRequest = Partial<
+  Omit<PromotionProjectRequest, "projectId" | "promotionId">
+>;
+
 export type PromotionProject = {
   id: string;
+  description: string | null;
   createdAt: Date;
   updatedAt: Date;
   minPerGroup: number;
@@ -24,6 +29,7 @@ export type PromotionProject = {
   malus: number | null;
   malusTimeType: MalusTimeType | null;
   allowLateSubmission: boolean;
+  isReportRequired: boolean;
   projectGroupRule: ProjectGroupRule;
   startDate: Date;
   endDate: Date;

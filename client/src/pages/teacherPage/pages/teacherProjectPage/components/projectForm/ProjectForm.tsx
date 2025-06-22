@@ -20,13 +20,14 @@ const schema = z.object({
     description: z.string().nonempty(),
     projectVisibility: z.nativeEnum(PROJECT_VISIBILITY),
     file: z
-        .instanceof(File, { message: "File is required" })
+        .instanceof(File)
         .refine((file) => [".zip", "application/pdf"].includes(file.type), {
             message: "Only pdf file is allowed",
         })
         .refine((file) => file.size <= FILE_SIZE_LIMIT, {
             message: "File size should not exceed 10 MB",
-        }),
+        })
+        .optional(),
 });
 
 export type FileFormValues = z.infer<typeof schema>;

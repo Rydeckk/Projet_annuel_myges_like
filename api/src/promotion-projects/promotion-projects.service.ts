@@ -1,12 +1,14 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreatePromotionProjectDto } from "./dto/promotion-project.dto";
 import {
-    Prisma,
-    ProjectGroup,
-    ProjectGroupRule,
-    Student,
-} from "@prisma/client";
+    BadRequestException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import {
+    CreatePromotionProjectDto,
+    UpdatePromotionProjectDto,
+} from "./dto/promotion-project.dto";
+import { Prisma, ProjectGroupRule, PromotionProject } from "@prisma/client";
 import { shuffleArray } from "src/utils/utils";
 import { PrismaTX } from "types/prisma";
 
@@ -24,20 +26,43 @@ export class PromotionProjectsService {
     }
 
     private async assignStudentToProjectGroupRandomly({
-        students,
-        projectGroupsCreated,
-        minPerGroup,
-        maxPerGroup,
-        totalGroups,
+        promotion,
+        promotionProject,
         tx,
     }: {
-        students: Student[];
-        projectGroupsCreated: ProjectGroup[];
-        minPerGroup: number;
-        maxPerGroup: number;
-        totalGroups: number;
+        promotion: Prisma.PromotionGetPayload<{
+            include: {
+                promotionStudents: {
+                    include: {
+                        student: true;
+                    };
+                };
+            };
+        }>;
+        promotionProject: PromotionProject;
         tx: PrismaTX;
     }) {
+        const {
+            id: promotionProjectId,
+            minPerGroup,
+            maxPerGroup,
+        } = promotionProject;
+        const { promotionStudents } = promotion;
+
+        const totalGroups = Math.min(
+            Math.floor(promotionStudents.length / maxPerGroup) + 1,
+            Math.floor(promotionStudents.length / minPerGroup),
+        );
+
+        const students = promotionStudents.map(({ student }) => student);
+
+        const projectGroupsCreated = await tx.projectGroup.createManyAndReturn({
+            data: Array.from({ length: totalGroups }).map((_, i) => ({
+                promotionProjectId,
+                name: `Group ${i + 1}`,
+            })),
+        });
+
         const shuffledStudents = shuffleArray(students);
 
         const { projectGroupStudents } = projectGroupsCreated.reduce(
@@ -100,40 +125,98 @@ export class PromotionProjectsService {
                     },
                 });
 
-            const { promotionStudents } = promotion;
-
-            const { minPerGroup, maxPerGroup, projectGroupRule } =
-                createdPromotionProject;
-
-            const totalGroups = Math.min(
-                Math.floor(promotionStudents.length / maxPerGroup) + 1,
-                Math.floor(promotionStudents.length / minPerGroup),
-            );
-
-            const projectGroupsCreated =
-                await tx.projectGroup.createManyAndReturn({
-                    data: Array.from({ length: totalGroups }).map((_, i) => ({
-                        promotionProjectId: createdPromotionProject.id,
-                        name: `Group ${i + 1}`,
-                    })),
-                });
-
-            if (projectGroupRule === ProjectGroupRule.RANDOM) {
-                const students = promotionStudents.map(
-                    ({ student }) => student,
-                );
-
+            if (
+                createdPromotionProject.projectGroupRule ===
+                ProjectGroupRule.RANDOM
+            ) {
                 await this.assignStudentToProjectGroupRandomly({
-                    students,
-                    projectGroupsCreated,
-                    minPerGroup,
-                    maxPerGroup,
-                    totalGroups,
+                    promotion,
+                    promotionProject: createdPromotionProject,
                     tx,
                 });
             }
 
             return createdPromotionProject;
+        });
+    }
+
+    async update(
+        promotionProjectId: string,
+        updatePromotionProjectDto: UpdatePromotionProjectDto,
+    ) {
+        const foundPromotionProject =
+            await this.prisma.promotionProject.findUnique({
+                where: {
+                    id: promotionProjectId,
+                },
+                include: {
+                    promotion: {
+                        include: {
+                            promotionStudents: {
+                                include: {
+                                    student: true,
+                                },
+                            },
+                        },
+                    },
+                    projectGroups: true,
+                },
+            });
+
+        if (!foundPromotionProject) {
+            throw new NotFoundException();
+        }
+
+        const { projectGroupRule, maxPerGroup, minPerGroup } =
+            foundPromotionProject;
+
+        const hasProjectGroups = foundPromotionProject.projectGroups.length;
+
+        const isCurrentRandomGroupRule =
+            projectGroupRule === ProjectGroupRule.RANDOM;
+
+        const isCurrentOthenThanRandomRuleGroup =
+            projectGroupRule !== ProjectGroupRule.RANDOM;
+
+        if (
+            hasProjectGroups &&
+            isCurrentOthenThanRandomRuleGroup &&
+            updatePromotionProjectDto.projectGroupRule ===
+                ProjectGroupRule.RANDOM
+        ) {
+            throw new BadRequestException(
+                "Project groups have already been created, you cannot switch to RANDOM group rule",
+            );
+        }
+
+        if (
+            isCurrentRandomGroupRule &&
+            (maxPerGroup !== updatePromotionProjectDto?.maxPerGroup ||
+                minPerGroup !== updatePromotionProjectDto?.minPerGroup)
+        ) {
+            throw new BadRequestException(
+                "Min and max per group cannot be change if the group type is RANDOM",
+            );
+        }
+
+        return this.prisma.$transaction(async (tx) => {
+            if (
+                updatePromotionProjectDto.projectGroupRule ===
+                ProjectGroupRule.RANDOM
+            ) {
+                await this.assignStudentToProjectGroupRandomly({
+                    promotion: foundPromotionProject.promotion,
+                    promotionProject: foundPromotionProject,
+                    tx,
+                });
+            }
+
+            return tx.promotionProject.update({
+                where: {
+                    id: promotionProjectId,
+                },
+                data: updatePromotionProjectDto,
+            });
         });
     }
 
@@ -156,6 +239,12 @@ export class PromotionProjectsService {
                     },
                 },
             },
+        });
+    }
+
+    async delete(where: Prisma.PromotionProjectWhereUniqueInput) {
+        return this.prisma.promotionProject.delete({
+            where,
         });
     }
 }
