@@ -89,7 +89,7 @@ CREATE TABLE "promotion_student" (
 CREATE TABLE "project" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "file_name" TEXT,
     "path" TEXT,
     "file_size" INTEGER,
@@ -104,11 +104,13 @@ CREATE TABLE "project" (
 -- CreateTable
 CREATE TABLE "promotion_project" (
     "id" TEXT NOT NULL,
+    "description" TEXT,
     "min_per_group" INTEGER NOT NULL,
     "max_per_group" INTEGER NOT NULL,
     "malus" INTEGER,
     "malus_time_type" "MalusTimeType",
     "allow_late_submission" BOOLEAN NOT NULL,
+    "is_report_required" BOOLEAN NOT NULL,
     "project_group_rule" "ProjectGroupRule" NOT NULL,
     "start_date" TIMESTAMP(3) NOT NULL,
     "end_date" TIMESTAMP(3) NOT NULL,
@@ -116,8 +118,6 @@ CREATE TABLE "promotion_project" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "promotion_id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
-    "is_report_required" BOOLEAN NOT NULL,
-    "description" TEXT,
 
     CONSTRAINT "promotion_project_pkey" PRIMARY KEY ("id")
 );
@@ -150,6 +150,7 @@ CREATE TABLE "report" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "project_group_id" TEXT NOT NULL,
     "student_id" TEXT NOT NULL,
+    "report_section_id" TEXT NOT NULL,
 
     CONSTRAINT "report_pkey" PRIMARY KEY ("id")
 );
@@ -158,7 +159,9 @@ CREATE TABLE "report" (
 CREATE TABLE "report_section" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "project_group_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "promotion_project_id" TEXT NOT NULL,
     "teacher_id" TEXT NOT NULL,
 
     CONSTRAINT "report_section_pkey" PRIMARY KEY ("id")
@@ -403,7 +406,10 @@ ALTER TABLE "report" ADD CONSTRAINT "report_project_group_id_fkey" FOREIGN KEY (
 ALTER TABLE "report" ADD CONSTRAINT "report_student_id_fkey" FOREIGN KEY ("student_id") REFERENCES "student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "report_section" ADD CONSTRAINT "report_section_project_group_id_fkey" FOREIGN KEY ("project_group_id") REFERENCES "project_group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "report" ADD CONSTRAINT "report_report_section_id_fkey" FOREIGN KEY ("report_section_id") REFERENCES "report_section"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "report_section" ADD CONSTRAINT "report_section_promotion_project_id_fkey" FOREIGN KEY ("promotion_project_id") REFERENCES "promotion_project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "report_section" ADD CONSTRAINT "report_section_teacher_id_fkey" FOREIGN KEY ("teacher_id") REFERENCES "teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

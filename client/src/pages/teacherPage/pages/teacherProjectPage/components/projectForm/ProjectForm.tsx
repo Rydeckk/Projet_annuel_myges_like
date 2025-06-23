@@ -17,7 +17,7 @@ import { FILE_SIZE_LIMIT } from "@/constants/file.constant";
 
 const schema = z.object({
     name: z.string().nonempty(),
-    description: z.string().nonempty(),
+    description: z.string().optional(),
     projectVisibility: z.nativeEnum(PROJECT_VISIBILITY),
     file: z
         .instanceof(File)
@@ -70,7 +70,7 @@ export const ProjectForm = ({ onSubmit, projectData = undefined }: Props) => {
                 <Input
                     id="description"
                     {...register("description")}
-                    defaultValue={projectData?.description}
+                    defaultValue={projectData?.description ?? undefined}
                 />
                 <p className="text-red-500">{errors.description?.message}</p>
             </div>
