@@ -23,7 +23,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { format, isBefore, isEqual, startOfDay } from "date-fns";
+import { isBefore, isEqual, startOfDay } from "date-fns";
+import { DateAndTime } from "@/components/dateAndTime/DateAndTime";
 
 const schema = z
     .object({
@@ -163,30 +164,38 @@ export const PromotionProjectFrom = ({
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor="startDate">Start date</Label>
-                <Input
-                    id="startDate"
-                    {...register("startDate")}
-                    type="date"
+                <Controller
+                    name="startDate"
+                    control={control}
                     defaultValue={
                         promotionProject
-                            ? format(promotionProject.startDate, "yyyy-MM-dd")
+                            ? promotionProject.startDate
                             : undefined
                     }
+                    render={({ field }) => (
+                        <DateAndTime
+                            date={field.value}
+                            onChange={field.onChange}
+                        />
+                    )}
                 />
                 <p className="text-red-500">{errors.startDate?.message}</p>
             </div>
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor="endDate">End date</Label>
-                <Input
-                    id="endDate"
-                    {...register("endDate")}
-                    type="date"
+                <Controller
+                    name="endDate"
+                    control={control}
                     defaultValue={
-                        promotionProject
-                            ? format(promotionProject.endDate, "yyyy-MM-dd")
-                            : undefined
+                        promotionProject ? promotionProject.endDate : undefined
                     }
+                    render={({ field }) => (
+                        <DateAndTime
+                            date={field.value}
+                            onChange={field.onChange}
+                        />
+                    )}
                 />
                 <p className="text-red-500">{errors.endDate?.message}</p>
             </div>
