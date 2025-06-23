@@ -14,30 +14,58 @@ import { PROJECT_GROUP_RULE } from "@/enums/ProjectGroupRule";
 import { ApiException } from "@/services/api/ApiException";
 import { ProjectService } from "@/services/projectService/ProjectService";
 import { Project } from "@/types/Project";
-import { PromotionProjectRequest } from "@/types/PromotionProject";
+import {
+    PromotionProject,
+    PromotionProjectRequest,
+} from "@/types/PromotionProject";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { format, isBefore, isEqual, startOfDay } from "date-fns";
 
-const schema = z.object({
-    minPerGroup: z.number(),
-    maxPerGroup: z.number(),
-    allowLateSubmission: z.boolean(),
-    projectGroupRule: z.nativeEnum(PROJECT_GROUP_RULE),
-    promotionId: z.string().uuid().nonempty(),
-    projectId: z
-        .string({ required_error: "Project is required" })
-        .uuid()
-        .nonempty(),
-});
+const schema = z
+    .object({
+        minPerGroup: z.number(),
+        maxPerGroup: z.number(),
+        allowLateSubmission: z.boolean(),
+        isReportRequired: z.boolean(),
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date(),
+        projectGroupRule: z.nativeEnum(PROJECT_GROUP_RULE),
+        promotionId: z.string().uuid().nonempty(),
+        projectId: z
+            .string({ required_error: "Project is required" })
+            .uuid()
+            .nonempty(),
+    })
+    .refine((data) => !isBefore(data.startDate, startOfDay(new Date())), {
+        message: "Start date cannot be in the past",
+        path: ["startDate"],
+    })
+    .refine((data) => !isBefore(data.endDate, data.startDate), {
+        message: "End date must be after start date",
+        path: ["endDate"],
+    })
+    .refine((data) => !isEqual(data.startDate, data.endDate), {
+        message: "Start and end dates cannot be identical",
+        path: ["startDate"],
+    })
+    .refine((data) => !isEqual(data.startDate, data.endDate), {
+        message: "Start and end dates cannot be identical",
+        path: ["endDate"],
+    });
 
 type Props = {
+    promotionProject?: PromotionProject;
     onSubmit: (data: PromotionProjectRequest) => void;
 };
 
-export const PromotionProjectFrom = ({ onSubmit }: Props) => {
+export const PromotionProjectFrom = ({
+    promotionProject = undefined,
+    onSubmit,
+}: Props) => {
     const { promotion } = useContext(TeacherPromotionDetailContext);
 
     const {
@@ -48,9 +76,12 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
     } = useForm<PromotionProjectRequest>({
         resolver: zodResolver(schema),
         defaultValues: {
-            allowLateSubmission: false,
-            projectGroupRule: PROJECT_GROUP_RULE.RANDOM,
+            allowLateSubmission: promotionProject?.allowLateSubmission ?? false,
+            isReportRequired: promotionProject?.isReportRequired ?? false,
+            projectGroupRule:
+                promotionProject?.projectGroupRule ?? PROJECT_GROUP_RULE.FREE,
             promotionId: promotion?.id,
+            projectId: promotionProject?.projectId,
         },
     });
 
@@ -75,7 +106,7 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
 
     return (
         <form
-            className="flex flex-col gap-4 px-4"
+            className="flex flex-col gap-4 px-4 overflow-y-auto"
             onSubmit={handleSubmit(onSubmit)}
         >
             <div className="flex flex-col gap-2">
@@ -84,6 +115,7 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                     id="min-per-group"
                     type="number"
                     {...register("minPerGroup", { valueAsNumber: true })}
+                    defaultValue={promotionProject?.minPerGroup}
                 />
                 <p className="text-red-500">{errors.minPerGroup?.message}</p>
             </div>
@@ -94,6 +126,7 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                     id="max-per-group"
                     type="number"
                     {...register("maxPerGroup", { valueAsNumber: true })}
+                    defaultValue={promotionProject?.maxPerGroup}
                 />
                 <p className="text-red-500">{errors.maxPerGroup?.message}</p>
             </div>
@@ -106,11 +139,56 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                     <Switch
                         id="allow-late-submission"
                         {...register("allowLateSubmission")}
+                        defaultChecked={promotionProject?.allowLateSubmission}
                     />
                 </div>
                 <p className="text-red-500">
                     {errors.allowLateSubmission?.message}
                 </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center space-x-2">
+                    <Label htmlFor="is-report-required">Report required</Label>
+                    <Switch
+                        id="is-report-required"
+                        {...register("isReportRequired")}
+                        defaultChecked={promotionProject?.isReportRequired}
+                    />
+                </div>
+                <p className="text-red-500">
+                    {errors.isReportRequired?.message}
+                </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="startDate">Start date</Label>
+                <Input
+                    id="startDate"
+                    {...register("startDate")}
+                    type="date"
+                    defaultValue={
+                        promotionProject
+                            ? format(promotionProject.startDate, "yyyy-MM-dd")
+                            : undefined
+                    }
+                />
+                <p className="text-red-500">{errors.startDate?.message}</p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="endDate">End date</Label>
+                <Input
+                    id="endDate"
+                    {...register("endDate")}
+                    type="date"
+                    defaultValue={
+                        promotionProject
+                            ? format(promotionProject.endDate, "yyyy-MM-dd")
+                            : undefined
+                    }
+                />
+                <p className="text-red-500">{errors.endDate?.message}</p>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -122,7 +200,10 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                         <Select
                             value={field.value}
                             onValueChange={field.onChange}
-                            defaultValue={PROJECT_GROUP_RULE.RANDOM}
+                            defaultValue={
+                                promotionProject?.projectGroupRule ??
+                                PROJECT_GROUP_RULE.FREE
+                            }
                         >
                             <SelectTrigger className="w-full">
                                 <SelectValue />
@@ -144,34 +225,36 @@ export const PromotionProjectFrom = ({ onSubmit }: Props) => {
                 />
             </div>
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="projectId">Project</Label>
-                <Controller
-                    name="projectId"
-                    control={control}
-                    render={({ field }) => (
-                        <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a project" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {projects.map((project) => (
-                                    <SelectItem
-                                        key={project.id}
-                                        value={project.id}
-                                    >
-                                        {project.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
-                <p className="text-red-500">{errors.projectId?.message}</p>
-            </div>
+            {!promotionProject && (
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="projectId">Project</Label>
+                    <Controller
+                        name="projectId"
+                        control={control}
+                        render={({ field }) => (
+                            <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a project" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {projects.map((project) => (
+                                        <SelectItem
+                                            key={project.id}
+                                            value={project.id}
+                                        >
+                                            {project.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    <p className="text-red-500">{errors.projectId?.message}</p>
+                </div>
+            )}
 
             <Button type="submit">Save</Button>
         </form>

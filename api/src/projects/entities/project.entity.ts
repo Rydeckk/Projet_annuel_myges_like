@@ -10,6 +10,7 @@ export class ProjectEntity {
     projectVisibility: ProjectVisibility;
     createdAt: Date;
     updatedAt: Date;
+
     createdByTeacherId: string;
 
     constructor(partial: Partial<ProjectEntity>) {

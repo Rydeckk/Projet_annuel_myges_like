@@ -17,18 +17,30 @@ export class ProjectService {
   }
 
   async create(data: ProjectRequest) {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
     return this.api.request<Project>({
       path: PROJECT_PATH,
       method: "POST",
-      data,
+      data: formData,
+      contentType: null,
     });
   }
 
   async update(projectId: string, data: Partial<ProjectRequest>) {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
     return this.api.request<Project>({
       path: `${PROJECT_PATH}/${projectId}`,
       method: "PUT",
-      data,
+      data: formData,
+      contentType: null,
     });
   }
 

@@ -54,7 +54,7 @@ export const Project = () => {
                     </SheetContent>
                 </Sheet>
             </div>
-            <div className="flex flex-col gap-4 mt-10">
+            <div className="flex gap-4 mt-6 flex-wrap">
                 {projects.map((project) => (
                     <ProjectCard key={project.id} project={project} />
                 ))}

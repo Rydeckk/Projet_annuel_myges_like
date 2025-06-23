@@ -63,6 +63,7 @@ model Student {
   projectGroupStudents ProjectGroupStudent[]
   deliverables         Deliverable[]
   ratingResults        RatingResult[]
+  reports              Report[]
 
   @@unique([userId])
   @@map("student")
@@ -74,8 +75,9 @@ model Teacher {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
-  promotions Promotion[]
-  projects   Project[]
+  promotions     Promotion[]
+  projects       Project[]
+  reportSections ReportSection[]
 
   @@unique([userId])
   @@map("teacher")
@@ -150,14 +152,24 @@ enum ProjectGroupRule {
   FREE
 }
 
+enum MalusTimeType {
+  HOUR
+  DAY
+  WEEK
+}
+
 model PromotionProject {
   id                  String           @id @default(uuid())
+  description         String?          @map("description")
   minPerGroup         Int              @map("min_per_group")
   maxPerGroup         Int              @map("max_per_group")
   malus               Int?
-  malusPerTime        DateTime?        @map("malus_per_time")
+  malusTimeType       MalusTimeType?   @map("malus_time_type")
   allowLateSubmission Boolean          @map("allow_late_submission")
+  isReportRequired    Boolean          @map("is_report_required")
   projectGroupRule    ProjectGroupRule @map("project_group_rule")
+  startDate           DateTime         @map("start_date")
+  endDate             DateTime         @map("end_date")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -188,11 +200,12 @@ model ProjectGroup {
   promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId String           @map("promotion_project_id")
 
-  projectGroupStudents ProjectGroupStudent[]
-  deliverables         Deliverable[]
-  projectGroupResult   ProjectGroupResult?
-  report               Report?
-  defense              Defense?
+  projectGroupStudents   ProjectGroupStudent[]
+  deliverables           Deliverable[]
+  projectGroupResult     ProjectGroupResult?
+  report                 Report[]
+  reportRequiredSections ReportSection[]
+  defense                Defense?
 
   @@map("project_group")
 }
@@ -216,11 +229,25 @@ model Report {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  projectGroup   ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
-  projectGroupId String       @map("project_group_id")
+  projectGroup       ProjectGroup @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
+  projectGroupId     String       @map("project_group_id")
+  createdBystudent   Student      @relation(fields: [createdByStudentId], references: [id], onDelete: Cascade)
+  createdByStudentId String       @map("student_id")
 
   @@unique([projectGroupId])
   @@map("report")
+}
+
+model ReportSection {
+  id    String @id @default(uuid())
+  title String
+
+  projectGroup     ProjectGroup @relation(fields: [projectGroupId], references: [id])
+  projectGroupId   String       @map("project_group_id")
+  createdByTeacher Teacher      @relation(fields: [teacherId], references: [id])
+  teacherId        String       @map("teacher_id")
+
+  @@map("report_section")
 }
 
 model Defense {

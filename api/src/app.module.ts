@@ -12,6 +12,7 @@ import { PromotionsModule } from "./promotions/promotions.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { PromotionProjectsModule } from "./promotion-projects/promotion-projects.module";
 import { ReportModule } from "./report/report.module";
+import { ProjectGroupsModule } from "./project-groups/project-groups.module";
 
 @Module({
     imports: [
@@ -28,8 +29,8 @@ import { ReportModule } from "./report/report.module";
         ProjectsModule,
         PromotionProjectsModule,
         ReportModule,
+        ProjectGroupsModule,
     ],
-    controllers: [],
     providers: [
         {
             provide: APP_GUARD,

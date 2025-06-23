@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { UUID } from "crypto";
 
 export class CreatePromotionStudentDto {
     @IsEmail()
@@ -13,5 +14,5 @@ export class CreatePromotionStudentDto {
     lastName: string;
 
     @IsUUID()
-    promotionId: string;
+    promotionId: UUID;
 }

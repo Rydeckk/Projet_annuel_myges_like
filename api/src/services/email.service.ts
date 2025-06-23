@@ -1,47 +1,49 @@
+import {
+    SendSmtpEmail,
+    TransactionalEmailsApi,
+    TransactionalEmailsApiApiKeys,
+} from "@getbrevo/brevo";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-
-const SENDER = {
-    name: "Myges Like",
-    email: "mygeslike@gmail.com",
-};
-
-// COMMENT for the moment we don't use it
+import { StudentAccountCreationParams } from "constants/brevo.constant";
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly configService: ConfigService) {}
+    private apiInstance: TransactionalEmailsApi;
 
-    async sendMail({
+    constructor(private readonly configService: ConfigService) {
+        this.apiInstance = new TransactionalEmailsApi();
+        this.apiInstance.setApiKey(
+            TransactionalEmailsApiApiKeys.apiKey,
+            this.configService.get<string>("brevoApiKey")!,
+        );
+    }
+
+    async sendMail<T extends StudentAccountCreationParams>({
+        name,
         email,
-        userData,
+        templateId,
+        params,
     }: {
+        name: string;
         email: string;
-        userData: { firstName: string; lastName: string };
+        templateId: number;
+        params: T;
     }) {
-        const options = {
-            method: "POST",
-            headers: {
-                accept: "application/json",
-                "content-type": "application/json",
-                "api-key": this.configService.get<string>("brevoApiKey")!,
-            },
+        const sendSmtpEmail = new SendSmtpEmail();
 
-            body: JSON.stringify({
-                sender: SENDER,
-                to: [
-                    {
-                        email,
-                        name: `${userData.firstName} ${userData.lastName}`,
-                    },
-                ],
-                subject: "Your student account is created",
-                htmlContent: "",
-            }),
-        };
+        sendSmtpEmail.to = [
+            {
+                email,
+                name,
+            },
+        ];
+
+        sendSmtpEmail.templateId = templateId;
+        sendSmtpEmail.params = params;
 
         try {
-            await fetch("https://api.brevo.com/v3/smtp/email", options);
+            await this.apiInstance.sendTransacEmail(sendSmtpEmail);
         } catch (error) {
             console.error(error);
         }

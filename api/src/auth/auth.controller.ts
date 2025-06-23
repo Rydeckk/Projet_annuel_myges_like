@@ -10,7 +10,6 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { Public } from "./strategies/jwt/jwt-auth.guard";
 import { GoogleAuthGuard } from "./strategies/google/google-auth.guard";
 import { MicrosoftAuthGuard } from "./strategies/microsoft/microsoft-auth.guard";
 import { LoginDto, RegisterDto } from "./dto/auth.dto";
@@ -19,6 +18,7 @@ import { UsersService } from "src/users/users.service";
 import { UserRole } from "@prisma/client";
 import { RequestUser, SsoUser } from "types/sso";
 import { HashService } from "src/services/hash.service";
+import { Public } from "decorators/is-public.decorator";
 
 @Controller("auth")
 export class AuthController {

@@ -1,13 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
     Sheet,
     SheetContent,
     SheetHeader,
@@ -21,6 +13,17 @@ import { format } from "date-fns";
 import { useContext, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ProjectForm } from "../projectForm/ProjectForm";
+import { ExpandableCard } from "@/components/ui/expandable-card";
+import { Badge } from "@/components/ui/badge";
+import { GET_COLOR_STYLES_BY_VISIBILITY } from "@/enums/ProjectVisibility";
+import { Clock, Download, ExternalLink } from "lucide-react";
+import { Link } from "react-router";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
     project: Project;
@@ -46,10 +49,13 @@ export const ProjectCard = ({ project }: Props) => {
         }
     };
 
-    const onDeleteProject = async () => {
+    const onDeleteProject = async (
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    ) => {
+        e.stopPropagation();
         try {
             await projectService.delete(project.id);
-            await getProjects();
+            getProjects();
             setOpen(false);
             toast.success("The project was successfully deleted");
         } catch (error) {
@@ -60,24 +66,98 @@ export const ProjectCard = ({ project }: Props) => {
     };
 
     return (
-        <>
-            <Card>
-                <CardHeader>
-                    <CardTitle>{project.name}</CardTitle>
-                    <CardDescription className="text-ellipsis line-clamp-4">
-                        {project.description}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p>Visibility : {project.projectVisibility}</p>
-                    <p>{`Created at : ${format(project.createdAt, "H:m:ss - yyyy-MM-dd")}`}</p>
-                    <p>{`Updated at : ${format(project.updatedAt, "H:m:ss - yyyy-MM-dd")}`}</p>
-                </CardContent>
-                <CardFooter className="flex gap-4">
-                    <Button onClick={() => setOpen(true)}>Update</Button>
-                    <Button onClick={onDeleteProject}>Delete</Button>
-                </CardFooter>
-            </Card>
+        <div className="w-[23rem]">
+            <ExpandableCard
+                title={project.name}
+                description={project.description}
+                headerContent={
+                    <div className="w-full flex justify-between items-center">
+                        <Badge
+                            variant="secondary"
+                            className={
+                                GET_COLOR_STYLES_BY_VISIBILITY[
+                                    project.projectVisibility
+                                ]
+                            }
+                        >
+                            {project.projectVisibility}
+                        </Badge>
+                        <div className="flex gap-4">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    {project?.path && (
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                size="icon"
+                                                variant="outline"
+                                                className="h-8 w-8"
+                                                asChild
+                                            >
+                                                <Link
+                                                    to={project.path}
+                                                    target="_blank"
+                                                >
+                                                    <Download />
+                                                </Link>
+                                            </Button>
+                                        </TooltipTrigger>
+                                    )}
+                                    <TooltipContent>
+                                        <p>Download project file</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            size="icon"
+                                            variant="outline"
+                                            className="h-8 w-8"
+                                            asChild
+                                        >
+                                            <Link to="">
+                                                <ExternalLink className="h-4 w-4" />
+                                            </Link>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>View</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
+                    </div>
+                }
+                disabled
+            >
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                    <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>{`Created at : ${format(project.createdAt, "HH:mm - dd-MM-yyyy")}`}</span>
+                    </div>
+                </div>
+                <div className="flex items-center justify-between w-full text-sm text-gray-600">
+                    <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>{`Updated at : ${format(project.updatedAt, "HH:mm - dd-MM-yyyy")}`}</span>
+                    </div>
+                </div>
+                <div className="flex justify-between">
+                    <Button
+                        className="w-[45%]"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setOpen(true);
+                        }}
+                    >
+                        Update
+                    </Button>
+                    <Button className="w-[45%]" onClick={onDeleteProject}>
+                        Delete
+                    </Button>
+                </div>
+            </ExpandableCard>
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetContent className="p-4">
                     <SheetHeader>
@@ -89,6 +169,6 @@ export const ProjectCard = ({ project }: Props) => {
                     />
                 </SheetContent>
             </Sheet>
-        </>
+        </div>
     );
 };
