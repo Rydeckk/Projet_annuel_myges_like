@@ -2,7 +2,6 @@ import { useState } from "react";
 import { format, set } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Popover,
     PopoverContent,
@@ -11,9 +10,14 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 
-export const DateAndTime = () => {
+type Props = {
+    date: Date;
+    onChange: (data: Date) => void;
+};
+
+export const DateAndTime = ({ date, onChange }: Props) => {
     const [open, setOpen] = useState(false);
-    const [dateTime, setDateTime] = useState<Date | undefined>(undefined);
+    const [dateTime, setDateTime] = useState<Date | undefined>(new Date(date));
 
     const timeString = dateTime ? format(dateTime, "HH:mm:ss") : "00:00:00";
 
@@ -28,6 +32,7 @@ export const DateAndTime = () => {
         });
 
         setDateTime(updated);
+        onChange(updated);
         setOpen(false);
     };
 
@@ -41,17 +46,14 @@ export const DateAndTime = () => {
             minutes,
             seconds: seconds ?? 0,
         });
-
+        onChange(updated);
         setDateTime(updated);
     };
 
     return (
         <div className="flex gap-4">
             <div className="flex flex-col gap-3">
-                <Label htmlFor="date-picker" className="px-1">
-                    Date
-                </Label>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={open} onOpenChange={setOpen} modal>
                     <PopoverTrigger asChild>
                         <Button
                             variant="outline"
@@ -79,9 +81,6 @@ export const DateAndTime = () => {
             </div>
 
             <div className="flex flex-col gap-3">
-                <Label htmlFor="time-picker" className="px-1">
-                    Time
-                </Label>
                 <Input
                     type="time"
                     id="time-picker"
