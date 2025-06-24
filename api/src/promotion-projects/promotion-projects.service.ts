@@ -175,12 +175,12 @@ export class PromotionProjectsService {
         const isCurrentRandomGroupRule =
             projectGroupRule === ProjectGroupRule.RANDOM;
 
-        const isCurrentOthenThanRandomRuleGroup =
+        const isCurrentOtherThanRandomRuleGroup =
             projectGroupRule !== ProjectGroupRule.RANDOM;
 
         if (
             hasProjectGroups &&
-            isCurrentOthenThanRandomRuleGroup &&
+            isCurrentOtherThanRandomRuleGroup &&
             updatePromotionProjectDto.projectGroupRule ===
                 ProjectGroupRule.RANDOM
         ) {

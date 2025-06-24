@@ -69,7 +69,7 @@ export const ProjectCard = ({ project }: Props) => {
         <div className="w-[23rem]">
             <ExpandableCard
                 title={project.name}
-                description={project.description}
+                description={project?.description ?? undefined}
                 headerContent={
                     <div className="w-full flex justify-between items-center">
                         <Badge
