@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ProjectGroupStudentEntity } from "./project-group-student.entity";
+import { ProjectGroupStudentEntity } from "../../project-group-students/entities/project-group-student.entity";
 
 export class ProjectGroupEntity {
     id: string;

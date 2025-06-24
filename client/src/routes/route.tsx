@@ -14,6 +14,7 @@ import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPag
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
 import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
 import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
+import { TeacherProjectGroupPage } from "@/pages/teacherPage/pages/teacherProjectGroupPage/TeacherProjectGroupPage";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -75,6 +76,10 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: "projects",
                         Component: TeacherPromotionProjectsPage,
+                    },
+                    {
+                        path: "projects/groups",
+                        Component: TeacherProjectGroupPage,
                     },
                 ],
             },
