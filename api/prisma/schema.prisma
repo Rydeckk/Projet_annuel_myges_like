@@ -237,10 +237,12 @@ model Report {
 }
 
 model ReportSection {
-  id        String   @id @default(uuid())
-  title     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  title       String
+  description String   @default("")
+  order       Int      
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId String           @map("promotion_project_id")

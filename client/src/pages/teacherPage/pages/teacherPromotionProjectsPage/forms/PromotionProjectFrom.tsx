@@ -137,10 +137,19 @@ export const PromotionProjectFrom = ({
                     <Label htmlFor="allow-late-submission">
                         Allow late submission
                     </Label>
-                    <Switch
-                        id="allow-late-submission"
-                        {...register("allowLateSubmission")}
-                        defaultChecked={promotionProject?.allowLateSubmission}
+                    <Controller
+                        name="allowLateSubmission"
+                        control={control}
+                        defaultValue={
+                            promotionProject?.allowLateSubmission ?? false
+                        }
+                        render={({ field }) => (
+                            <Switch
+                                id="allow-late-submission"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                        )}
                     />
                 </div>
                 <p className="text-red-500">
@@ -151,10 +160,19 @@ export const PromotionProjectFrom = ({
             <div className="flex flex-col gap-2">
                 <div className="flex items-center space-x-2">
                     <Label htmlFor="is-report-required">Report required</Label>
-                    <Switch
-                        id="is-report-required"
-                        {...register("isReportRequired")}
-                        defaultChecked={promotionProject?.isReportRequired}
+                    <Controller
+                        name="isReportRequired"
+                        control={control}
+                        defaultValue={
+                            promotionProject?.isReportRequired ?? false
+                        }
+                        render={({ field }) => (
+                            <Switch
+                                id="is-report-required"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
+                        )}
                     />
                 </div>
                 <p className="text-red-500">
@@ -170,7 +188,7 @@ export const PromotionProjectFrom = ({
                     defaultValue={
                         promotionProject
                             ? promotionProject.startDate
-                            : undefined
+                            : new Date()
                     }
                     render={({ field }) => (
                         <DateAndTime
@@ -188,7 +206,7 @@ export const PromotionProjectFrom = ({
                     name="endDate"
                     control={control}
                     defaultValue={
-                        promotionProject ? promotionProject.endDate : undefined
+                        promotionProject ? promotionProject.endDate : new Date()
                     }
                     render={({ field }) => (
                         <DateAndTime

@@ -159,6 +159,8 @@ CREATE TABLE "report" (
 CREATE TABLE "report_section" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL DEFAULT '',
+    "order" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "promotion_project_id" TEXT NOT NULL,

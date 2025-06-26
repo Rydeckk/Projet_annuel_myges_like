@@ -148,7 +148,32 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                     <div className="flex flex-col gap-2 my-2">
                         <p>{`Start date: ${format(promotionProject.startDate, "HH:mm - dd-MM-yyyy")}`}</p>
                         <p>{`End date: ${format(promotionProject.endDate, "HH:mm - dd-MM-yyyy")}`}</p>
-                        <p>{`Is report required: ${promotionProject.isReportRequired}`}</p>
+                        <p>
+                            {`Is report required: ${promotionProject.isReportRequired}`}
+                            {promotionProject.isReportRequired && (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                size="icon"
+                                                variant="ghost"
+                                                className="h-5 w-5 ml-1"
+                                                asChild
+                                            >
+                                                <Link
+                                                    to={`${promotionProject.project?.name}/report-sections`}
+                                                >
+                                                    <ExternalLink className="h-2 w-2" />
+                                                </Link>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Report Section</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+                        </p>
                         <p>{`Allow late submission: ${promotionProject.allowLateSubmission}`}</p>
                     </div>
                 }
