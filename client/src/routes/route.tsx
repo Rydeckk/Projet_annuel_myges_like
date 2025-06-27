@@ -1,5 +1,5 @@
 import { App } from "../App";
-import { createBrowserRouter, Navigate, Outlet } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import { StudentPage } from "../pages/studentPage/StudentPage";
 import { TeacherPage } from "../pages/teacherPage/TeacherPage";
 import { SsoRedirectPage } from "@/pages/ssoRedirectPage/SsoRedirectPage";
@@ -14,7 +14,8 @@ import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPag
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
 import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
 import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
-import { TeacherPromotionProjectsReportSectionsPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsReportSectionsPage/TeacherPromotionProjectsReportSectionsPage";
+import { TeacherPromotionProjectsDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsDetailPage/TeacherPromotionProjectsDetailPage";
+import { StudentProjectDeliverablePage } from "@/pages/studentPage/pages/studentProjectDeliverablePage/StudentProjectDeliverablePage";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: "groups",
                         Component: StudentProjectGroupsPage,
+                    },
+                    {
+                        path: "deliverable",
+                        Component: StudentProjectDeliverablePage,
                     },
                 ],
             },
@@ -83,12 +88,7 @@ export const ROUTER = createBrowserRouter([
                         children: [
                             {
                                 path: "",
-                                element: <Navigate to="../projects" replace />,
-                            },
-                            {
-                                path: "report-sections",
-                                Component:
-                                    TeacherPromotionProjectsReportSectionsPage,
+                                Component: TeacherPromotionProjectsDetailPage,
                             },
                         ],
                     },

@@ -1,4 +1,4 @@
-import { Report, ReportRequest } from "@/types/Report";
+import { Report, ReportRequest, ReportUpdateRequest } from "@/types/Report";
 import { Api } from "../api/Api";
 
 const REPORT_PATH = "report";
@@ -25,10 +25,10 @@ export class ReportService {
     });
   }
 
-  async update(reportId: string, data: Partial<ReportRequest>) {
+  async update(reportId: string, data: Partial<ReportUpdateRequest>) {
     return this.api.request<Report>({
       path: `${REPORT_PATH}/${reportId}`,
-      method: "PUT",
+      method: "PATCH",
       data,
     });
   }

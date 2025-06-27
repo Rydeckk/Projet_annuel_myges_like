@@ -16,6 +16,12 @@ export class ReportService {
         });
     }
 
+    async findAll(where: Prisma.ReportWhereInput) {
+        return this.prisma.report.findMany({
+            where,
+        });
+    }
+
     async findUnique(where: Prisma.ReportWhereUniqueInput) {
         return this.prisma.report.findUnique({
             where,

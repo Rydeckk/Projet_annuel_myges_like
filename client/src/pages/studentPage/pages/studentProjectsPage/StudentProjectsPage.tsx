@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { StudentProjectCard } from "./components/studentProjectCard/StudentProjectCard";
 import { PromotionProject } from "@/types/PromotionProject";
 import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
+import { StudentProjectCard } from "./components/StudentProjectCard/StudentProjectCard";
 
 export const StudentProjectPage = () => {
     const promotionProjectService = useMemo(

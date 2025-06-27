@@ -238,6 +238,11 @@ export class PromotionProjectsService {
                         },
                     },
                 },
+                reportSections: {
+                    include: {
+                        reports: true,
+                    },
+                },
             },
         });
     }

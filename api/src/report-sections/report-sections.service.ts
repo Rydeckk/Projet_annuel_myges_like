@@ -4,6 +4,7 @@ import {
     CreateReportSectionsDto,
     UpdateReportSectionsDto,
 } from "./dto/report-sections.dto";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ReportSectionsService {
@@ -74,13 +75,14 @@ export class ReportSectionsService {
         });
     }
 
-    async findAll(promotionProjectId: string) {
+    async findAll(where: Prisma.ReportSectionWhereInput) {
         return this.prisma.reportSection.findMany({
-            where: {
-                promotionProjectId: promotionProjectId,
-            },
+            where,
             orderBy: {
                 order: "asc",
+            },
+            include: {
+                reports: true,
             },
         });
     }

@@ -35,6 +35,11 @@ export const StudentProjectCard = ({
                         View Project
                     </Link>
                 </Button>
+                <Button>
+                    <Link to={`${promotionProject.project?.name}/deliverable`}>
+                        View Deliverable
+                    </Link>
+                </Button>
             </CardFooter>
         </Card>
     );

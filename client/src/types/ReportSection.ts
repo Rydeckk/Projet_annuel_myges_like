@@ -1,3 +1,5 @@
+import { Report } from "./Report";
+
 export type ReportSection = {
   id: string;
   title: string;
@@ -5,6 +7,7 @@ export type ReportSection = {
   order: number;
   promotionProjectId: string;
   teacherId: string;
+  reports: Report[];
 };
 
 export type ReportSectionRequest = {

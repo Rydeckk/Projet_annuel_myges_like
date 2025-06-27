@@ -37,8 +37,12 @@ export class ReportSectionsController {
 
     @Get("promotion-project/:promotionProjectId")
     @SerializeOptions({ type: ReportSectionsEntity })
-    async findAll(@Param("promotionProjectId") promotionProjectId: string) {
-        return this.reportSectionsService.findAll(promotionProjectId);
+    async findAll(
+        @Param("promotionProjectId", ParseUUIDPipe) promotionProjectId: string,
+    ) {
+        return this.reportSectionsService.findAll({
+            promotionProjectId: promotionProjectId,
+        });
     }
 
     @Patch(":id")

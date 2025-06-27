@@ -2,6 +2,7 @@ import { ProjectGroupRule } from "@/enums/ProjectGroupRule";
 import { Project } from "./Project";
 import { ProjectGroup } from "./ProjectGroup";
 import { MalusTimeType } from "@/enums/MalusTimeType";
+import { ReportSection } from "./ReportSection";
 
 export type PromotionProjectRequest = {
   minPerGroup: number;
@@ -37,4 +38,5 @@ export type PromotionProject = {
   projectId: string;
   project?: Project;
   projectGroups?: ProjectGroup[];
+  reportSections?: ReportSection[];
 };

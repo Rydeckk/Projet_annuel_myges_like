@@ -39,7 +39,7 @@ export class ReportController {
     async findByProjectGroupId(
         @Param("projectGroupId", ParseUUIDPipe) projectGroupId: string,
     ) {
-        return this.reportService.findUnique({
+        return this.reportService.findAll({
             projectGroupId,
         });
     }

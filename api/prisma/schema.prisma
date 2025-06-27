@@ -232,7 +232,7 @@ model Report {
   reportSection      ReportSection @relation(fields: [reportSectionId], references: [id], onDelete: Cascade)
   reportSectionId    String        @map("report_section_id")
 
-  @@unique([projectGroupId])
+  @@unique([projectGroupId, reportSectionId])
   @@map("report")
 }
 

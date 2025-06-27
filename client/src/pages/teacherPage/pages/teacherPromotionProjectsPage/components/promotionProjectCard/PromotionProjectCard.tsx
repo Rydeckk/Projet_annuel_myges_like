@@ -131,7 +131,7 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                                             className="h-8 w-8"
                                             asChild
                                         >
-                                            <Link to="">
+                                            <Link to={project.name}>
                                                 <ExternalLink className="h-4 w-4" />
                                             </Link>
                                         </Button>

@@ -342,7 +342,7 @@ CREATE UNIQUE INDEX "teacher_user_id_key" ON "teacher"("user_id");
 CREATE UNIQUE INDEX "promotion_project_promotion_id_project_id_key" ON "promotion_project"("promotion_id", "project_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "report_project_group_id_key" ON "report"("project_group_id");
+CREATE UNIQUE INDEX "report_project_group_id_report_section_id_key" ON "report"("project_group_id", "report_section_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "defense_project_group_id_key" ON "defense"("project_group_id");
