@@ -237,6 +237,9 @@ export class PromotionProjectsService {
                             },
                         },
                     },
+                    orderBy: {
+                        createdAt: "asc",
+                    },
                 },
             },
         });

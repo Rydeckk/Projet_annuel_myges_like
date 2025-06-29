@@ -1,5 +1,6 @@
 import { OmitType, PartialType } from "@nestjs/mapped-types";
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { UUID } from "crypto";
 
 export class CreateProjectGroupDto {
     @IsNotEmpty()
@@ -12,4 +13,8 @@ export class CreateProjectGroupDto {
 
 export class UpdateProjectGroupDto extends PartialType(
     OmitType(CreateProjectGroupDto, ["promotionProjectId"]),
-) {}
+) {
+    @IsOptional()
+    @IsUUID("4", { each: true })
+    selectedProjectGroupStudentIds: UUID[];
+}

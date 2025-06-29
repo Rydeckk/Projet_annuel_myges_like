@@ -8,13 +8,15 @@ import { TeacherProjectPage } from "@/pages/teacherPage/pages/teacherProjectPage
 import { TeacherPromotionProjectsPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsPage/TeacherPromotionProjectsPage";
 import { TeacherPromotionStudentsPage } from "@/pages/teacherPage/pages/teacherPromotionStudentsPage/TeacherPromotionStudentsPage";
 import { TeacherPromotionsPage } from "@/pages/teacherPage/pages/teacherPromotionsPage/components/TeacherPromotionsPage";
-import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPromotionDetailPage/TeacherPromotionDetailPage";
 import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPage/StudentProjectsPage";
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
 import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
 import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
-import { TeacherProjectGroupPage } from "@/pages/teacherPage/pages/teacherProjectGroupPage/TeacherProjectGroupPage";
+import { TeacherPromotionProjectDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
+import { TeacherPromotionProjectDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/TeacherPromotionProjectDetailPage";
+import { TeacherProjectGroup } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/pages/teacherProjectGroup/TeacherProjectGroup";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -78,8 +80,22 @@ export const ROUTER = createBrowserRouter([
                         Component: TeacherPromotionProjectsPage,
                     },
                     {
-                        path: "projects/groups",
-                        Component: TeacherProjectGroupPage,
+                        path: "projects/:projectName",
+                        element: (
+                            <TeacherPromotionProjectDetailContextProvider>
+                                <Outlet />
+                            </TeacherPromotionProjectDetailContextProvider>
+                        ),
+                        children: [
+                            {
+                                path: "",
+                                Component: TeacherPromotionProjectDetailPage,
+                            },
+                            {
+                                path: "groups",
+                                Component: TeacherProjectGroup,
+                            },
+                        ],
                     },
                 ],
             },

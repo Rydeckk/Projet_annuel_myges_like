@@ -1,7 +1,7 @@
 import {
-  CreateProjectGroupDto,
+  ProjectGroupRequest,
   ProjectGroup,
-  UpdateProjectGroupDto,
+  UpdateProjectGroupRequest,
 } from "@/types/ProjectGroup";
 import { Api } from "../api/Api";
 
@@ -14,7 +14,7 @@ export class ProjectGroupService {
     this.api = api;
   }
 
-  async create(data: CreateProjectGroupDto) {
+  async create(data: ProjectGroupRequest) {
     return this.api.request<ProjectGroup>({
       path: PROJECT_GROUP_PATH,
       method: "POST",
@@ -22,17 +22,20 @@ export class ProjectGroupService {
     });
   }
 
-  async update(projectId: string, data: UpdateProjectGroupDto) {
+  async update(
+    projectGroupId: string,
+    data: Partial<UpdateProjectGroupRequest>,
+  ) {
     return this.api.request<ProjectGroup>({
-      path: `${PROJECT_GROUP_PATH}/${projectId}`,
+      path: `${PROJECT_GROUP_PATH}/${projectGroupId}`,
       method: "PUT",
       data,
     });
   }
 
-  async delete(projectId: string) {
+  async delete(projectGroupId: string) {
     return this.api.request<ProjectGroup>({
-      path: `${PROJECT_GROUP_PATH}/${projectId}`,
+      path: `${PROJECT_GROUP_PATH}/${projectGroupId}`,
       method: "DELETE",
     });
   }

@@ -11,13 +11,15 @@ import { Calendar } from "@/components/ui/calendar";
 import { ChevronDownIcon } from "lucide-react";
 
 type Props = {
-    date: Date;
+    date?: Date;
     onChange: (data: Date) => void;
 };
 
-export const DateAndTime = ({ date, onChange }: Props) => {
+export const DateAndTime = ({ date = undefined, onChange }: Props) => {
     const [open, setOpen] = useState(false);
-    const [dateTime, setDateTime] = useState<Date | undefined>(new Date(date));
+    const [dateTime, setDateTime] = useState<Date | undefined>(
+        date ? new Date(date) : undefined,
+    );
 
     const timeString = dateTime ? format(dateTime, "HH:mm:ss") : "00:00:00";
 

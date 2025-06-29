@@ -37,9 +37,16 @@ export class PromotionProjectService {
         });
     }
 
-    async findByProjectName(projectName: string) {
+    async teacherFindByProjectName(projectName: string) {
         return this.api.request<PromotionProject>({
-            path: `${PROMOTION_PROJECTS_PATH}/project/${projectName}`,
+            path: `${PROMOTION_PROJECTS_PATH}/teacher/project/${projectName}`,
+            method: "GET",
+        });
+    }
+
+    async studentFindByProjectName(projectName: string) {
+        return this.api.request<PromotionProject>({
+            path: `${PROMOTION_PROJECTS_PATH}/student/project/${projectName}`,
             method: "GET",
         });
     }

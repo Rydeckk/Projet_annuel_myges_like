@@ -1,14 +1,14 @@
 import { ProjectGroupStudent } from "./ProjectGroupStudent";
 
-export type CreateProjectGroupDto = {
+export type ProjectGroupRequest = {
   name: string;
   promotionProjectId: string;
 };
 
-export type UpdateProjectGroupDto = Omit<
-  CreateProjectGroupDto,
-  "promotionProjectId"
->;
+export type UpdateProjectGroupRequest = Partial<{
+  name: string;
+  selectedProjectGroupStudentIds: string[];
+}>;
 
 export type ProjectGroup = {
   id: string;

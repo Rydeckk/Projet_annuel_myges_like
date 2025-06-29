@@ -21,7 +21,7 @@ import {
 import { PromotionStudentForm } from "../teacherPromotionsPage/components/forms/PromotionStudentForm";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 
 export const TeacherPromotionStudentsPage = () => {
     const { promotion, getPromotion } = useContext(

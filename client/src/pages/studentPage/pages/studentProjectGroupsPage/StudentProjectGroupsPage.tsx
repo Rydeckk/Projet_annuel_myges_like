@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { StudentPromotionProjectContext } from "../../contexts/StudentPromotionProjectContext";
-import { StudentProjectGroupsCard } from "./components/studentProjectGroupsCard/StudentProjectGroupsCard";
+import { StudentProjectGroupsCard } from "./components/StudentProjectGroupsCard/StudentProjectGroupsCard";
 
 export const StudentProjectGroupsPage = () => {
     const { promotionProject } = useContext(StudentPromotionProjectContext);
