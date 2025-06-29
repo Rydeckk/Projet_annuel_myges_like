@@ -57,9 +57,25 @@ export class PromotionProjectsController {
         );
     }
 
-    @Get("project/:name")
+    @Get("teacher/project/:name")
     @SerializeOptions({ type: PromotionProjectEntity })
     async findByProjectName(
+        @GetCurrentUser("id") userScopeId: string,
+        @Param("name") projectName: string,
+    ) {
+        return this.promotionProjectsService.findFirst({
+            project: {
+                name: projectName,
+            },
+            promotion: {
+                createdByTeacherId: userScopeId,
+            },
+        });
+    }
+
+    @Get("student/project/:name")
+    @SerializeOptions({ type: PromotionProjectEntity })
+    async studentFindByProjectName(
         @GetCurrentUser("id") userScopeId: string,
         @Param("name") projectName: string,
     ) {

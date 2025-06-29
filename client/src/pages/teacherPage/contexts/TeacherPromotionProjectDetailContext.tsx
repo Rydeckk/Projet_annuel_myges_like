@@ -2,8 +2,6 @@ import { ApiException } from "@/services/api/ApiException";
 import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
 import { ProjectGroup } from "@/types/ProjectGroup";
 import { PromotionProject } from "@/types/PromotionProject";
-import { decodeToken } from "@/utils/jwt";
-import Cookies from "js-cookie";
 import {
     createContext,
     ReactNode,
@@ -17,13 +15,13 @@ import { toast } from "sonner";
 
 type ContextProps = {
     promotionProject: PromotionProject | null;
-    studentProjectGroup: ProjectGroup | null;
+    projectGroups: ProjectGroup[];
     getPromotionProject: () => Promise<void>;
 };
 
-const StudentPromotionProjectContext = createContext<ContextProps>({
+const TeacherPromotionProjectDetailContext = createContext<ContextProps>({
     promotionProject: null,
-    studentProjectGroup: null,
+    projectGroups: [],
     getPromotionProject: async () => {},
 });
 
@@ -31,7 +29,7 @@ type Props = {
     children: ReactNode;
 };
 
-const StudentPromotionProjectContextProvider = ({ children }: Props) => {
+const TeacherPromotionProjectDetailContextProvider = ({ children }: Props) => {
     const { projectName } = useParams();
 
     const promotionProjectService = useMemo(
@@ -42,28 +40,18 @@ const StudentPromotionProjectContextProvider = ({ children }: Props) => {
     const [promotionProject, setPromotionProject] =
         useState<PromotionProject | null>(null);
 
-    const token = Cookies.get("token");
-    const decodedToken = decodeToken(token);
-    const studentId = decodedToken?.sub;
-
-    const studentProjectGroup = useMemo(
-        () =>
-            promotionProject?.projectGroups?.find(({ projectGroupStudents }) =>
-                projectGroupStudents?.find(
-                    (projectGroupStudent) =>
-                        projectGroupStudent.studentId === studentId,
-                ),
-            ) ?? null,
-        [promotionProject?.projectGroups, studentId],
+    const projectGroups = useMemo(
+        () => promotionProject?.projectGroups ?? [],
+        [promotionProject?.projectGroups],
     );
 
     const getPromotionProject = useCallback(async () => {
         try {
-            const promotionProjectData =
-                await promotionProjectService.studentFindByProjectName(
+            const projectData =
+                await promotionProjectService.teacherFindByProjectName(
                     projectName ?? "",
                 );
-            setPromotionProject(promotionProjectData);
+            setPromotionProject(projectData);
         } catch (error) {
             if (error instanceof ApiException) {
                 toast.error(error.message);
@@ -76,18 +64,18 @@ const StudentPromotionProjectContextProvider = ({ children }: Props) => {
     }, []);
 
     const data = useMemo(
-        () => ({ promotionProject, studentProjectGroup, getPromotionProject }),
-        [promotionProject, studentProjectGroup, getPromotionProject],
+        () => ({ promotionProject, projectGroups, getPromotionProject }),
+        [promotionProject, projectGroups, getPromotionProject],
     );
 
     return (
-        <StudentPromotionProjectContext.Provider value={data}>
+        <TeacherPromotionProjectDetailContext.Provider value={data}>
             {children}
-        </StudentPromotionProjectContext.Provider>
+        </TeacherPromotionProjectDetailContext.Provider>
     );
 };
 
 export {
-    StudentPromotionProjectContext,
-    StudentPromotionProjectContextProvider,
+    TeacherPromotionProjectDetailContext,
+    TeacherPromotionProjectDetailContextProvider,
 };
