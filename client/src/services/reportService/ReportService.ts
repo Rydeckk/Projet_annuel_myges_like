@@ -1,4 +1,9 @@
-import { Report, ReportRequest, ReportUpdateRequest } from "@/types/Report";
+import {
+  Report,
+  ReportContent,
+  ReportRequest,
+  ReportUpdateRequest,
+} from "@/types/Report";
 import { Api } from "../api/Api";
 
 const REPORT_PATH = "report";
@@ -21,6 +26,28 @@ export class ReportService {
   async getReportByProjectGroupId(projectGroupId: string) {
     return this.api.request<Report>({
       path: `${REPORT_PATH}/project-group/${projectGroupId}`,
+      method: "GET",
+    });
+  }
+
+  async getReportsByPromotionId(promotionId: string) {
+    return this.api.request<Report[]>({
+      path: `${REPORT_PATH}/promotion/${promotionId}`,
+      method: "GET",
+    });
+  }
+
+  async getReportContentByPromotionAndProjectAndGroup(
+    promotionId: string,
+    projectName: string,
+    projectGroupName: string,
+    reportSectionName: string | null,
+  ) {
+    const query = reportSectionName
+      ? `?reportSectionName=${reportSectionName}`
+      : "";
+    return this.api.request<ReportContent>({
+      path: `${REPORT_PATH}/promotion/${promotionId}/project/${projectName}/project-group/${projectGroupName}/content${query}`,
       method: "GET",
     });
   }

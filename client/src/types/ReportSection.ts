@@ -1,3 +1,4 @@
+import { PromotionProject } from "./PromotionProject";
 import { Report } from "./Report";
 
 export type ReportSection = {
@@ -6,6 +7,7 @@ export type ReportSection = {
   description: string;
   order: number;
   promotionProjectId: string;
+  promotionProject: PromotionProject;
   teacherId: string;
   reports: Report[];
 };

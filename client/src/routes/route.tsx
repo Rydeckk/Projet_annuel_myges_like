@@ -16,6 +16,8 @@ import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProje
 import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
 import { TeacherPromotionProjectsDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsDetailPage/TeacherPromotionProjectsDetailPage";
 import { StudentProjectDeliverablePage } from "@/pages/studentPage/pages/studentProjectDeliverablePage/StudentProjectDeliverablePage";
+import { TeacherPromotionReportsPage } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/TeacherPromotionReportsPage";
+import { TeacherPromotionReportsView } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/components/teacherPromotionReportsView/TeacherPromotionReportsView";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -81,6 +83,32 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: "projects",
                         Component: TeacherPromotionProjectsPage,
+                    },
+                    {
+                        path: "reports",
+                        Component: TeacherPromotionReportsPage,
+                    },
+                    {
+                        path: "reports/:projectName",
+                        element: <Outlet />,
+                        children: [
+                            {
+                                path: "",
+                                element: <Outlet />,
+                            },
+                            {
+                                path: ":groupName",
+                                Component: TeacherPromotionReportsView,
+                                children: [
+                                    {
+                                        path: "",
+                                    },
+                                    {
+                                        path: ":sectionReportName",
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
                         path: "projects/:projectName",

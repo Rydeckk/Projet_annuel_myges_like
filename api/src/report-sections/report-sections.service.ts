@@ -10,8 +10,11 @@ import { Prisma } from "@prisma/client";
 export class ReportSectionsService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async getLastOrder() {
+    async getLastOrder(promotionProjectId: string) {
         const reportSectionFind = await this.prisma.reportSection.findFirst({
+            where: {
+                promotionProjectId,
+            },
             orderBy: {
                 order: "desc",
             },
@@ -64,7 +67,7 @@ export class ReportSectionsService {
     }
 
     async create(teacherId: string, data: CreateReportSectionsDto) {
-        const order = await this.getLastOrder();
+        const order = await this.getLastOrder(data.promotionProjectId);
 
         return this.prisma.reportSection.create({
             data: {

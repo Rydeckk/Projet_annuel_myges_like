@@ -1,3 +1,6 @@
+import { ProjectGroup } from "./ProjectGroup";
+import { ReportSection } from "./ReportSection";
+
 export type ReportRequest = {
   content: string;
   projectGroupId: string;
@@ -14,6 +17,12 @@ export type Report = {
   createdAt: Date;
   updatedAt: Date;
   projectGroupId: string;
+  projectGroup: ProjectGroup;
   createdByStudentId: string;
   reportSectionId: string;
+  reportSection: ReportSection;
+};
+
+export type ReportContent = {
+  content: string;
 };

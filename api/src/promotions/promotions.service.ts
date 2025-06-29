@@ -99,6 +99,14 @@ export class PromotionsService {
                 promotionProjects: {
                     include: {
                         project: true,
+                        reportSections: {
+                            include: {
+                                reports: true,
+                            },
+                            orderBy: {
+                                order: "asc",
+                            },
+                        },
                     },
                 },
             },

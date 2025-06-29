@@ -10,6 +10,9 @@ export const TeacherPromotionDetailPage = () => {
             <Button asChild>
                 <Link to="projects">Promotion Projects</Link>
             </Button>
+            <Button asChild>
+                <Link to="reports">Promotion Reports</Link>
+            </Button>
         </div>
     );
 };

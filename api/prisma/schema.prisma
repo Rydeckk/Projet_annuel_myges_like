@@ -250,6 +250,7 @@ model ReportSection {
   teacherId          String           @map("teacher_id")
   reports            Report[]
 
+  @@unique([title, promotionProjectId])
   @@map("report_section")
 }
 

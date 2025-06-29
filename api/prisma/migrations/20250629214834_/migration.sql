@@ -345,6 +345,9 @@ CREATE UNIQUE INDEX "promotion_project_promotion_id_project_id_key" ON "promotio
 CREATE UNIQUE INDEX "report_project_group_id_report_section_id_key" ON "report"("project_group_id", "report_section_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "report_section_title_promotion_project_id_key" ON "report_section"("title", "promotion_project_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "defense_project_group_id_key" ON "defense"("project_group_id");
 
 -- CreateIndex

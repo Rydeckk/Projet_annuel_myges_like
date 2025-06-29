@@ -7,4 +7,5 @@ export type ProjectGroup = {
   createdAt: Date;
   updatedAt: Date;
   projectGroupStudents?: ProjectGroupStudent[];
+  report?: Report[];
 };

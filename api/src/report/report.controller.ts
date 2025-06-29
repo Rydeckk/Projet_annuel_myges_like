@@ -8,6 +8,7 @@ import {
     Delete,
     SerializeOptions,
     ParseUUIDPipe,
+    Query,
 } from "@nestjs/common";
 import { ReportService } from "./report.service";
 import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
@@ -42,6 +43,38 @@ export class ReportController {
         return this.reportService.findAll({
             projectGroupId,
         });
+    }
+
+    @Get("promotion/:promotionId")
+    @SerializeOptions({ type: ReportEntity })
+    async findByPromotionId(
+        @Param("promotionId", ParseUUIDPipe) promotionId: string,
+    ) {
+        return this.reportService.findAll({
+            reportSection: {
+                promotionProject: {
+                    promotionId,
+                },
+            },
+        });
+    }
+
+    @Get(
+        "/promotion/:promotionId/project/:projectName/project-group/:projectGroupName/content",
+    )
+    @SerializeOptions({ type: ReportEntity })
+    async findByProjectAndGroup(
+        @Param("promotionId", ParseUUIDPipe) promotionId: string,
+        @Param("projectName") projectName: string,
+        @Param("projectGroupName") projectGroupName: string,
+        @Query("reportSectionName") reportSectionName: string,
+    ) {
+        return this.reportService.getContent(
+            promotionId,
+            projectName,
+            projectGroupName,
+            reportSectionName,
+        );
     }
 
     @Patch(":id")
