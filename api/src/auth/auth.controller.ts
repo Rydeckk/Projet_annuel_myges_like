@@ -19,7 +19,7 @@ import { UserRole } from "@prisma/client";
 import { RequestUser, SsoUser } from "types/sso";
 import { HashService } from "src/services/hash.service";
 import { Public } from "decorators/is-public.decorator";
-import { GetCurrentUser, UserWithDetails } from "src/decorators/user.decorator";
+import { GetCurrentUser, UserWithDetails } from "decorators/user.decorator";
 
 @Controller("auth")
 export class AuthController {
