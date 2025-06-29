@@ -44,6 +44,7 @@ export const ReportPage = ({ existingReport, onSubmit }: ReportProps) => {
                     onSaveReport({
                         content: content || "",
                         projectGroupId: report.projetGroupId,
+                        reportSectionId: report.reportSectionId,
                     })
                 }
             >

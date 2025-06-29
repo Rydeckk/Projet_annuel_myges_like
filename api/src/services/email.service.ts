@@ -5,7 +5,7 @@ import {
 } from "@getbrevo/brevo";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { StudentAccountCreationParams } from "src/constants/brevo.constant";
+import { StudentAccountCreationParams } from "constants/brevo.constant";
 
 @Injectable()
 export class EmailService {

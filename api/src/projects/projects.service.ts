@@ -10,6 +10,15 @@ export class ProjectsService {
     async findAll(where: Prisma.ProjectWhereInput | undefined = undefined) {
         return this.prisma.project.findMany({
             where,
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+    }
+
+    async findUnique(where: Prisma.ProjectWhereUniqueInput) {
+        return this.prisma.project.findUnique({
+            where,
         });
     }
 

@@ -1,6 +1,7 @@
 export type ReportRequest = {
   content: string;
   projectGroupId: string;
+  reportSectionId: string;
 };
 
 export type Report = {
@@ -9,4 +10,6 @@ export type Report = {
   createdAt: Date;
   updatedAt: Date;
   projetGroupId: string;
+  createdByStudentId: string;
+  reportSectionId: string;
 };

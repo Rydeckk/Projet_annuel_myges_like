@@ -24,11 +24,7 @@ export const Project = () => {
 
     const onCreateProject = async (data: ProjectRequest) => {
         try {
-            const formData = new FormData();
-            Object.entries(data).forEach(([key, value]) => {
-                formData.append(key, value);
-            });
-            await projectService.create(formData);
+            await projectService.create(data);
             await getProjects();
             setOpen(false);
             toast.success("The project was successfully created");
@@ -58,7 +54,7 @@ export const Project = () => {
                     </SheetContent>
                 </Sheet>
             </div>
-            <div className="flex flex-col gap-4 mt-10">
+            <div className="flex gap-4 mt-6 flex-wrap">
                 {projects.map((project) => (
                     <ProjectCard key={project.id} project={project} />
                 ))}

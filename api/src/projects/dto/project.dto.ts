@@ -13,7 +13,7 @@ export class CreateProjectDto {
     @IsString()
     name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     description: string;
 

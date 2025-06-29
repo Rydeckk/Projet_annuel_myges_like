@@ -10,7 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import {
     BREVO_TEMPLATE,
     StudentAccountCreationParams,
-} from "src/constants/brevo.constant";
+} from "constants/brevo.constant";
 
 @Injectable()
 export class PromotionsService {
@@ -83,8 +83,8 @@ export class PromotionsService {
         return Promise.all(studentToCreate);
     }
 
-    async findFirst(where: Prisma.PromotionWhereInput) {
-        return this.prisma.promotion.findFirst({
+    async findUnique(where: Prisma.PromotionWhereUniqueInput) {
+        return this.prisma.promotion.findUnique({
             where,
             include: {
                 promotionStudents: {

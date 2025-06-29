@@ -7,9 +7,12 @@ import { Prisma } from "@prisma/client";
 export class ReportService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async create(data: CreateReportDto) {
+    async create(studentId: string, data: CreateReportDto) {
         return this.prisma.report.create({
-            data,
+            data: {
+                ...data,
+                createdByStudentId: studentId,
+            },
         });
     }
 

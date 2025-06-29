@@ -17,16 +17,17 @@ import { FILE_SIZE_LIMIT } from "@/constants/file.constant";
 
 const schema = z.object({
     name: z.string().nonempty(),
-    description: z.string().nonempty(),
+    description: z.string().optional(),
     projectVisibility: z.nativeEnum(PROJECT_VISIBILITY),
     file: z
-        .instanceof(File, { message: "File is required" })
+        .instanceof(File)
         .refine((file) => [".zip", "application/pdf"].includes(file.type), {
             message: "Only pdf file is allowed",
         })
         .refine((file) => file.size <= FILE_SIZE_LIMIT, {
             message: "File size should not exceed 10 MB",
-        }),
+        })
+        .optional(),
 });
 
 export type FileFormValues = z.infer<typeof schema>;
@@ -69,7 +70,7 @@ export const ProjectForm = ({ onSubmit, projectData = undefined }: Props) => {
                 <Input
                     id="description"
                     {...register("description")}
-                    defaultValue={projectData?.description}
+                    defaultValue={projectData?.description ?? undefined}
                 />
                 <p className="text-red-500">{errors.description?.message}</p>
             </div>
