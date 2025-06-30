@@ -1,7 +1,8 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TeacherPromotionProjectsReportSectionsPage } from "../teacherPromotionProjectsReportSectionsPage/TeacherPromotionProjectsReportSectionsPage";
+import { TeacherProjectGroup } from "./pages/teacherProjectGroup/TeacherProjectGroup";
 
-export const TeacherPromotionProjectsDetailPage = () => {
+export const TeacherPromotionProjectDetailPage = () => {
     return (
         <Tabs defaultValue="detail">
             <TabsList className="h-auto gap-2 rounded-none border-b border-border bg-transparent px-0 py-1 text-foreground">
@@ -31,7 +32,7 @@ export const TeacherPromotionProjectsDetailPage = () => {
             </TabsContent>
             <TabsContent value="project-groups">
                 <p className="p-4 text-center text-xs text-muted-foreground">
-                    Content for Tab 2
+                    <TeacherProjectGroup />
                 </p>
             </TabsContent>
             <TabsContent value="report-sections">

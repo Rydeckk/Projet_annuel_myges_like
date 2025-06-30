@@ -19,7 +19,7 @@ import { useContext, useMemo, useState } from "react";
 import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import {
     Sheet,
     SheetContent,

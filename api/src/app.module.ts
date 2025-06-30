@@ -14,6 +14,7 @@ import { PromotionProjectsModule } from "./promotion-projects/promotion-projects
 import { ReportModule } from "./report/report.module";
 import { ProjectGroupsModule } from "./project-groups/project-groups.module";
 import { ReportSectionsModule } from "./report-sections/report-sections.module";
+import { ProjectGroupStudentsModule } from "./project-group-students/project-group-students.module";
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { ReportSectionsModule } from "./report-sections/report-sections.module";
         ReportModule,
         ProjectGroupsModule,
         ReportSectionsModule,
+        ProjectGroupStudentsModule,
     ],
     providers: [
         {

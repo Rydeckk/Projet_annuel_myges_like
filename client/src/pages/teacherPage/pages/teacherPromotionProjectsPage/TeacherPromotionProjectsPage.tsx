@@ -6,7 +6,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { CirclePlus } from "lucide-react";
 import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router";

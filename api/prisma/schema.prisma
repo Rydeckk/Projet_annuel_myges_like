@@ -89,7 +89,7 @@ model Teacher {
 
 model Promotion {
   id        String   @id @default(uuid())
-  name      String
+  name      String   @unique
   startDate DateTime @map("start_date")
   endDate   DateTime @map("end_date")
 
@@ -128,7 +128,7 @@ enum ProjectVisibility {
 
 model Project {
   id                String            @id @default(uuid())
-  name              String
+  name              String            @unique
   description       String?
   fileName          String?           @map("file_name")
   path              String?
@@ -189,9 +189,8 @@ model PromotionProject {
 }
 
 model ProjectGroup {
-  id   String @id @default(uuid())
-  name String
-
+  id        String   @id @default(uuid())
+  name      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 

@@ -83,8 +83,8 @@ export class PromotionsService {
         return Promise.all(studentToCreate);
     }
 
-    async findFirst(where: Prisma.PromotionWhereInput) {
-        return this.prisma.promotion.findFirst({
+    async findUnique(where: Prisma.PromotionWhereUniqueInput) {
+        return this.prisma.promotion.findUnique({
             where,
             include: {
                 promotionStudents: {

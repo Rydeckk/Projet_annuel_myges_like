@@ -9,7 +9,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { PROJECT_GROUP_RULE } from "@/enums/ProjectGroupRule";
 import { ApiException } from "@/services/api/ApiException";
 import { ProjectService } from "@/services/projectService/ProjectService";

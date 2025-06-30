@@ -22,7 +22,7 @@ export class PromotionsController {
     @Get(":name")
     @SerializeOptions({ type: PromotionEntity })
     async findByPromotionName(@Param("name") name: string) {
-        return this.promotionsService.findFirst({
+        return this.promotionsService.findUnique({
             name,
         });
     }
