@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Report } from "@/types/Report";
-import { TeacherPromotionDetailContext } from "../../contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "../../contexts/TeacherPromotionDetailContext";
 import { ReportService } from "@/services/reportService/ReportService";
 import {
     Select,

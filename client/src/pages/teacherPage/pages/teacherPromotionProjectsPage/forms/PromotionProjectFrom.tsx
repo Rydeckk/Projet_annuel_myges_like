@@ -188,7 +188,7 @@ export const PromotionProjectFrom = ({
                     defaultValue={
                         promotionProject
                             ? promotionProject.startDate
-                            : new Date()
+                            : undefined
                     }
                     render={({ field }) => (
                         <DateAndTime
@@ -206,7 +206,7 @@ export const PromotionProjectFrom = ({
                     name="endDate"
                     control={control}
                     defaultValue={
-                        promotionProject ? promotionProject.endDate : new Date()
+                        promotionProject ? promotionProject.endDate : undefined
                     }
                     render={({ field }) => (
                         <DateAndTime

@@ -1,4 +1,4 @@
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { ReportService } from "@/services/reportService/ReportService";
 import MDEditor from "@uiw/react-md-editor";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";

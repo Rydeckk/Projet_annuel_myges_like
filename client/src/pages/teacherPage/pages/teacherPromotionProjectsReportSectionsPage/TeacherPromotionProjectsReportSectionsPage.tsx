@@ -4,7 +4,7 @@ import {
     ReportSectionUpdateRequest,
 } from "@/types/ReportSection";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { TeacherPromotionDetailContext } from "../../contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "../../contexts/TeacherPromotionDetailContext";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -103,7 +103,7 @@ export const TeacherPromotionProjectsReportSectionsPage = () => {
 
     return (
         <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between py-4">
                 <h1 className="text-2xl font-bold">
                     Report Section Management
                 </h1>

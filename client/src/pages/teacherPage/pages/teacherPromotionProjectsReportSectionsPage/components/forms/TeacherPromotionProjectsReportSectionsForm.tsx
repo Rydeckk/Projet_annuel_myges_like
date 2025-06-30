@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { ReportSectionRequest } from "@/types/ReportSection";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext } from "react";

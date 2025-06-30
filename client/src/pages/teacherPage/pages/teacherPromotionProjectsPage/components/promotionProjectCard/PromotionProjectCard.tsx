@@ -137,7 +137,7 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>View</p>
+                                        <p>Project detail</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>

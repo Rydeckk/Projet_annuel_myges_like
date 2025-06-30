@@ -51,7 +51,7 @@ export const DateAndTime = ({ date = undefined, onChange }: Props) => {
         onChange(updated);
         setDateTime(updated);
     };
-
+    console.log(date);
     return (
         <div className="flex gap-4">
             <div className="flex flex-col gap-3">
