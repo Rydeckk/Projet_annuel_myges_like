@@ -3,7 +3,7 @@ import { PromotionProject } from "@/types/PromotionProject";
 import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
 import { ApiException } from "@/services/api/ApiException";
 import { toast } from "sonner";
-import { StudentProjectCard } from "./components/StudentProjectCard/StudentProjectCard";
+import { PromotionProjectCard } from "@/pages/teacherPage/pages/teacherPromotionProjectsPage/components/promotionProjectCard/PromotionProjectCard";
 
 export const StudentProjectPage = () => {
     const promotionProjectService = useMemo(
@@ -31,9 +31,9 @@ export const StudentProjectPage = () => {
     }, [promotionProjectService]);
 
     return (
-        <div className="flex flex-col gap-4 mt-10">
+        <div className="flex gap-4 mt-6 flex-wrap">
             {promotionProjects.map((promotionProject) => (
-                <StudentProjectCard
+                <PromotionProjectCard
                     key={promotionProject.id}
                     promotionProject={promotionProject}
                 />
