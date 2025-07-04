@@ -274,19 +274,32 @@ model Defense {
 
 // #region DELIVERABLE
 
+enum DeliverableType {
+  ARCHIVE
+  GIT_REPOSITORY
+}
+
 model Deliverable {
-  id          String  @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
-  descritpion String?
+  description String?
+  type        DeliverableType @default(ARCHIVE)
+  deadline    DateTime?
+  submitAt    DateTime?       @map("submit_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  projectGroup        ProjectGroup        @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
-  projectGroupId      String              @map("project_group_id")
-  uploadedByStudent   Student             @relation(fields: [uploadedByStudentId], references: [id])
-  uploadedByStudentId String              @map("uploaded_by_student_id")
+  projectGroup        ProjectGroup         @relation(fields: [projectGroupId], references: [id], onDelete: Cascade)
+  projectGroupId      String               @map("project_group_id")
+  uploadedByStudent   Student              @relation(fields: [uploadedByStudentId], references: [id])
+  uploadedByStudentId String               @map("uploaded_by_student_id")
   deliverableArchive  DeliverableArchive?
+  deliverableGitRepo  DeliverableGitRepo?
+  
+  // Similarity analysis relationships
+  similarityAnalysisAsDeliverable1 SimilarityAnalysis[] @relation("SimilarityAnalysisDeliverable1")
+  similarityAnalysisAsDeliverable2 SimilarityAnalysis[] @relation("SimilarityAnalysisDeliverable2")
 
   @@map("deliverable")
 }
@@ -307,6 +320,22 @@ model DeliverableArchive {
   @@map("deliverable_archive")
 }
 
+model DeliverableGitRepo {
+  id           String  @id @default(uuid())
+  repositoryUrl String @map("repository_url")
+  branch       String? @default("main")
+  commitHash   String? @map("commit_hash")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
+  deliverableId String      @map("deliverable_id")
+
+  @@unique([deliverableId])
+  @@map("deliverable_git_repo")
+}
+
 // #endregion
 
 // #region DELIVERABLE RULE 
@@ -315,6 +344,7 @@ enum RuleType {
   MAX_SIZE_FILE
   FILE_PRESENCE
   FILE_CONTENT_MATCH
+  FOLDER_STRUCTURE
 }
 
 model DeliverableRule {
@@ -328,6 +358,7 @@ model DeliverableRule {
   ruleMaxSizeFile                  RuleMaxSizeFile?
   ruleFilePresence                 RuleFilePresence?
   ruleFileContentMatch             RuleFileContentMatch?
+  ruleFolderStructure              RuleFolderStructure?
   deliverableRuleResults           DeliverableRuleResult[]
 
   @@map("deliverable_rule")
@@ -385,6 +416,17 @@ model RuleFileContentMatch {
   @@map("rule_file_content_match")
 }
 
+model RuleFolderStructure {
+  id               String @id @default(uuid())
+  expectedStructure String @map("expected_structure") // JSON describing expected folder structure
+
+  deliverableRule   DeliverableRule @relation(fields: [deliverableRuleId], references: [id], onDelete: Cascade)
+  deliverableRuleId String          @map("deliverable_rule_id")
+
+  @@unique([deliverableRuleId])
+  @@map("rule_folder_structure")
+}
+
 // #endregion
 
 // #region PROJECT RESULT
@@ -432,6 +474,23 @@ model RatingResult {
   studentId             String              @map("student_id")
 
   @@map("rating_result")
+}
+
+model SimilarityAnalysis {
+  id                 String  @id @default(uuid())
+  similarityScore    Float   @map("similarity_score") // 0.0 to 1.0
+  isSuspicious       Boolean @map("is_suspicious")
+  analysisDetails    String? @map("analysis_details") // JSON with detailed results
+  
+  createdAt DateTime @default(now()) @map("created_at")
+
+  deliverable1   Deliverable @relation("SimilarityAnalysisDeliverable1", fields: [deliverable1Id], references: [id], onDelete: Cascade)
+  deliverable1Id String      @map("deliverable1_id")
+  deliverable2   Deliverable @relation("SimilarityAnalysisDeliverable2", fields: [deliverable2Id], references: [id], onDelete: Cascade)
+  deliverable2Id String      @map("deliverable2_id")
+
+  @@unique([deliverable1Id, deliverable2Id])
+  @@map("similarity_analysis")
 }
 
 // #endregion
