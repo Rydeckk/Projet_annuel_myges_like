@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from "@nestjs/common";
 import { Storage } from "@google-cloud/storage";
 import { Readable } from "stream";
-import { MulterFile } from "multer";
+
+interface MulterFile {
+    originalname: string;
+    mimetype: string;
+    buffer: Buffer;
+}
 
 @Injectable()
 export class GoogleCloudStorageService {
@@ -29,13 +32,13 @@ export class GoogleCloudStorageService {
             typeof file !== "object" ||
             typeof file.originalname !== "string" ||
             typeof file.mimetype !== "string" ||
-            !(file as any).buffer
+            !file.buffer
         ) {
             throw new Error("Invalid file");
         }
 
         const bucket = this.storage.bucket(this.bucketName);
-        const blob = bucket.file(file.originalname as string);
+        const blob = bucket.file(file.originalname);
 
         const blobStream = blob.createWriteStream({
             resumable: false,
