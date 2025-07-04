@@ -4,7 +4,7 @@ import { RuleType, MatchType } from "@prisma/client";
 import * as JSZip from "jszip";
 
 interface FolderStructureNode {
-    [key: string]: FolderStructureNode | "file";
+    [key: string]: FolderStructureNode | "file" | null;
 }
 
 interface StructureValidationResult {
@@ -318,7 +318,7 @@ export class DeliverableValidationService {
             let isMatch = false;
 
             switch (rule.matchType) {
-                case MatchType.CONTAINS:
+                case MatchType.TEXT:
                     isMatch = content.includes(rule.match);
                     break;
                 case MatchType.REGEX:
@@ -332,9 +332,6 @@ export class DeliverableValidationService {
                             message: `Invalid regex pattern: ${rule.match}`,
                         } as ValidationResult;
                     }
-                    break;
-                case MatchType.EXACT:
-                    isMatch = content.trim() === rule.match;
                     break;
             }
 
@@ -489,7 +486,11 @@ export class DeliverableValidationService {
             }
 
             if (typeof expectedNode === "object" && expectedNode !== null) {
-                if (typeof actualNode !== "object" || actualNode === "file") {
+                if (
+                    typeof actualNode !== "object" ||
+                    actualNode === null ||
+                    (actualNode as any) === "file"
+                ) {
                     missingPaths.push(fullPath);
                 } else {
                     const subValidation = this.validateStructureRecursive(
