@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { GoogleCloudStorageService } from "src/google-cloud-storage/google-cloud-storage.service";
-import { MulterFile } from "multer";
+type MulterFile = Express.Multer.File;
 
 @Injectable()
 export class UploadService {

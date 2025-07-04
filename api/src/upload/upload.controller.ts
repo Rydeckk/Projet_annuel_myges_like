@@ -7,7 +7,7 @@ import {
 import { UploadService } from "./upload.service";
 import { Public } from "decorators/is-public.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { MulterFile } from "multer";
+type MulterFile = Express.Multer.File;
 
 @Controller("upload")
 export class UploadController {

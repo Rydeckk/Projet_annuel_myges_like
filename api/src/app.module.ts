@@ -16,6 +16,8 @@ import { ProjectGroupsModule } from "./project-groups/project-groups.module";
 import { ReportSectionsModule } from "./report-sections/report-sections.module";
 import { ProjectGroupStudentsModule } from "./project-group-students/project-group-students.module";
 import { UploadModule } from "./upload/upload.module";
+import { DeliverablesModule } from "./deliverables/deliverables.module";
+import { DeliverableRulesModule } from "./deliverable-rules/deliverable-rules.module";
 import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-storage.service";
 
 @Module({
@@ -37,6 +39,8 @@ import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-s
         ReportSectionsModule,
         ProjectGroupStudentsModule,
         UploadModule,
+        DeliverablesModule,
+        DeliverableRulesModule,
     ],
     providers: [
         {
