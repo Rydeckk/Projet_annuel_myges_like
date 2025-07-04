@@ -85,7 +85,15 @@ export class ReportSectionsService {
                 order: "asc",
             },
             include: {
-                reports: true,
+                reports: {
+                    include: {
+                        createdBystudent: {
+                            include: {
+                                user: true,
+                            },
+                        },
+                    },
+                },
             },
         });
     }

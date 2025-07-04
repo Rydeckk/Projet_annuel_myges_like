@@ -1,6 +1,7 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TeacherPromotionProjectsReportSectionsPage } from "../teacherPromotionProjectsReportSectionsPage/TeacherPromotionProjectsReportSectionsPage";
 import { TeacherProjectGroup } from "./pages/teacherProjectGroup/TeacherProjectGroup";
+import { TeacherProjectDeliverablePage } from "../teacherProjectDeliverablePage/TeacherProjectDeliverablePage";
 
 export const TeacherPromotionProjectDetailPage = () => {
     return (
@@ -24,6 +25,12 @@ export const TeacherPromotionProjectDetailPage = () => {
                 >
                     Report Sections
                 </TabsTrigger>
+                <TabsTrigger
+                    value="deliverable-sections"
+                    className="relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 hover:bg-accent hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent"
+                >
+                    Deliverable sections
+                </TabsTrigger>
             </TabsList>
             <TabsContent value="detail">
                 <p className="p-4 text-center text-xs text-muted-foreground">
@@ -35,6 +42,9 @@ export const TeacherPromotionProjectDetailPage = () => {
             </TabsContent>
             <TabsContent value="report-sections">
                 <TeacherPromotionProjectsReportSectionsPage />
+            </TabsContent>
+            <TabsContent value="deliverable-sections">
+                <TeacherProjectDeliverablePage />
             </TabsContent>
         </Tabs>
     );
