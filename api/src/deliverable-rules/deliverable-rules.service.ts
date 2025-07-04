@@ -11,6 +11,7 @@ import {
     RuleFilePresenceDto,
     RuleFileContentMatchDto,
     RuleFolderStructureDto,
+    AssignRuleToPromotionProjectDto,
 } from "./dto/deliverable-rule.dto";
 import { RuleType } from "@prisma/client";
 
@@ -246,5 +247,94 @@ export class DeliverableRulesService {
                     `Unsupported rule type: ${ruleType as string}`,
                 );
         }
+    }
+
+    async assignRuleToPromotionProject(
+        assignDto: AssignRuleToPromotionProjectDto,
+    ): Promise<void> {
+        // Verify rule exists
+        await this.findOne(assignDto.deliverableRuleId);
+
+        // Verify promotion project exists
+        const promotionProject = await this.prisma.promotionProject.findUnique({
+            where: { id: assignDto.promotionProjectId },
+        });
+
+        if (!promotionProject) {
+            throw new NotFoundException("Promotion project not found");
+        }
+
+        // Check if already assigned
+        const existing =
+            await this.prisma.promotionProjectDeliverableRule.findUnique({
+                where: {
+                    deliverableRuleId_promotionProjectId: {
+                        deliverableRuleId: assignDto.deliverableRuleId,
+                        promotionProjectId: assignDto.promotionProjectId,
+                    },
+                },
+            });
+
+        if (existing) {
+            throw new BadRequestException(
+                "Rule is already assigned to this promotion project",
+            );
+        }
+
+        await this.prisma.promotionProjectDeliverableRule.create({
+            data: assignDto,
+        });
+    }
+
+    async removeRuleFromPromotionProject(
+        deliverableRuleId: string,
+        promotionProjectId: string,
+    ): Promise<void> {
+        const assignment =
+            await this.prisma.promotionProjectDeliverableRule.findUnique({
+                where: {
+                    deliverableRuleId_promotionProjectId: {
+                        deliverableRuleId,
+                        promotionProjectId,
+                    },
+                },
+            });
+
+        if (!assignment) {
+            throw new NotFoundException(
+                "Rule assignment not found for this promotion project",
+            );
+        }
+
+        await this.prisma.promotionProjectDeliverableRule.delete({
+            where: {
+                deliverableRuleId_promotionProjectId: {
+                    deliverableRuleId,
+                    promotionProjectId,
+                },
+            },
+        });
+    }
+
+    async getPromotionProjectRules(promotionProjectId: string) {
+        return this.prisma.promotionProjectDeliverableRule.findMany({
+            where: { promotionProjectId },
+            include: {
+                deliverableRule: {
+                    include: {
+                        ruleMaxSizeFile: true,
+                        ruleFilePresence: true,
+                        ruleFileContentMatch: true,
+                        ruleFolderStructure: true,
+                    },
+                },
+                promotionProject: {
+                    include: {
+                        project: true,
+                        promotion: true,
+                    },
+                },
+            },
+        });
     }
 }

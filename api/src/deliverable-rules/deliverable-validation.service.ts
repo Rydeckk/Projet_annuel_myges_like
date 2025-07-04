@@ -1,6 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { RuleType, MatchType } from "@prisma/client";
+import * as JSZip from "jszip";
+
+interface FolderStructureNode {
+    [key: string]: FolderStructureNode | "file";
+}
+
+interface StructureValidationResult {
+    isValid: boolean;
+    message: string;
+    missingPaths: string[];
+    extraPaths: string[];
+}
 
 interface DeliverableWithArchive {
     id: string;
@@ -96,7 +108,7 @@ export class DeliverableValidationService {
 
         // Validate each rule
         for (const rule of rules) {
-            const result = this.validateSingleRule(
+            const result = await this.validateSingleRule(
                 rule,
                 filePath,
                 fileBuffer,
@@ -119,12 +131,12 @@ export class DeliverableValidationService {
         };
     }
 
-    private validateSingleRule(
+    private async validateSingleRule(
         rule: RuleWithSpecificData,
         filePath?: string,
         fileBuffer?: Buffer,
         deliverable?: DeliverableWithArchive,
-    ): ValidationResult {
+    ): Promise<ValidationResult> {
         const baseResult = {
             ruleId: rule.id,
             ruleType: rule.ruleType as string,
@@ -142,7 +154,7 @@ export class DeliverableValidationService {
                     );
 
                 case RuleType.FILE_PRESENCE:
-                    return this.validateFilePresence(
+                    return await this.validateFilePresence(
                         rule.ruleFilePresence,
                         filePath,
                         fileBuffer,
@@ -150,7 +162,7 @@ export class DeliverableValidationService {
                     );
 
                 case RuleType.FILE_CONTENT_MATCH:
-                    return this.validateFileContentMatch(
+                    return await this.validateFileContentMatch(
                         rule.ruleFileContentMatch,
                         filePath,
                         fileBuffer,
@@ -158,7 +170,7 @@ export class DeliverableValidationService {
                     );
 
                 case RuleType.FOLDER_STRUCTURE:
-                    return this.validateFolderStructure(
+                    return await this.validateFolderStructure(
                         rule.ruleFolderStructure,
                         filePath,
                         fileBuffer,
@@ -211,22 +223,61 @@ export class DeliverableValidationService {
         } as ValidationResult;
     }
 
-    private validateFilePresence(
+    private async validateFilePresence(
         rule: { fileName: string } | null | undefined,
         filePath?: string,
         fileBuffer?: Buffer,
         baseResult?: Partial<ValidationResult>,
-    ): ValidationResult {
-        // TODO: Implement file presence validation
-        // This would require extracting and analyzing the archive content
-        return {
-            ...baseResult,
-            isValid: true,
-            message: "File presence validation not yet implemented",
-        } as ValidationResult;
+    ): Promise<ValidationResult> {
+        if (!rule) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "File presence rule data not found",
+            } as ValidationResult;
+        }
+
+        if (!fileBuffer) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "No file buffer provided for validation",
+            } as ValidationResult;
+        }
+
+        try {
+            const zip = await JSZip.loadAsync(fileBuffer);
+            const files = Object.keys(zip.files);
+            const requiredFile = rule.fileName;
+
+            // Check for exact match or pattern match
+            const fileExists = files.some((fileName) => {
+                // Remove directory path for comparison
+                const baseName = fileName.split("/").pop() || "";
+                return baseName === requiredFile || fileName === requiredFile;
+            });
+
+            return {
+                ...baseResult,
+                isValid: fileExists,
+                message: fileExists
+                    ? `Required file '${requiredFile}' found`
+                    : `Required file '${requiredFile}' not found`,
+                details: {
+                    requiredFile,
+                    foundFiles: files.filter((f) => !f.endsWith("/")),
+                },
+            } as ValidationResult;
+        } catch (error) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: `Error reading archive: ${error instanceof Error ? error.message : "Unknown error"}`,
+            } as ValidationResult;
+        }
     }
 
-    private validateFileContentMatch(
+    private async validateFileContentMatch(
         rule:
             | { fileName: string; match: string; matchType: MatchType }
             | null
@@ -234,29 +285,150 @@ export class DeliverableValidationService {
         filePath?: string,
         fileBuffer?: Buffer,
         baseResult?: Partial<ValidationResult>,
-    ): ValidationResult {
-        // TODO: Implement file content validation
-        // This would require extracting specific files and checking their content
-        return {
-            ...baseResult,
-            isValid: true,
-            message: "File content validation not yet implemented",
-        } as ValidationResult;
+    ): Promise<ValidationResult> {
+        if (!rule) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "File content rule data not found",
+            } as ValidationResult;
+        }
+
+        if (!fileBuffer) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "No file buffer provided for validation",
+            } as ValidationResult;
+        }
+
+        try {
+            const zip = await JSZip.loadAsync(fileBuffer);
+            const targetFile = zip.file(rule.fileName);
+
+            if (!targetFile) {
+                return {
+                    ...baseResult,
+                    isValid: false,
+                    message: `File '${rule.fileName}' not found in archive`,
+                } as ValidationResult;
+            }
+
+            const content = await targetFile.async("text");
+            let isMatch = false;
+
+            switch (rule.matchType) {
+                case MatchType.CONTAINS:
+                    isMatch = content.includes(rule.match);
+                    break;
+                case MatchType.REGEX:
+                    try {
+                        const regex = new RegExp(rule.match);
+                        isMatch = regex.test(content);
+                    } catch {
+                        return {
+                            ...baseResult,
+                            isValid: false,
+                            message: `Invalid regex pattern: ${rule.match}`,
+                        } as ValidationResult;
+                    }
+                    break;
+                case MatchType.EXACT:
+                    isMatch = content.trim() === rule.match;
+                    break;
+            }
+
+            return {
+                ...baseResult,
+                isValid: isMatch,
+                message: isMatch
+                    ? `Content matches ${rule.matchType.toLowerCase()} pattern`
+                    : `Content does not match ${rule.matchType.toLowerCase()} pattern`,
+                details: {
+                    fileName: rule.fileName,
+                    matchType: rule.matchType,
+                    expectedPattern: rule.match,
+                    contentPreview:
+                        content.substring(0, 200) +
+                        (content.length > 200 ? "..." : ""),
+                },
+            } as ValidationResult;
+        } catch (error) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: `Error reading file content: ${error instanceof Error ? error.message : "Unknown error"}`,
+            } as ValidationResult;
+        }
     }
 
-    private validateFolderStructure(
+    private async validateFolderStructure(
         rule: { expectedStructure: string } | null | undefined,
         filePath?: string,
         fileBuffer?: Buffer,
         baseResult?: Partial<ValidationResult>,
-    ): ValidationResult {
-        // TODO: Implement folder structure validation
-        // This would require extracting the archive and checking its structure
-        return {
-            ...baseResult,
-            isValid: true,
-            message: "Folder structure validation not yet implemented",
-        } as ValidationResult;
+    ): Promise<ValidationResult> {
+        if (!rule) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "Folder structure rule data not found",
+            } as ValidationResult;
+        }
+
+        if (!fileBuffer) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: "No file buffer provided for validation",
+            } as ValidationResult;
+        }
+
+        try {
+            const zip = await JSZip.loadAsync(fileBuffer);
+            const files = Object.keys(zip.files);
+
+            // Parse expected structure from JSON
+            let expectedStructure: FolderStructureNode;
+            try {
+                expectedStructure = JSON.parse(
+                    rule.expectedStructure,
+                ) as FolderStructureNode;
+            } catch {
+                return {
+                    ...baseResult,
+                    isValid: false,
+                    message: "Invalid expected structure JSON format",
+                } as ValidationResult;
+            }
+
+            // Build actual structure from archive
+            const actualStructure = this.buildFolderStructure(files);
+
+            // Validate structure
+            const validation = this.validateStructureRecursive(
+                expectedStructure,
+                actualStructure,
+            );
+
+            return {
+                ...baseResult,
+                isValid: validation.isValid,
+                message: validation.message,
+                details: {
+                    expectedStructure,
+                    actualStructure,
+                    missingPaths: validation.missingPaths,
+                    extraPaths: validation.extraPaths,
+                },
+            } as ValidationResult;
+        } catch (error) {
+            return {
+                ...baseResult,
+                isValid: false,
+                message: `Error validating folder structure: ${error instanceof Error ? error.message : "Unknown error"}`,
+            } as ValidationResult;
+        }
     }
 
     private formatBytes(bytes: number): string {
@@ -265,5 +437,77 @@ export class DeliverableValidationService {
         const sizes = ["Bytes", "KB", "MB", "GB"];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    private buildFolderStructure(files: string[]): FolderStructureNode {
+        const structure: FolderStructureNode = {};
+
+        for (const filePath of files) {
+            const parts = filePath.split("/").filter((part) => part.length > 0);
+            let current = structure;
+
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+                const isLastPart = i === parts.length - 1;
+
+                if (isLastPart && !filePath.endsWith("/")) {
+                    // It's a file
+                    current[part] = "file";
+                } else {
+                    // It's a directory
+                    if (!current[part] || current[part] === "file") {
+                        current[part] = {};
+                    }
+                    const nextNode = current[part];
+                    if (typeof nextNode === "object") {
+                        current = nextNode;
+                    }
+                }
+            }
+        }
+
+        return structure;
+    }
+
+    private validateStructureRecursive(
+        expected: FolderStructureNode,
+        actual: FolderStructureNode,
+        currentPath = "",
+    ): StructureValidationResult {
+        const missingPaths: string[] = [];
+        const extraPaths: string[] = [];
+
+        // Check for missing required items
+        for (const key in expected) {
+            const fullPath = currentPath ? `${currentPath}/${key}` : key;
+            const expectedNode = expected[key];
+            const actualNode = actual[key];
+
+            if (!(key in actual)) {
+                missingPaths.push(fullPath);
+                continue;
+            }
+
+            if (typeof expectedNode === "object" && expectedNode !== null) {
+                if (typeof actualNode !== "object" || actualNode === "file") {
+                    missingPaths.push(fullPath);
+                } else {
+                    const subValidation = this.validateStructureRecursive(
+                        expectedNode,
+                        actualNode,
+                        fullPath,
+                    );
+                    missingPaths.push(...subValidation.missingPaths);
+                    extraPaths.push(...subValidation.extraPaths);
+                }
+            }
+        }
+
+        const isValid = missingPaths.length === 0;
+        const message = isValid
+            ? "Folder structure matches expected format"
+            : `Missing required paths: ${missingPaths.join(", ")}`;
+
+        return { isValid, message, missingPaths, extraPaths };
     }
 }

@@ -9,9 +9,11 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { DeliverableRulesService } from "./deliverable-rules.service";
+import { DeliverableValidationService } from "./deliverable-validation.service";
 import {
     CreateDeliverableRuleDto,
     UpdateDeliverableRuleDto,
+    AssignRuleToPromotionProjectDto,
 } from "./dto/deliverable-rule.dto";
 import { JwtAuthGuard } from "src/auth/strategies/jwt/jwt-auth.guard";
 
@@ -20,6 +22,7 @@ import { JwtAuthGuard } from "src/auth/strategies/jwt/jwt-auth.guard";
 export class DeliverableRulesController {
     constructor(
         private readonly deliverableRulesService: DeliverableRulesService,
+        private readonly deliverableValidationService: DeliverableValidationService,
     ) {}
 
     @Post()
@@ -60,5 +63,41 @@ export class DeliverableRulesController {
     @Delete(":id")
     remove(@Param("id") id: string) {
         return this.deliverableRulesService.remove(id);
+    }
+
+    @Post("assign")
+    async assignRuleToPromotionProject(
+        @Body() assignDto: AssignRuleToPromotionProjectDto,
+    ): Promise<void> {
+        return this.deliverableRulesService.assignRuleToPromotionProject(
+            assignDto,
+        );
+    }
+
+    @Delete("unassign/:deliverableRuleId/:promotionProjectId")
+    async removeRuleFromPromotionProject(
+        @Param("deliverableRuleId") deliverableRuleId: string,
+        @Param("promotionProjectId") promotionProjectId: string,
+    ): Promise<void> {
+        return this.deliverableRulesService.removeRuleFromPromotionProject(
+            deliverableRuleId,
+            promotionProjectId,
+        );
+    }
+
+    @Get("promotion-project/:promotionProjectId/rules")
+    getPromotionProjectRules(
+        @Param("promotionProjectId") promotionProjectId: string,
+    ) {
+        return this.deliverableRulesService.getPromotionProjectRules(
+            promotionProjectId,
+        );
+    }
+
+    @Post("validate/:deliverableId")
+    async validateDeliverable(@Param("deliverableId") deliverableId: string) {
+        return this.deliverableValidationService.validateDeliverable(
+            deliverableId,
+        );
     }
 }
