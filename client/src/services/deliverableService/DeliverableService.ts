@@ -79,7 +79,11 @@ export class DeliverableService {
     });
   }
 
-  async attachGit(id: string, gitUrl: string, branch?: string): Promise<Deliverable> {
+  async attachGit(
+    id: string,
+    gitUrl: string,
+    branch?: string,
+  ): Promise<Deliverable> {
     return this.api.request<Deliverable>({
       path: `${DELIVERABLES_PATH}/${id}/attach-git`,
       method: "POST",
@@ -90,7 +94,11 @@ export class DeliverableService {
     });
   }
 
-  async submit(id: string, comment?: string, submitLate?: boolean): Promise<Deliverable> {
+  async submit(
+    id: string,
+    comment?: string,
+    submitLate?: boolean,
+  ): Promise<Deliverable> {
     return this.api.request<Deliverable>({
       path: `${DELIVERABLES_PATH}/${id}/submit`,
       method: "POST",
@@ -119,14 +127,31 @@ export class DeliverableService {
     });
   }
 
-  async validateAgainstRules(id: string): Promise<any> {
+  async validateAgainstRules(id: string): Promise<{
+    compliant: boolean;
+    results: Array<{
+      ruleId: string;
+      ruleType: string;
+      respected: boolean;
+      message: string | null;
+    }>;
+  }> {
     return this.api.request({
       path: `${DELIVERABLES_PATH}/${id}/validate`,
       method: "POST",
     });
   }
 
-  async getValidationResults(id: string): Promise<any> {
+  async getValidationResults(id: string): Promise<{
+    deliverableId: string;
+    validatedAt: string;
+    results: Array<{
+      ruleId: string;
+      ruleType: string;
+      respected: boolean;
+      message: string | null;
+    }>;
+  }> {
     return this.api.request({
       path: `${DELIVERABLES_PATH}/${id}/validation-results`,
       method: "GET",
