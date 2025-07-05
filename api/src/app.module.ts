@@ -18,6 +18,8 @@ import { ProjectGroupStudentsModule } from "./project-group-students/project-gro
 import { UploadModule } from "./upload/upload.module";
 import { DeliverablesModule } from "./deliverables/deliverables.module";
 import { DeliverableRulesModule } from "./deliverable-rules/deliverable-rules.module";
+import { TeacherModule } from "./teacher-dashboard/teacher.module";
+import { SimilarityAnalysisModule } from "./similarity-analysis/similarity-analysis.module";
 import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-storage.service";
 
 @Module({
@@ -41,6 +43,8 @@ import { GoogleCloudStorageService } from "./google-cloud-storage/google-cloud-s
         UploadModule,
         DeliverablesModule,
         DeliverableRulesModule,
+        TeacherModule,
+        SimilarityAnalysisModule,
     ],
     providers: [
         {

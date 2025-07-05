@@ -100,4 +100,13 @@ export class DeliverableRulesController {
             deliverableId,
         );
     }
+
+    @Post("validate")
+    testRule(@Body() testRuleDto: CreateDeliverableRuleDto) {
+        // Test a rule without saving it to database
+        return {
+            message: "Rule test functionality not yet implemented",
+            rule: testRuleDto,
+        };
+    }
 }
