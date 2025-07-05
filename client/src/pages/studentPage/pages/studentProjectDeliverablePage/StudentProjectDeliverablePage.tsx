@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentProjectDeliverableReport } from "./components/studentProjectDelivableReport.tsx/StudentProjectDeliverableReport";
+import { StudentProjectDeliverable } from "./components/studentProjectDeliverable/StudentProjectDeliverable";
 
 export const StudentProjectDeliverablePage = () => {
     return (
@@ -19,9 +20,7 @@ export const StudentProjectDeliverablePage = () => {
                 </TabsTrigger>
             </TabsList>
             <TabsContent value="project-deliverable">
-                <p className="p-4 text-center text-xs text-muted-foreground">
-                    Content for Tab 1
-                </p>
+                <StudentProjectDeliverable />
             </TabsContent>
             <TabsContent value="project-report">
                 <StudentProjectDeliverableReport />

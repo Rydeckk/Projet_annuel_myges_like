@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TeacherProjectDeliverableReport } from "./components/teacherProjectDeliverableReport/TeacherProjectDeliverableReport";
+import { TeacherProjectDeliverableMain } from "./components/teacherProjectDeliverableMain/TeacherProjectDeliverableMain";
 
 export const TeacherProjectDeliverablePage = () => {
     return (
@@ -19,9 +20,7 @@ export const TeacherProjectDeliverablePage = () => {
                 </TabsTrigger>
             </TabsList>
             <TabsContent value="project-deliverable">
-                <p className="p-4 text-center text-xs text-muted-foreground">
-                    Content for Project Deliverable - Teacher View
-                </p>
+                <TeacherProjectDeliverableMain />
             </TabsContent>
             <TabsContent value="project-report">
                 <TeacherProjectDeliverableReport />
