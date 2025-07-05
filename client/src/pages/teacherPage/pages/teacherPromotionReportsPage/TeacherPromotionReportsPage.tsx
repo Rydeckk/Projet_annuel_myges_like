@@ -135,12 +135,12 @@ export const TeacherPromotionReportsPage = () => {
                     <TeacherPromotionReportsCard
                         key={report.id}
                         projectName={
-                            report.reportSection.promotionProject.project
+                            report.reportSection?.promotionProject?.project
                                 ?.name ?? ""
                         }
-                        projectGroup={report.projectGroup}
+                        projectGroup={report.projectGroup!}
                         reportSection={
-                            report.reportSection.id === selectedSectionReport
+                            report?.reportSection?.id === selectedSectionReport
                                 ? report.reportSection
                                 : undefined
                         }

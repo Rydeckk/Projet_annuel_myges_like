@@ -3,15 +3,13 @@ import {
     Get,
     Post,
     Body,
-    Patch,
     Param,
-    Delete,
     SerializeOptions,
     ParseUUIDPipe,
     Query,
 } from "@nestjs/common";
 import { ReportService } from "./report.service";
-import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
+import { CreateReportDto } from "./dto/report.dto";
 import { ReportEntity } from "./entities/report.entity";
 import { GetCurrentUser } from "decorators/user.decorator";
 
@@ -20,19 +18,11 @@ export class ReportController {
     constructor(private readonly reportService: ReportService) {}
 
     @Post()
-    async create(
+    async upsert(
         @Body() createReportDto: CreateReportDto,
         @GetCurrentUser("id") userScopeId: string,
     ) {
-        return this.reportService.create(userScopeId, createReportDto);
-    }
-
-    @Get(":id")
-    @SerializeOptions({ type: ReportEntity })
-    async findOne(@Param("id", ParseUUIDPipe) id: string) {
-        return this.reportService.findUnique({
-            id,
-        });
+        return this.reportService.upsert(userScopeId, createReportDto);
     }
 
     @Get("project-group/:projectGroupId")
@@ -75,20 +65,5 @@ export class ReportController {
             projectGroupName,
             reportSectionName,
         );
-    }
-
-    @Patch(":id")
-    @SerializeOptions({ type: ReportEntity })
-    async update(
-        @Param("id", ParseUUIDPipe) id: string,
-        @Body() updateReportDto: UpdateReportDto,
-    ) {
-        return this.reportService.update(id, updateReportDto);
-    }
-
-    @Delete(":id")
-    @SerializeOptions({ type: ReportEntity })
-    async remove(@Param("id", ParseUUIDPipe) id: string) {
-        return this.reportService.remove(id);
     }
 }

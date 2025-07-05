@@ -81,26 +81,8 @@ export const ROUTER = createBrowserRouter([
                         Component: TeacherPromotionReportsPage,
                     },
                     {
-                        path: "reports/:projectName",
-                        element: <Outlet />,
-                        children: [
-                            {
-                                path: "",
-                                element: <Outlet />,
-                            },
-                            {
-                                path: ":groupName",
-                                Component: TeacherPromotionReportsView,
-                                children: [
-                                    {
-                                        path: "",
-                                    },
-                                    {
-                                        path: ":sectionReportName",
-                                    },
-                                ],
-                            },
-                        ],
+                        path: "reports/:projectName/:groupName",
+                        Component: TeacherPromotionReportsView,
                     },
                     {
                         path: "projects/:projectName",

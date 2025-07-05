@@ -6,68 +6,61 @@ import {
     CardContent,
 } from "@/components/ui/card";
 import { ReportSection } from "@/types/ReportSection";
-import { Report, ReportUpdateRequest } from "@/types/Report";
-import { zodResolver } from "@hookform/resolvers/zod";
 import MDEditor from "@uiw/react-md-editor";
-import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useDebounce } from "use-debounce";
-import { z } from "zod";
-
-const schema = z.object({
-    content: z.string().optional(),
-});
+import { useContext, useMemo, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { StudentPromotionProjectContext } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
+import { toast } from "sonner";
+import { ReportService } from "@/services/reportService/ReportService";
+import { ApiException } from "@/services/api/ApiException";
 
 type StudentProjectDeliverableReportCardProps = {
     reportSection: ReportSection;
-    onSave: (
-        content: string,
-        reportSection: ReportSection,
-        report?: Report,
-    ) => void;
-    report?: Report;
 };
 
 export const StudentProjectDeliverableReportCard = ({
     reportSection,
-    onSave,
-    report,
 }: StudentProjectDeliverableReportCardProps) => {
     const {
-        watch,
-        control,
-        formState: { errors },
-    } = useForm<ReportUpdateRequest>({
-        resolver: zodResolver(schema),
-        defaultValues: {
-            content: report?.content ?? "",
-        },
-    });
+        studentProjectGroup,
+        studentProjectGroupReports,
+        getPromotionProject,
+    } = useContext(StudentPromotionProjectContext);
 
-    const watchedContent = watch("content");
-    const [debouncedContent] = useDebounce(watchedContent, 500);
+    const report = studentProjectGroupReports.find(
+        (report) => report.reportSectionId === reportSection.id,
+    );
 
-    const lastSentValuesRef = useRef<ReportUpdateRequest>({
-        content: report?.content ?? "",
-    });
+    const reportService = useMemo(() => new ReportService(), []);
 
-    useEffect(() => {
-        const values = {
-            content: debouncedContent,
-        };
+    const [content, setContent] = useState(report?.content ?? "");
 
-        const result = schema.safeParse(values);
-        if (result.success) {
-            const lastSent = lastSentValuesRef.current;
-            const hasChanged =
-                JSON.stringify(lastSent) !== JSON.stringify(result.data);
-
-            if (hasChanged) {
-                lastSentValuesRef.current = result.data;
-                onSave(result.data.content ?? "", reportSection, report);
+    const onUpdateDebounced = useDebouncedCallback(async (content: string) => {
+        try {
+            await reportService.upsert({
+                content,
+                projectGroupId: studentProjectGroup!.id,
+                reportSectionId: reportSection.id,
+            });
+            toast.success(
+                `Report ${report ? "updated" : "created"} successfully`,
+            );
+            getPromotionProject();
+        } catch (error) {
+            if (error instanceof ApiException) {
+                toast.error(error.message);
             }
         }
-    }, [debouncedContent, onSave, report, reportSection]);
+    }, 250);
+
+    const onContentChange = async (content: string = "") => {
+        if (!studentProjectGroup) {
+            toast.error("You must be in a project group to create a report");
+            return;
+        }
+        setContent(content);
+        await onUpdateDebounced(content);
+    };
 
     return (
         <Card>
@@ -80,26 +73,15 @@ export const StudentProjectDeliverableReportCard = ({
             <CardContent className="flex gap-4">
                 <div className="flex flex-col flex-grow-1 gap-2">
                     <div className="flex flex-col gap-2">
-                        <Controller
-                            name="content"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <div className="flex flex-col gap-2">
-                                    <MDEditor
-                                        data-color-mode="light"
-                                        id="content"
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        onBlur={field.onBlur}
-                                        className="min-h-[300px] w-full border rounded p-2"
-                                    />
-                                    <p className="text-red-500">
-                                        {errors.content?.message}
-                                    </p>
-                                </div>
-                            )}
-                        />
+                        <div className="flex flex-col gap-2">
+                            <MDEditor
+                                data-color-mode="light"
+                                id="content"
+                                value={content}
+                                onChange={onContentChange}
+                                className="min-h-[300px] w-full border rounded p-2"
+                            />
+                        </div>
                     </div>
                 </div>
             </CardContent>

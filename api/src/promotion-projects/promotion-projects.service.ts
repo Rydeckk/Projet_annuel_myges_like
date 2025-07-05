@@ -245,6 +245,9 @@ export class PromotionProjectsService {
                     include: {
                         reports: true,
                     },
+                    orderBy: {
+                        order: "asc",
+                    },
                 },
             },
         });

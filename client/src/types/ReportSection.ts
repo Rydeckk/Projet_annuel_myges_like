@@ -3,13 +3,15 @@ import { Report } from "./Report";
 
 export type ReportSection = {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   title: string;
   description: string;
   order: number;
   promotionProjectId: string;
-  promotionProject: PromotionProject;
   teacherId: string;
-  reports: Report[];
+  reports?: Report[];
+  promotionProject?: PromotionProject;
 };
 
 export type ReportSectionRequest = {
@@ -18,8 +20,8 @@ export type ReportSectionRequest = {
   promotionProjectId: string;
 };
 
-export type ReportSectionUpdateRequest = {
-  title?: string;
-  description?: string;
-  order?: number;
-};
+export type ReportSectionUpdateRequest = Partial<{
+  title: string;
+  description: string;
+  order: number;
+}> & { promotionProjectId: string };

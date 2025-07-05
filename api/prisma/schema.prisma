@@ -200,7 +200,7 @@ model ProjectGroup {
   projectGroupStudents ProjectGroupStudent[]
   deliverables         Deliverable[]
   projectGroupResult   ProjectGroupResult?
-  report               Report[]
+  reports              Report[]
   defense              Defense?
 
   @@map("project_group")
@@ -239,7 +239,7 @@ model ReportSection {
   id          String   @id @default(uuid())
   title       String
   description String   @default("")
-  order       Int      
+  order       Int
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 

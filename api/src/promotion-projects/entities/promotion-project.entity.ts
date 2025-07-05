@@ -2,6 +2,7 @@ import { MalusTimeType, ProjectGroupRule } from "@prisma/client";
 import { Type } from "class-transformer";
 import { ProjectGroupEntity } from "src/project-groups/entities/project-group.entity";
 import { ProjectEntity } from "src/projects/entities/project.entity";
+import { ReportSectionEntity } from "src/report-sections/entities/report-section.entity";
 
 export class PromotionProjectEntity {
     id: string;
@@ -26,6 +27,9 @@ export class PromotionProjectEntity {
 
     @Type(() => ProjectGroupEntity)
     projectGroups?: ProjectGroupEntity[];
+
+    @Type(() => ReportSectionEntity)
+    reportSections?: ReportSectionEntity[];
 
     constructor(partial: Partial<PromotionProjectEntity>) {
         Object.assign(this, partial);

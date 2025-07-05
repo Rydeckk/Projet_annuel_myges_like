@@ -2,7 +2,6 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
     Param,
     ParseUUIDPipe,
     Patch,
@@ -10,12 +9,13 @@ import {
     SerializeOptions,
 } from "@nestjs/common";
 import { ReportSectionsService } from "./report-sections.service";
-import { ReportSectionsEntity } from "./entities/report-sections.entity";
+import { ReportSectionEntity } from "./entities/report-section.entity";
 import { GetCurrentUser } from "decorators/user.decorator";
 import {
     CreateReportSectionsDto,
+    DeleteReportSectionDto,
     UpdateReportSectionsDto,
-} from "./dto/report-sections.dto";
+} from "./dto/report-section.dto";
 
 @Controller("report-sections")
 export class ReportSectionsController {
@@ -24,7 +24,7 @@ export class ReportSectionsController {
     ) {}
 
     @Post()
-    @SerializeOptions({ type: ReportSectionsEntity })
+    @SerializeOptions({ type: ReportSectionEntity })
     async create(
         @Body() createReportSectionsDto: CreateReportSectionsDto,
         @GetCurrentUser("id") userScopeId: string,
@@ -35,28 +35,31 @@ export class ReportSectionsController {
         );
     }
 
-    @Get("promotion-project/:promotionProjectId")
-    @SerializeOptions({ type: ReportSectionsEntity })
-    async findAll(
-        @Param("promotionProjectId", ParseUUIDPipe) promotionProjectId: string,
-    ) {
-        return this.reportSectionsService.findAll({
-            promotionProjectId: promotionProjectId,
-        });
-    }
-
     @Patch(":id")
-    @SerializeOptions({ type: ReportSectionsEntity })
+    @SerializeOptions({ type: ReportSectionEntity })
     async update(
         @Param("id", ParseUUIDPipe) id: string,
         @Body() updateReportSectionsDto: UpdateReportSectionsDto,
+        @GetCurrentUser("id") userScopeId: string,
     ) {
-        return this.reportSectionsService.update(id, updateReportSectionsDto);
+        return this.reportSectionsService.update(
+            id,
+            userScopeId,
+            updateReportSectionsDto,
+        );
     }
 
     @Delete(":id")
-    @SerializeOptions({ type: ReportSectionsEntity })
-    async remove(@Param("id", ParseUUIDPipe) id: string) {
-        return this.reportSectionsService.delete(id);
+    @SerializeOptions({ type: ReportSectionEntity })
+    async remove(
+        @Param("id", ParseUUIDPipe) id: string,
+        @GetCurrentUser("id") userScopeId: string,
+        @Body() deleteReportSectionDto: DeleteReportSectionDto,
+    ) {
+        return this.reportSectionsService.delete(
+            id,
+            userScopeId,
+            deleteReportSectionDto,
+        );
     }
 }

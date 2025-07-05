@@ -22,13 +22,6 @@ export class ReportSectionsService {
         });
     }
 
-    async findAll(promotionProjectId: string) {
-        return this.api.request<ReportSection[]>({
-            path: `${REPORT_SECTIONS_PATH}/promotion-project/${promotionProjectId}`,
-            method: "GET",
-        });
-    }
-
     async update(reportSectionId: string, data: ReportSectionUpdateRequest) {
         return this.api.request<ReportSection>({
             path: `${REPORT_SECTIONS_PATH}/${reportSectionId}`,
@@ -37,10 +30,13 @@ export class ReportSectionsService {
         });
     }
 
-    async delete(reportSectionId: string) {
+    async delete(reportSectionId: string, promotionProjectId: string) {
         return this.api.request<ReportSection>({
             path: `${REPORT_SECTIONS_PATH}/${reportSectionId}`,
             method: "DELETE",
+            data: {
+                promotionProjectId,
+            },
         });
     }
 }

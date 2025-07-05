@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { StudentPromotionProjectContext } from "../../contexts/StudentPromotionProjectContext";
 import { StudentProjectDetailCard } from "./components/studentProjectDetailCard/StudentProjectDetailCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StudentProjectDeliverablePage } from "../studentProjectDeliverablePage/StudentProjectDeliverablePage";
 import { StudentProjectGroupsPage } from "../studentProjectGroupsPage/StudentProjectGroupsPage";
+import { StudentProjectReports } from "../studentProjectDeliverablePage/components/studentProjectReports/StudentProjectReports";
 
 export const StudentProjectDetailPage = () => {
     const { promotionProject, studentProjectGroup } = useContext(
@@ -49,10 +49,10 @@ export const StudentProjectDetailPage = () => {
             <TabsContent value="project-groups">
                 <StudentProjectGroupsPage />
             </TabsContent>
-            <TabsContent value="report-sections"></TabsContent>
-            <TabsContent value="deliverable">
-                <StudentProjectDeliverablePage />
+            <TabsContent value="report-sections">
+                <StudentProjectReports />
             </TabsContent>
+            <TabsContent value="deliverable">Deliverable sections</TabsContent>
         </Tabs>
     );
 };

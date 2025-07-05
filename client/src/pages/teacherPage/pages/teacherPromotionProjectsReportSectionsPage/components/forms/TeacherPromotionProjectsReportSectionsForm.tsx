@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TeacherPromotionDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
+import { Textarea } from "@/components/ui/textarea";
+import { TeacherPromotionProjectDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
 import { ReportSectionRequest } from "@/types/ReportSection";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
 import { z } from "zod";
 
 const schema = z.object({
@@ -22,8 +22,9 @@ type TeacherPromotionProjectsReportSectionsFormProps = {
 export const TeacherPromotionProjectsReportSectionsForm = ({
     onSubmit,
 }: TeacherPromotionProjectsReportSectionsFormProps) => {
-    const { promotion } = useContext(TeacherPromotionDetailContext);
-    const { projectName } = useParams();
+    const { promotionProject } = useContext(
+        TeacherPromotionProjectDetailContext,
+    );
 
     const {
         register,
@@ -32,13 +33,7 @@ export const TeacherPromotionProjectsReportSectionsForm = ({
     } = useForm<ReportSectionRequest>({
         resolver: zodResolver(schema),
         defaultValues: {
-            title: "",
-            description: "",
-            promotionProjectId:
-                promotion?.promotionProjects?.find(
-                    (promotionProject) =>
-                        promotionProject.project?.name === projectName,
-                )?.id || "",
+            promotionProjectId: promotionProject?.id,
         },
     });
 
@@ -54,7 +49,7 @@ export const TeacherPromotionProjectsReportSectionsForm = ({
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="description">Description</Label>
-                <textarea
+                <Textarea
                     id="description"
                     className="border rounded p-2"
                     rows={4}

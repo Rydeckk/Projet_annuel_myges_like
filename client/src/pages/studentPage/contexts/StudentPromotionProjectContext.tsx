@@ -2,6 +2,7 @@ import { ApiException } from "@/services/api/ApiException";
 import { PromotionProjectService } from "@/services/promotionProjectService/PromotionProjectService";
 import { ProjectGroup } from "@/types/ProjectGroup";
 import { PromotionProject } from "@/types/PromotionProject";
+import { Report } from "@/types/Report";
 import { decodeToken } from "@/utils/jwt";
 import Cookies from "js-cookie";
 import {
@@ -18,12 +19,14 @@ import { toast } from "sonner";
 type ContextProps = {
     promotionProject: PromotionProject | null;
     studentProjectGroup: ProjectGroup | null;
+    studentProjectGroupReports: Report[];
     getPromotionProject: () => Promise<void>;
 };
 
 const StudentPromotionProjectContext = createContext<ContextProps>({
     promotionProject: null,
     studentProjectGroup: null,
+    studentProjectGroupReports: [],
     getPromotionProject: async () => {},
 });
 
@@ -57,6 +60,17 @@ const StudentPromotionProjectContextProvider = ({ children }: Props) => {
         [promotionProject?.projectGroups, studentId],
     );
 
+    const studentProjectGroupReports = useMemo(
+        () =>
+            (promotionProject?.reportSections ?? []).flatMap((sectionReport) =>
+                (sectionReport?.reports ?? []).filter(
+                    (report) =>
+                        report.projectGroupId === studentProjectGroup?.id,
+                ),
+            ),
+        [promotionProject?.reportSections, studentProjectGroup?.id],
+    );
+
     const getPromotionProject = useCallback(async () => {
         try {
             const promotionProjectData =
@@ -76,8 +90,18 @@ const StudentPromotionProjectContextProvider = ({ children }: Props) => {
     }, []);
 
     const data = useMemo(
-        () => ({ promotionProject, studentProjectGroup, getPromotionProject }),
-        [promotionProject, studentProjectGroup, getPromotionProject],
+        () => ({
+            promotionProject,
+            studentProjectGroup,
+            getPromotionProject,
+            studentProjectGroupReports,
+        }),
+        [
+            promotionProject,
+            studentProjectGroup,
+            getPromotionProject,
+            studentProjectGroupReports,
+        ],
     );
 
     return (

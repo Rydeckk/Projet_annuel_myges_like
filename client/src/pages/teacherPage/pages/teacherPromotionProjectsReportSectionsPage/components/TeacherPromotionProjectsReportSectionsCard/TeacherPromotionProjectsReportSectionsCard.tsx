@@ -13,87 +13,112 @@ import {
     ReportSectionUpdateRequest,
 } from "@/types/ReportSection";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef } from "react";
+import { useContext, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useDebounce } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { ReportSectionsService } from "@/services/reportSectionsService/ReportSectionsService";
+import { TeacherPromotionProjectDetailContext } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
+import { ApiException } from "@/services/api/ApiException";
+import { Textarea } from "@/components/ui/textarea";
 
 const schema = z.object({
     title: z.string().nonempty().optional(),
     description: z.string().optional(),
-    order: z
-        .number()
-        .optional()
-        .refine((val) => val === undefined || val > 0, {
-            message: "Order must be greater than 0",
-        }),
+    order: z.number().optional(),
+    promotionProjectId: z.string().uuid(),
 });
 
 type TeacherPromotionProjectsReportSectionsCardProps = {
     sectionReport: ReportSection;
-    onUpdate: (id: string, updated: ReportSectionUpdateRequest) => void;
-    onDelete: (id: string) => void;
 };
 
 export const TeacherPromotionProjectsReportSectionsCard = ({
     sectionReport,
-    onUpdate,
-    onDelete,
 }: TeacherPromotionProjectsReportSectionsCardProps) => {
+    const { promotionProject, getPromotionProject } = useContext(
+        TeacherPromotionProjectDetailContext,
+    );
+
     const {
         register,
-        watch,
         formState: { errors },
     } = useForm<ReportSectionUpdateRequest>({
         resolver: zodResolver(schema),
         defaultValues: {
-            title: sectionReport.title ?? "",
-            description: sectionReport.description ?? "",
+            title: sectionReport.title,
+            description: sectionReport.description,
             order: sectionReport.order,
+            promotionProjectId: sectionReport.promotionProjectId,
         },
     });
 
-    const watchedTitle = watch("title");
-    const watchedDescription = watch("description");
-    const watchedOrder = watch("order");
-    const [debouncedTitle] = useDebounce(watchedTitle, 500);
-    const [debouncedDescription] = useDebounce(watchedDescription, 500);
-    const [debouncedOrder] = useDebounce(watchedOrder, 500);
+    const reportSectionsService = useMemo(
+        () => new ReportSectionsService(),
+        [],
+    );
 
-    const lastSentValuesRef = useRef<ReportSectionUpdateRequest>({
-        title: sectionReport.title ?? "",
-        description: sectionReport.description ?? "",
-        order: sectionReport.order,
-    });
+    const reportSections = promotionProject?.reportSections ?? [];
 
-    useEffect(() => {
-        const values = {
-            title: debouncedTitle,
-            description: debouncedDescription,
-            order: debouncedOrder,
-        };
+    const onUpdateDebounced = useDebouncedCallback(
+        async (id: string, updatedSection: ReportSectionUpdateRequest) => {
+            try {
+                await reportSectionsService.update(id, updatedSection);
+                getPromotionProject();
+                toast.success("Section updated successfully");
+            } catch (error) {
+                if (error instanceof ApiException) {
+                    toast.error(error.message);
+                }
+            }
+        },
+        250,
+    );
 
-        const result = schema.safeParse(values);
-        if (result.success) {
-            const lastSent = lastSentValuesRef.current;
-            const hasChanged =
-                JSON.stringify(lastSent) !== JSON.stringify(result.data);
+    const onReportSectionUpdateChange = async (
+        key: keyof Omit<ReportSectionUpdateRequest, "order">,
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        await onUpdateDebounced(sectionReport.id, {
+            ...sectionReport,
+            [key]: e.target.value,
+        });
+    };
 
-            if (hasChanged) {
-                lastSentValuesRef.current = result.data;
-                onUpdate(sectionReport.id, result.data);
+    const onUpdateOrder = async (
+        updatedSection: ReportSectionUpdateRequest,
+    ) => {
+        try {
+            await reportSectionsService.update(
+                sectionReport.id,
+                updatedSection,
+            );
+            await getPromotionProject();
+            toast.success("Section updated successfully");
+        } catch (error) {
+            if (error instanceof ApiException) {
+                toast.error(error.message);
             }
         }
-    }, [
-        debouncedTitle,
-        debouncedDescription,
-        debouncedOrder,
-        onUpdate,
-        sectionReport.id,
-    ]);
+    };
+
+    const onDelete = async (id: string) => {
+        try {
+            await reportSectionsService.delete(
+                id,
+                sectionReport.promotionProjectId,
+            );
+            await getPromotionProject();
+            toast.success("Section deleted successfully");
+        } catch (error) {
+            if (error instanceof ApiException) {
+                toast.error(error.message);
+            }
+        }
+    };
 
     return (
         <Card>
@@ -104,49 +129,53 @@ export const TeacherPromotionProjectsReportSectionsCard = ({
             <CardContent className="flex gap-4">
                 <div className="flex flex-col justify-evenly gap-2">
                     {sectionReport.order > 1 && (
-                        <ArrowUp
-                            className="cursor-pointer text-muted-foreground hover:text-primary"
-                            onClick={() => {
-                                const nextValue = sectionReport.order - 1;
-                                const result = schema.safeParse({
-                                    order: nextValue,
-                                });
-                                if (result.success) {
-                                    onUpdate(sectionReport.id, result.data);
-                                } else {
-                                    toast.error(result.error.errors[0].message);
-                                }
-                            }}
-                        />
-                    )}
-                    <ArrowDown
-                        className="cursor-pointer text-muted-foreground hover:text-primary"
-                        onClick={() => {
-                            const nextValue = sectionReport.order + 1;
-                            const result = schema.safeParse({
-                                order: nextValue,
-                            });
-                            if (result.success) {
-                                onUpdate(sectionReport.id, result.data);
-                            } else {
-                                toast.error(result.error.message);
+                        <Button
+                            onClick={() =>
+                                onUpdateOrder({
+                                    ...sectionReport,
+                                    order: sectionReport.order - 1,
+                                })
                             }
-                        }}
-                    />
+                        >
+                            <ArrowUp />
+                        </Button>
+                    )}
+                    {reportSections.length !== sectionReport.order && (
+                        <Button
+                            onClick={() =>
+                                onUpdateOrder({
+                                    ...sectionReport,
+                                    order: sectionReport.order + 1,
+                                })
+                            }
+                        >
+                            <ArrowDown />
+                        </Button>
+                    )}
                 </div>
                 <div className="flex flex-col flex-grow-1 gap-2">
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="title">Titre</Label>
-                        <Input id="title" type="text" {...register("title")} />
+                        <Input
+                            id="title"
+                            type="text"
+                            {...register("title")}
+                            onChange={(e) =>
+                                onReportSectionUpdateChange("title", e)
+                            }
+                        />
                         <p className="text-red-500">{errors.title?.message}</p>
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="description">Description</Label>
-                        <textarea
+                        <Textarea
                             id="description"
                             className="border rounded p-2 resize-none"
                             rows={4}
                             {...register("description")}
+                            onChange={(e) =>
+                                onReportSectionUpdateChange("description", e)
+                            }
                         />
                         <p className="text-red-500">
                             {errors.description?.message}

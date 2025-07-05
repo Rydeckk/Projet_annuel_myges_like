@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateReportDto, UpdateReportDto } from "./dto/report.dto";
+import { CreateReportDto } from "./dto/report.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Prisma } from "@prisma/client";
 
@@ -7,11 +7,25 @@ import { Prisma } from "@prisma/client";
 export class ReportService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async create(studentId: string, data: CreateReportDto) {
-        return this.prisma.report.create({
-            data: {
-                ...data,
+    async upsert(
+        studentId: string,
+        { content, projectGroupId, reportSectionId }: CreateReportDto,
+    ) {
+        return this.prisma.report.upsert({
+            where: {
+                projectGroupId_reportSectionId: {
+                    projectGroupId,
+                    reportSectionId,
+                },
+            },
+            create: {
+                content,
+                projectGroupId,
+                reportSectionId,
                 createdByStudentId: studentId,
+            },
+            update: {
+                content,
             },
         });
     }
@@ -22,7 +36,7 @@ export class ReportService {
             include: {
                 projectGroup: {
                     include: {
-                        report: true,
+                        reports: true,
                         projectGroupStudents: {
                             include: {
                                 student: {
@@ -50,12 +64,6 @@ export class ReportService {
                     order: "asc",
                 },
             },
-        });
-    }
-
-    async findUnique(where: Prisma.ReportWhereUniqueInput) {
-        return this.prisma.report.findUnique({
-            where,
         });
     }
 
@@ -103,18 +111,5 @@ export class ReportService {
         return {
             content: reports.map((report) => report.content).join("\n\n"),
         };
-    }
-
-    async update(id: string, data: UpdateReportDto) {
-        return this.prisma.report.update({
-            where: { id },
-            data,
-        });
-    }
-
-    async remove(id: string) {
-        return this.prisma.report.delete({
-            where: { id },
-        });
     }
 }

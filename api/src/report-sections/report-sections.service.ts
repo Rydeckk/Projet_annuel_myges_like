@@ -2,118 +2,139 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import {
     CreateReportSectionsDto,
+    DeleteReportSectionDto,
     UpdateReportSectionsDto,
-} from "./dto/report-sections.dto";
-import { Prisma } from "@prisma/client";
+} from "./dto/report-section.dto";
 
 @Injectable()
 export class ReportSectionsService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async getLastOrder(promotionProjectId: string) {
-        const reportSectionFind = await this.prisma.reportSection.findFirst({
-            where: {
-                promotionProjectId,
-            },
-            orderBy: {
-                order: "desc",
-            },
-        });
-
-        return reportSectionFind ? reportSectionFind.order + 1 : 1;
-    }
-
-    async updateOrder(id: string, newOrder: number, isDelete: boolean = false) {
-        const reportSectionUpdated = await this.prisma.reportSection.findUnique(
-            {
-                where: { id: id },
-            },
-        );
-
-        if (!reportSectionUpdated) {
-            throw new Error("Report section not found");
-        }
-
-        if (newOrder === reportSectionUpdated.order && isDelete === false) {
-            return;
-        }
-
-        if (reportSectionUpdated.order < newOrder || isDelete) {
-            await this.prisma.reportSection.updateMany({
+    async create(teacherId: string, data: CreateReportSectionsDto) {
+        const aboveOneLastOrder =
+            (await this.prisma.reportSection.count({
                 where: {
-                    promotionProjectId: reportSectionUpdated.promotionProjectId,
-                    order: isDelete
-                        ? { gt: reportSectionUpdated.order }
-                        : { gt: reportSectionUpdated.order, lte: newOrder },
-                },
-                data: {
-                    order: { decrement: 1 },
-                },
-            });
-        } else {
-            await this.prisma.reportSection.updateMany({
-                where: {
-                    promotionProjectId: reportSectionUpdated.promotionProjectId,
-                    order: {
-                        gte: newOrder,
-                        lt: reportSectionUpdated.order,
+                    createdByTeacher: {
+                        id: teacherId,
+                    },
+                    promotionProject: {
+                        id: data.promotionProjectId,
                     },
                 },
-                data: {
-                    order: { increment: 1 },
-                },
-            });
-        }
-    }
-
-    async create(teacherId: string, data: CreateReportSectionsDto) {
-        const order = await this.getLastOrder(data.promotionProjectId);
+            })) + 1;
 
         return this.prisma.reportSection.create({
             data: {
                 ...data,
-                order: order,
-                teacherId: teacherId,
+                order: aboveOneLastOrder,
+                teacherId,
             },
         });
     }
 
-    async findAll(where: Prisma.ReportSectionWhereInput) {
-        return this.prisma.reportSection.findMany({
-            where,
-            orderBy: {
-                order: "asc",
-            },
-            include: {
-                reports: true,
-            },
+    async update(
+        reportSectionId: string,
+        teacherId: string,
+        { promotionProjectId, ...data }: UpdateReportSectionsDto,
+    ) {
+        const promotionReportSections =
+            await this.prisma.reportSection.findMany({
+                where: {
+                    promotionProjectId,
+                    teacherId,
+                },
+                orderBy: {
+                    order: "asc",
+                },
+            });
+
+        const currentReportSectionIndex = promotionReportSections.findIndex(
+            ({ id }) => id === reportSectionId,
+        );
+
+        const isOrderHigherThanCurrent =
+            data.order >
+            promotionReportSections[currentReportSectionIndex].order;
+
+        const isOrderLowerThanCurrent =
+            data.order <
+            promotionReportSections[currentReportSectionIndex].order;
+
+        const previousReportSection =
+            promotionReportSections[currentReportSectionIndex - 1];
+
+        const nextReportSection =
+            promotionReportSections[currentReportSectionIndex + 1];
+
+        return this.prisma.$transaction(async (tx) => {
+            if (isOrderLowerThanCurrent) {
+                await tx.reportSection.update({
+                    where: { id: previousReportSection.id },
+                    data: {
+                        order: Math.min(
+                            promotionReportSections.length,
+                            previousReportSection.order + 1,
+                        ),
+                    },
+                });
+            }
+
+            if (isOrderHigherThanCurrent) {
+                await tx.reportSection.update({
+                    where: { id: nextReportSection.id },
+                    data: {
+                        order: Math.max(nextReportSection.order - 1, 1),
+                    },
+                });
+            }
+
+            return tx.reportSection.update({
+                where: { id: reportSectionId },
+                data,
+            });
         });
     }
 
-    async update(id: string, data: UpdateReportSectionsDto) {
-        if (data.order) {
-            await this.updateOrder(id, data.order);
-        }
+    async delete(
+        reportSectionId: string,
+        teacherId: string,
+        { promotionProjectId }: DeleteReportSectionDto,
+    ) {
+        const promotionReportSections =
+            await this.prisma.reportSection.findMany({
+                where: {
+                    promotionProjectId,
+                    teacherId,
+                },
+                orderBy: {
+                    order: "asc",
+                },
+            });
 
-        return this.prisma.reportSection.update({
-            where: { id: id },
-            data: data,
-        });
-    }
+        const currentReportSectionIndex = promotionReportSections.findIndex(
+            ({ id }) => id === reportSectionId,
+        );
 
-    async delete(id: string) {
-        const reportSection = await this.prisma.reportSection.findUnique({
-            where: { id: id },
-        });
+        const slicedReportSections = promotionReportSections
+            .slice(currentReportSectionIndex + 1)
+            .map(({ id }) => id);
 
-        if (!reportSection) {
-            throw new Error("Report section not found");
-        }
+        return this.prisma.$transaction(async (tx) => {
+            await tx.reportSection.updateMany({
+                where: {
+                    promotionProjectId,
+                    id: { in: slicedReportSections },
+                },
+                data: {
+                    order: {
+                        decrement: 1,
+                    },
+                },
+            });
 
-        await this.updateOrder(id, reportSection.order, true);
-
-        return this.prisma.reportSection.delete({
-            where: { id: id },
+            return tx.reportSection.delete({
+                where: { id: reportSectionId },
+            });
         });
     }
 }
