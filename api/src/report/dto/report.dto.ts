@@ -1,14 +1,13 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class CreateReportDto {
     @IsNotEmpty()
     @IsString()
     content: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsUUID()
     projectGroupId: string;
-}
 
-export class UpdateReportDto extends PartialType(CreateReportDto) {}
+    @IsUUID()
+    reportSectionId: string;
+}

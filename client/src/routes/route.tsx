@@ -8,12 +8,16 @@ import { TeacherProjectPage } from "@/pages/teacherPage/pages/teacherProjectPage
 import { TeacherPromotionProjectsPage } from "@/pages/teacherPage/pages/teacherPromotionProjectsPage/TeacherPromotionProjectsPage";
 import { TeacherPromotionStudentsPage } from "@/pages/teacherPage/pages/teacherPromotionStudentsPage/TeacherPromotionStudentsPage";
 import { TeacherPromotionsPage } from "@/pages/teacherPage/pages/teacherPromotionsPage/components/TeacherPromotionsPage";
-import { TeacherPromotionContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionContext";
-import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/contexts/PromotionDetailContext";
+import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionDetailContext";
 import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPromotionDetailPage/TeacherPromotionDetailPage";
 import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPage/StudentProjectsPage";
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
-import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
+import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
+import { TeacherPromotionReportsPage } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/TeacherPromotionReportsPage";
+import { TeacherPromotionReportsView } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/components/teacherPromotionReportsView/TeacherPromotionReportsView";
+import { TeacherPromotionProjectDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
+import { TeacherPromotionProjectDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/TeacherPromotionProjectDetailPage";
+import { TeacherProjectGroup } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/pages/teacherProjectGroup/TeacherProjectGroup";
 
 export const ROUTER = createBrowserRouter([
     {
@@ -27,16 +31,18 @@ export const ROUTER = createBrowserRouter([
             {
                 path: "projects",
                 Component: StudentProjectPage,
+            },
+            {
+                path: "projects/:projectName",
+                element: (
+                    <StudentPromotionProjectContextProvider>
+                        <Outlet />
+                    </StudentPromotionProjectContextProvider>
+                ),
                 children: [
                     {
-                        path: ":projectName",
+                        path: "",
                         Component: StudentProjectDetailPage,
-                        children: [
-                            {
-                                path: "groups",
-                                Component: StudentProjectGroupsPage,
-                            },
-                        ],
                     },
                 ],
             },
@@ -48,35 +54,51 @@ export const ROUTER = createBrowserRouter([
         children: [
             {
                 path: "promotions",
+                Component: TeacherPromotionsPage,
+            },
+            {
+                path: "promotions/:promotionName",
                 element: (
-                    <TeacherPromotionContextProvider>
+                    <TeacherPromotionDetailContextProvider>
                         <Outlet />
-                    </TeacherPromotionContextProvider>
+                    </TeacherPromotionDetailContextProvider>
                 ),
                 children: [
                     {
                         path: "",
-                        Component: TeacherPromotionsPage,
+                        Component: TeacherPromotionDetailPage,
                     },
                     {
-                        path: ":promotionName",
+                        path: "students",
+                        Component: TeacherPromotionStudentsPage,
+                    },
+                    {
+                        path: "projects",
+                        Component: TeacherPromotionProjectsPage,
+                    },
+                    {
+                        path: "reports",
+                        Component: TeacherPromotionReportsPage,
+                    },
+                    {
+                        path: "reports/:projectName/:groupName",
+                        Component: TeacherPromotionReportsView,
+                    },
+                    {
+                        path: "projects/:projectName",
                         element: (
-                            <TeacherPromotionDetailContextProvider>
+                            <TeacherPromotionProjectDetailContextProvider>
                                 <Outlet />
-                            </TeacherPromotionDetailContextProvider>
+                            </TeacherPromotionProjectDetailContextProvider>
                         ),
                         children: [
                             {
                                 path: "",
-                                Component: TeacherPromotionDetailPage,
+                                Component: TeacherPromotionProjectDetailPage,
                             },
                             {
-                                path: "students",
-                                Component: TeacherPromotionStudentsPage,
-                            },
-                            {
-                                path: "projects",
-                                Component: TeacherPromotionProjectsPage,
+                                path: "groups",
+                                Component: TeacherProjectGroup,
                             },
                         ],
                     },

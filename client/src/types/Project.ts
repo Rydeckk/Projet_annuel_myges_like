@@ -2,15 +2,15 @@ import { ProjectVisibility } from "@/enums/ProjectVisibility";
 
 export type ProjectRequest = {
   name: string;
-  description: string;
+  description?: string;
   projectVisibility: ProjectVisibility;
-  file: File;
+  file?: File;
 };
 
 export type Project = {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   fileName: string | null;
   path: string | null;
   fileSize: number | null;

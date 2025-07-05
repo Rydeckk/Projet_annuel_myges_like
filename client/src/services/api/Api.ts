@@ -38,7 +38,7 @@ export class Api {
 
       if (
         data &&
-        ["POST", "PUT", "PATCH"].includes(method.toUpperCase()) &&
+        ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase()) &&
         contentType === DEFAULT_CONTENT_TYPE
       ) {
         options.body = JSON.stringify(data);
