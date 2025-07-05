@@ -500,13 +500,15 @@ async function main() {
   const deliverable = await prisma.deliverable.create({
     data: {
       name: 'Livrable final - v1.0',
-      descritpion: 'Version finale de notre application web',
+      description: 'Version finale de notre application web',
+      type: 'ARCHIVE',
+      deadline: new Date('2025-08-15T23:59:59.000Z'),
       projectGroupId: group1.id,
       uploadedByStudentId: students[0].student!.id,
       deliverableArchive: {
         create: {
-          name: 'projet-web-alpha-v1.0.zip',
-          path: '/uploads/2025/projet-web-alpha-v1.0.zip',
+            name: "projet-web-alpha-v1.0.zip",
+                    path: "/uploads/2025/projet-web-alpha-v1.0.zip",
           fileSize: 25 * 1024 * 1024 // 25MB
         }
       }
