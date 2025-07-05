@@ -13,6 +13,7 @@ import { ProjectsModule } from "./projects/projects.module";
 import { PromotionProjectsModule } from "./promotion-projects/promotion-projects.module";
 import { ReportModule } from "./report/report.module";
 import { ProjectGroupsModule } from "./project-groups/project-groups.module";
+import { ReportSectionsModule } from "./report-sections/report-sections.module";
 import { ProjectGroupStudentsModule } from "./project-group-students/project-group-students.module";
 
 @Module({
@@ -31,6 +32,7 @@ import { ProjectGroupStudentsModule } from "./project-group-students/project-gro
         PromotionProjectsModule,
         ReportModule,
         ProjectGroupsModule,
+        ReportSectionsModule,
         ProjectGroupStudentsModule,
     ],
     providers: [

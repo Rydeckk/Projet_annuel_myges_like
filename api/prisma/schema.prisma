@@ -200,7 +200,7 @@ model ProjectGroup {
   projectGroupStudents ProjectGroupStudent[]
   deliverables         Deliverable[]
   projectGroupResult   ProjectGroupResult?
-  report               Report[]
+  reports              Report[]
   defense              Defense?
 
   @@map("project_group")
@@ -231,15 +231,17 @@ model Report {
   reportSection      ReportSection @relation(fields: [reportSectionId], references: [id], onDelete: Cascade)
   reportSectionId    String        @map("report_section_id")
 
-  @@unique([projectGroupId])
+  @@unique([projectGroupId, reportSectionId])
   @@map("report")
 }
 
 model ReportSection {
-  id        String   @id @default(uuid())
-  title     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  id          String   @id @default(uuid())
+  title       String
+  description String   @default("")
+  order       Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   promotionProject   PromotionProject @relation(fields: [promotionProjectId], references: [id], onDelete: Cascade)
   promotionProjectId String           @map("promotion_project_id")
@@ -247,6 +249,7 @@ model ReportSection {
   teacherId          String           @map("teacher_id")
   reports            Report[]
 
+  @@unique([title, promotionProjectId])
   @@map("report_section")
 }
 

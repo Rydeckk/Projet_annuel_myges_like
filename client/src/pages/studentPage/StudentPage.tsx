@@ -1,4 +1,5 @@
 import { AppSidebar, NavData } from "@/components/sidebar/AppSidebar";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { AuthentifiedWrapper } from "@/components/wrappers/AuthentifiedWrapper";
 import { StudentContextProvider } from "@/contexts/StudentContext";
 import { USER_ROLE } from "@/enums/UserRole";
@@ -18,14 +19,20 @@ const navData: NavData[] = [
 
 export const StudentPage = () => {
     return (
-        <AuthentifiedWrapper scope={USER_ROLE.STUDENT}>
-            <StudentContextProvider>
-                <AppSidebar title="Student" path="/student" navData={navData}>
-                    <div className="flex flex-1 flex-col gap-4 p-4">
-                        <Outlet />
-                    </div>
-                </AppSidebar>
-            </StudentContextProvider>
-        </AuthentifiedWrapper>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+            <AuthentifiedWrapper scope={USER_ROLE.STUDENT}>
+                <StudentContextProvider>
+                    <AppSidebar
+                        title="Student"
+                        path="/student"
+                        navData={navData}
+                    >
+                        <div className="flex flex-1 flex-col gap-4 p-4">
+                            <Outlet />
+                        </div>
+                    </AppSidebar>
+                </StudentContextProvider>
+            </AuthentifiedWrapper>
+        </ThemeProvider>
     );
 };

@@ -241,6 +241,14 @@ export class PromotionProjectsService {
                         createdAt: "asc",
                     },
                 },
+                reportSections: {
+                    include: {
+                        reports: true,
+                    },
+                    orderBy: {
+                        order: "asc",
+                    },
+                },
             },
         });
     }

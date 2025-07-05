@@ -12,8 +12,9 @@ import { TeacherPromotionDetailContextProvider } from "@/pages/teacherPage/conte
 import { TeacherPromotionDetailPage } from "@/pages/teacherPage/pages/teacherPromotionDetailPage/TeacherPromotionDetailPage";
 import { StudentProjectPage } from "@/pages/studentPage/pages/studentProjectsPage/StudentProjectsPage";
 import { StudentProjectDetailPage } from "@/pages/studentPage/pages/studentProjectDetailPage/StudentProjectDetailPage";
-import { StudentProjectGroupsPage } from "@/pages/studentPage/pages/studentProjectGroupsPage/StudentProjectGroupsPage";
 import { StudentPromotionProjectContextProvider } from "@/pages/studentPage/contexts/StudentPromotionProjectContext";
+import { TeacherPromotionReportsPage } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/TeacherPromotionReportsPage";
+import { TeacherPromotionReportsView } from "@/pages/teacherPage/pages/teacherPromotionReportsPage/components/teacherPromotionReportsView/TeacherPromotionReportsView";
 import { TeacherPromotionProjectDetailContextProvider } from "@/pages/teacherPage/contexts/TeacherPromotionProjectDetailContext";
 import { TeacherPromotionProjectDetailPage } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/TeacherPromotionProjectDetailPage";
 import { TeacherProjectGroup } from "@/pages/teacherPage/pages/teacherPromotionProjectDetailPage/pages/teacherProjectGroup/TeacherProjectGroup";
@@ -42,10 +43,6 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: "",
                         Component: StudentProjectDetailPage,
-                    },
-                    {
-                        path: "groups",
-                        Component: StudentProjectGroupsPage,
                     },
                 ],
             },
@@ -78,6 +75,14 @@ export const ROUTER = createBrowserRouter([
                     {
                         path: "projects",
                         Component: TeacherPromotionProjectsPage,
+                    },
+                    {
+                        path: "reports",
+                        Component: TeacherPromotionReportsPage,
+                    },
+                    {
+                        path: "reports/:projectName/:groupName",
+                        Component: TeacherPromotionReportsView,
                     },
                     {
                         path: "projects/:projectName",

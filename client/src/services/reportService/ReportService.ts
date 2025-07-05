@@ -1,4 +1,4 @@
-import { Report, ReportRequest } from "@/types/Report";
+import { Report, ReportContent, ReportRequest } from "@/types/Report";
 import { Api } from "../api/Api";
 
 const REPORT_PATH = "report";
@@ -10,7 +10,7 @@ export class ReportService {
     this.api = api;
   }
 
-  async create(data: ReportRequest) {
+  async upsert(data: ReportRequest) {
     return this.api.request<Report>({
       path: REPORT_PATH,
       method: "POST",
@@ -25,18 +25,25 @@ export class ReportService {
     });
   }
 
-  async update(reportId: string, data: Partial<ReportRequest>) {
-    return this.api.request<Report>({
-      path: `${REPORT_PATH}/${reportId}`,
-      method: "PUT",
-      data,
+  async getReportsByPromotionId(promotionId: string) {
+    return this.api.request<Report[]>({
+      path: `${REPORT_PATH}/promotion/${promotionId}`,
+      method: "GET",
     });
   }
 
-  async delete(reportId: string) {
-    return this.api.request<Report>({
-      path: `${REPORT_PATH}/${reportId}`,
-      method: "DELETE",
+  async getReportContentByPromotionAndProjectAndGroup(
+    promotionId: string,
+    projectName: string,
+    projectGroupName: string,
+    reportSectionName: string | null,
+  ) {
+    const query = reportSectionName
+      ? `?reportSectionName=${reportSectionName}`
+      : "";
+    return this.api.request<ReportContent>({
+      path: `${REPORT_PATH}/promotion/${promotionId}/project/${projectName}/project-group/${projectGroupName}/content${query}`,
+      method: "GET",
     });
   }
 }

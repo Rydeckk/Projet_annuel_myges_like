@@ -27,6 +27,8 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet";
 import { PromotionProjectFrom } from "../../forms/PromotionProjectFrom";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { USER_ROLE } from "@/enums/UserRole";
 
 type Props = {
     promotionProject: PromotionProject;
@@ -34,6 +36,7 @@ type Props = {
 
 export const PromotionProjectCard = ({ promotionProject }: Props) => {
     const { getPromotion } = useContext(TeacherPromotionDetailContext);
+    const { user } = useCurrentUser();
 
     const promotionProjectService = useMemo(
         () => new PromotionProjectService(),
@@ -43,6 +46,7 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
     const [open, setOpen] = useState(false);
 
     const project = promotionProject.project!;
+    const isTeacher = user?.user.role === USER_ROLE.TEACHER;
 
     const onUpdatePromotionProject = async (data: PromotionProjectRequest) => {
         try {
@@ -131,18 +135,13 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                                             className="h-8 w-8"
                                             asChild
                                         >
-                                            <Link
-                                                to={
-                                                    promotionProject.project
-                                                        ?.name ?? ""
-                                                }
-                                            >
+                                            <Link to={project.name}>
                                                 <ExternalLink className="h-4 w-4" />
                                             </Link>
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>View</p>
+                                        <p>Project detail</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -165,6 +164,7 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                         </div>
                     </div>
                 }
+                disabled={!isTeacher}
             >
                 <div className="flex items-center justify-between text-sm text-gray-600">
                     <div className="flex items-center">
@@ -172,23 +172,25 @@ export const PromotionProjectCard = ({ promotionProject }: Props) => {
                         <span>{`Created at : ${format(promotionProject.createdAt, "HH:mm - dd-MM-yyyy")}`}</span>
                     </div>
                 </div>
-                <div className="flex justify-between">
-                    <Button
-                        className="w-[45%]"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setOpen(true);
-                        }}
-                    >
-                        Update
-                    </Button>
-                    <Button
-                        className="w-[45%]"
-                        onClick={onDeletePromotionProject}
-                    >
-                        Delete
-                    </Button>
-                </div>
+                {isTeacher && (
+                    <div className="flex justify-between">
+                        <Button
+                            className="w-[45%]"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpen(true);
+                            }}
+                        >
+                            Update
+                        </Button>
+                        <Button
+                            className="w-[45%]"
+                            onClick={onDeletePromotionProject}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                )}
             </ExpandableCard>
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetContent className="p-4">

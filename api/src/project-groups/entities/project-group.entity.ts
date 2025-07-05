@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
 import { ProjectGroupStudentEntity } from "../../project-group-students/entities/project-group-student.entity";
+import { ReportEntity } from "src/report/entities/report.entity";
 
 export class ProjectGroupEntity {
     id: string;
@@ -8,6 +9,9 @@ export class ProjectGroupEntity {
     updatedAt: Date;
 
     promotionProjectId: string;
+
+    @Type(() => ReportEntity)
+    reports: ReportEntity[];
 
     @Type(() => ProjectGroupStudentEntity)
     projectGroupStudents?: ProjectGroupStudentEntity[];
