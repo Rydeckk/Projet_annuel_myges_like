@@ -10,39 +10,30 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { Public } from "./strategies/jwt/jwt-auth.guard";
 import { GoogleAuthGuard } from "./strategies/google/google-auth.guard";
 import { MicrosoftAuthGuard } from "./strategies/microsoft/microsoft-auth.guard";
 import { LoginDto, RegisterDto } from "./dto/auth.dto";
-import { compare, genSalt, hash } from "bcryptjs";
+import { compare } from "bcryptjs";
 import { UsersService } from "src/users/users.service";
 import { UserRole } from "@prisma/client";
-import { SsoUser } from "src/types/sso";
+import { RequestUser, SsoUser } from "types/sso";
+import { HashService } from "src/services/hash.service";
+import { Public } from "decorators/is-public.decorator";
+import { GetCurrentUser, UserWithDetails } from "decorators/user.decorator";
 
 @Controller("auth")
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly usersService: UsersService,
+        private readonly hashService: HashService,
     ) {}
 
     @Public()
     @Post("register")
     async register(@Body() { email, password, ...data }: RegisterDto) {
-        const salt = await genSalt(10);
-        const hashedPassword = await hash(password, salt);
-
         const existingUser = await this.usersService.findFirst({
-            OR: [
-                { email },
-                {
-                    emails: {
-                        some: {
-                            email,
-                        },
-                    },
-                },
-            ],
+            email,
         });
 
         if (existingUser) {
@@ -51,6 +42,8 @@ export class AuthController {
                 HttpStatus.CONFLICT,
             );
         }
+
+        const hashedPassword = await this.hashService.hashPassword(password);
 
         return this.authService.register({
             registerData: {
@@ -65,16 +58,7 @@ export class AuthController {
     @Post("login")
     async login(@Body() { email, password }: LoginDto) {
         const user = await this.usersService.findFirst({
-            OR: [
-                { email },
-                {
-                    emails: {
-                        some: {
-                            email,
-                        },
-                    },
-                },
-            ],
+            email,
         });
         const isPasswordMatch = await compare(password, user?.password ?? "");
 
@@ -85,43 +69,40 @@ export class AuthController {
         return this.authService.login(user);
     }
 
-    async ssoLogin({
-        email,
-        provider,
-        ...data
-    }: {
-        email: string;
-        firstName: string;
-        lastName: string;
-        provider: string;
-    }) {
+    async ssoLogin({ email, provider, providerUserId, ...data }: SsoUser) {
         const user = await this.usersService.findFirst({
-            OR: [
-                { email },
-                {
-                    emails: {
-                        some: {
-                            email,
-                            ssoProvider: provider,
-                        },
-                    },
-                },
-            ],
+            email,
         });
 
         if (!user) {
-            const DEFAULT_SSO_PASSWORD = email;
-            const salt = await genSalt(10);
-            const hashedPassword = await hash(DEFAULT_SSO_PASSWORD, salt);
+            const hashedPassword = await this.hashService.hashPassword(email);
             return this.authService.register({
                 registerData: {
                     ...data,
                     email,
-                    password: hashedPassword,
                     role: UserRole.TEACHER,
-                    shouldUpdatePassword: true,
+                    password: hashedPassword,
                 },
-                ssoProvider: provider,
+                ssoData: {
+                    provider,
+                    providerUserId,
+                },
+            });
+        }
+
+        if (!user?.authProvider) {
+            await this.usersService.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    authProvider: {
+                        create: {
+                            provider,
+                            providerUserId,
+                        },
+                    },
+                },
             });
         }
 
@@ -138,7 +119,7 @@ export class AuthController {
     @UseGuards(GoogleAuthGuard)
     async googleSsoCallback(
         @Request()
-        req: Request & SsoUser,
+        req: Request & RequestUser,
     ) {
         return this.ssoLogin(req.user);
     }
@@ -153,8 +134,13 @@ export class AuthController {
     @UseGuards(MicrosoftAuthGuard)
     async microsoftSsoCallback(
         @Request()
-        req: Request & SsoUser,
+        req: Request & RequestUser,
     ) {
         return this.ssoLogin(req.user);
+    }
+
+    @Get("me")
+    getCurrentUser(@GetCurrentUser() user: UserWithDetails) {
+        return user;
     }
 }

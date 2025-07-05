@@ -12,16 +12,28 @@ export class UsersService {
             include: {
                 student: true,
                 teacher: true,
+                authProvider: true,
             },
         });
     }
 
-    async findUnique(where: Prisma.UserWhereUniqueInput) {
-        return this.prisma.user.findUnique({
+    async update({
+        where,
+        data,
+    }: {
+        where: Prisma.UserWhereUniqueInput;
+        data: Prisma.UserUpdateInput;
+    }) {
+        return this.prisma.user.update({
             where,
-            include: {
-                student: true,
-                teacher: true,
+            data,
+        });
+    }
+
+    async delete(userId: string) {
+        return this.prisma.user.delete({
+            where: {
+                id: userId,
             },
         });
     }

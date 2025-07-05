@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
+import { VerifyCallback } from "passport-oauth2";
 import { Strategy } from "passport-microsoft";
-import { MicrosoftProfile } from "src/types/sso";
+import { MicrosoftProfile } from "types/sso";
 
 @Injectable()
 export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
@@ -24,20 +25,15 @@ export class MicrosoftStrategy extends PassportStrategy(Strategy, "microsoft") {
         _accessToken: string,
         _refreshToken: string,
         profile: MicrosoftProfile,
-        done: (
-            err: null,
-            user: {
-                email: string;
-                firstName: string;
-                lastName: string;
-            },
-        ) => void,
+        done: VerifyCallback,
     ) {
-        const { name, emails, provider } = profile;
+        const { id, name, emails, provider } = profile;
+
         const user = {
+            providerUserId: id,
             email: emails[0].value,
-            firstName: name.givenName,
-            lastName: name.familyName,
+            firstName: name?.givenName ?? "",
+            lastName: name?.familyName ?? "",
             provider,
         };
         done(null, user);

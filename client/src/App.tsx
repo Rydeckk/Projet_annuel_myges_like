@@ -1,10 +1,13 @@
+import { ThemeProvider } from "./components/ui/theme-provider";
 import { UnauthotentifiedWrapper } from "./components/wrappers/UnauthotentifiedWrapper";
-import { Authentification } from "./pages/authentification/Authentification";
+import { AuthentificationPage } from "./pages/authentificationPage/AuthentificationPage";
 
 export const App = () => {
     return (
-        <UnauthotentifiedWrapper>
-            <Authentification />
-        </UnauthotentifiedWrapper>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+            <UnauthotentifiedWrapper>
+                <AuthentificationPage />
+            </UnauthotentifiedWrapper>
+        </ThemeProvider>
     );
 };

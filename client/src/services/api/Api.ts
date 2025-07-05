@@ -1,22 +1,24 @@
 import Cookies from "js-cookie";
 import { ApiException } from "./ApiException";
 
+const DEFAULT_CONTENT_TYPE = "application/json";
+
 export class Api {
   async request<T>({
     path,
     method = "GET",
     data,
     headers = {},
-    contentType = "application/json",
+    contentType = DEFAULT_CONTENT_TYPE,
   }: {
     path: string;
     method?: string;
     data?: unknown;
     headers?: Record<string, string>;
-    contentType?: string;
+    contentType?: string | null;
   }): Promise<T> {
     try {
-      const token = Cookies.get("clientToken");
+      const token = Cookies.get("token");
 
       const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -34,8 +36,14 @@ export class Api {
         headers: requestHeaders,
       };
 
-      if (data && ["POST", "PUT", "PATCH"].includes(method.toUpperCase())) {
+      if (
+        data &&
+        ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase()) &&
+        contentType === DEFAULT_CONTENT_TYPE
+      ) {
         options.body = JSON.stringify(data);
+      } else {
+        options.body = data as BodyInit;
       }
 
       const response = await fetch(`${apiUrl}/${path}`, options);
